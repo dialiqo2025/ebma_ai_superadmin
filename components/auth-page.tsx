@@ -10,7 +10,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { Brand } from "./brand";
 import { Button, Spinner } from "./ui/button";
@@ -40,51 +40,6 @@ const inputClass =
 function FieldHint({ message }: { message?: string }) {
   if (!message) return null;
   return <span className="mt-1.5 block text-[12px] text-[#ef6a82]">{message}</span>;
-}
-
-function GoogleIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
-      <path
-        fill="#EA4335"
-        d="M9 7.24v3.46h4.84c-.21 1.18-.84 2.18-1.79 2.85l2.89 2.24c1.69-1.56 2.66-3.86 2.66-6.59 0-.63-.06-1.24-.16-1.83H9z"
-      />
-      <path
-        fill="#34A853"
-        d="M3.99 10.74A5.41 5.41 0 0 1 3.64 9c0-.61.11-1.2.3-1.74L.54 4.98A8.96 8.96 0 0 0 0 9c0 1.45.35 2.82.96 4.04l3.03-2.3z"
-      />
-      <path
-        fill="#4A90E2"
-        d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0 5.48 0 2.44 2.02.96 4.98l3.03 2.3C4.6 5.17 6.62 3.58 9 3.58z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.89-2.24c-.8.54-1.83.86-3.07.86-2.38 0-4.4-1.6-5.11-3.76l-3.03 2.3C2.44 15.98 5.48 18 9 18z"
-      />
-    </svg>
-  );
-}
-
-function MicrosoftIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
-      <path fill="#F25022" d="M1 1h7.5v7.5H1z" />
-      <path fill="#7FBA00" d="M9.5 1H17v7.5H9.5z" />
-      <path fill="#00A4EF" d="M1 9.5H8.5V17H1z" />
-      <path fill="#FFB900" d="M9.5 9.5H17V17H9.5z" />
-    </svg>
-  );
-}
-
-function AppleIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
-      <path
-        fill="currentColor"
-        d="M12.86 9.4c-.02-2.07 1.69-3.07 1.77-3.12-0.97-1.41-2.47-1.61-3-1.64-1.28-.13-2.5.75-3.15.75-.65 0-1.66-.73-2.73-.71-1.4.02-2.7.82-3.42 2.08-1.46 2.53-.37 6.28 1.05 8.34.69 1.01 1.52 2.14 2.61 2.1 1.05-.04 1.44-.67 2.71-.67 1.26 0 1.62.67 2.73.65 1.13-.02 1.84-1.03 2.53-2.05.79-1.16 1.12-2.28 1.14-2.34-.02-.01-2.18-.84-2.2-3.39zM11.1 3.34c.58-.7.97-1.68.86-2.65-.84.03-1.85.56-2.45 1.26-.54.62-1.01 1.62-.88 2.57.93.07 1.89-.47 2.47-1.18z"
-      />
-    </svg>
-  );
 }
 
 function AuthVisual() {
@@ -136,7 +91,7 @@ function AuthVisual() {
             </span>
             <p className="m-0 text-[10px] leading-normal text-[#707899]">
               <strong className="mb-1 block text-[11px] text-[#d2d5e6]">Passwordless access</strong>
-              Sign in with a one-time code or Google — no password to remember.
+              Sign in with a one-time code — no password to remember.
             </p>
           </div>
         </div>
@@ -156,12 +111,10 @@ function AuthVisual() {
 }
 
 export function AuthPage() {
-  const search = useSearchParams();
   const router = useRouter();
   const { setSession, isAuthenticated, ready, user } = useAuth();
 
-  const initialMode: Mode = search.get("mode") === "signup" ? "signup" : "login";
-  const [mode, setMode] = useState<Mode>(initialMode);
+  const [mode] = useState<Mode>("login");
   const [step, setStep] = useState<Step>("form");
   const [otpPurpose, setOtpPurpose] = useState<OtpPurpose>("signin");
 
@@ -210,14 +163,6 @@ export function AuthPage() {
     if (error instanceof ApiError && error.status === 429) {
       setSeconds(cooldownSeconds(error));
     }
-  };
-
-  const switchMode = (next: Mode) => {
-    setMode(next);
-    setStep("form");
-    setOtp(["", "", "", "", "", ""]);
-    clearMessages();
-    router.replace(next === "signup" ? "/?mode=signup" : "/");
   };
 
   const submitAuthForm = async (event: FormEvent<HTMLFormElement>) => {
@@ -341,18 +286,6 @@ export function AuthPage() {
     }
   };
 
-  const continueWithGoogle = () => {
-    window.location.href = authApi.googleAuthUrl();
-  };
-
-  const continueWithMicrosoft = () => {
-    window.location.href = authApi.microsoftAuthUrl();
-  };
-
-  const continueWithApple = () => {
-    window.location.href = authApi.appleAuthUrl();
-  };
-
   return (
     <main className="grid min-h-screen grid-cols-1 bg-[#090b17] min-[821px]:grid-cols-[1.04fr_0.96fr]">
       <AuthVisual />
@@ -376,33 +309,6 @@ export function AuthPage() {
                 </p>
               </div>
 
-              <div className="my-[28px] mb-[25px] grid grid-cols-2 gap-0 rounded-[11px] border border-[#252d4c] bg-[#14192e] p-1">
-                <button
-                  type="button"
-                  className={cx(
-                    "h-9 cursor-pointer rounded-lg border-0 text-[12px] font-bold transition-all",
-                    mode === "login"
-                      ? "bg-[linear-gradient(135deg,var(--color-brand-a),var(--color-brand-b))] text-white shadow-[0_4px_14px_rgba(91,79,233,.35)]"
-                      : "bg-transparent text-[#a0acc0] hover:text-[#b0b5d0]",
-                  )}
-                  onClick={() => switchMode("login")}
-                >
-                  Sign in
-                </button>
-                <button
-                  type="button"
-                  className={cx(
-                    "h-9 cursor-pointer rounded-lg border-0 text-[12px] font-bold transition-all",
-                    mode === "signup"
-                      ? "bg-[linear-gradient(135deg,var(--color-brand-a),var(--color-brand-b))] text-white shadow-[0_4px_14px_rgba(91,79,233,.35)]"
-                      : "bg-transparent text-[#a0acc0] hover:text-[#b0b5d0]",
-                  )}
-                  onClick={() => switchMode("signup")}
-                >
-                  Create account
-                </button>
-              </div>
-
               {(formError || formSuccess) && (
                 <div
                   className={cx(
@@ -415,39 +321,6 @@ export function AuthPage() {
                   {formError || formSuccess}
                 </div>
               )}
-
-              <div className="mb-4 grid gap-2.5">
-                <button
-                  type="button"
-                  onClick={continueWithGoogle}
-                  className="flex h-[47px] w-full items-center justify-center gap-2.5 rounded-[10px] border border-[#2b3356] bg-[#151a30] text-[12px] font-semibold text-[#e8eaf4] transition hover:border-[#3d4670] hover:bg-[#1a2038]"
-                >
-                  <GoogleIcon />
-                  Continue with Google
-                </button>
-                <button
-                  type="button"
-                  onClick={continueWithMicrosoft}
-                  className="flex h-[47px] w-full items-center justify-center gap-2.5 rounded-[10px] border border-[#2b3356] bg-[#151a30] text-[12px] font-semibold text-[#e8eaf4] transition hover:border-[#3d4670] hover:bg-[#1a2038]"
-                >
-                  <MicrosoftIcon />
-                  Continue with Microsoft
-                </button>
-                <button
-                  type="button"
-                  onClick={continueWithApple}
-                  className="flex h-[47px] w-full items-center justify-center gap-2.5 rounded-[10px] border border-[#2b3356] bg-[#151a30] text-[12px] font-semibold text-[#e8eaf4] transition hover:border-[#3d4670] hover:bg-[#1a2038]"
-                >
-                  <AppleIcon />
-                  Continue with Apple
-                </button>
-              </div>
-
-              <div className="mb-4 flex items-center gap-3">
-                <span className="h-px flex-1 bg-[#252d4c]" />
-                <span className="text-[10px] uppercase tracking-[0.12em] text-[#555d7e]">or</span>
-                <span className="h-px flex-1 bg-[#252d4c]" />
-              </div>
 
               <form className="grid gap-[18px]" onSubmit={submitAuthForm}>
                 {mode === "signup" && (
