@@ -4,17 +4,21 @@ import { FormEvent, useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
-  Bot,
   Eye,
-  Mic2,
   Pencil,
   Plus,
   Save,
   Trash2,
-  Volume2,
 } from "lucide-react";
 import { apiRequest } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
+import { PlanRatesEditor } from "@/components/plan-rates-editor";
+import {
+  bundleToStoredPlanRates,
+  defaultPlanRateBundle,
+  planRatesToBundle,
+  type BundleForm,
+} from "@/lib/billing/plan-rates-ui";
 
 type Plan = {
   plan_uuid: string;
@@ -26,6 +30,11 @@ type Plan = {
   billing_interval: string;
   plan_kind?: "service" | "wallet_topup";
   monthly_credits: string;
+  tts_credits_per_1000_chars?: string | null;
+  stt_credits_per_minute?: string | null;
+  llm_credits_per_1000_tokens?: string | null;
+  is_default?: boolean;
+  contact_only?: boolean;
   active: boolean;
   features?: { stt: boolean; tts: boolean; llm: boolean };
   benefits?: string[];
@@ -42,21 +51,8 @@ type FormState = {
   planKind: "service" | "wallet_topup";
   features: { stt: boolean; tts: boolean; llm: boolean };
   benefits: string;
-};
-
-type ApiRates = {
-  tts_characters: number;
-  stt_seconds: number;
-  llm_tokens: number;
-};
-
-type BundleForm = {
-  ttsCredits: string;
-  ttsPerChars: string;
-  sttCredits: string;
-  sttPerMinutes: string;
-  llmCredits: string;
-  llmPerTokens: string;
+  isDefault: boolean;
+  contactOnly: boolean;
 };
 
 const blank: FormState = {
@@ -65,24 +61,14 @@ const blank: FormState = {
   description: "",
   price: "0",
   currency: "INR",
-  credits: "1000",
+  credits: "0",
   billingInterval: "one_time",
   planKind: "service",
   features: { stt: true, tts: true, llm: true },
   benefits: "",
+  isDefault: false,
+  contactOnly: false,
 };
-
-const defaultBundle: BundleForm = {
-  ttsCredits: "10",
-  ttsPerChars: "100",
-  sttCredits: "50",
-  sttPerMinutes: "1",
-  llmCredits: "1",
-  llmPerTokens: "1000",
-};
-
-const input =
-  "h-11 w-full rounded-xl border border-[#2a3558] bg-[#0b1224] px-3.5 text-sm font-medium text-white outline-none transition focus:border-[#7c6ff0] focus:ring-2 focus:ring-[#7c6ff0]/20";
 
 const planInput =
   "h-10 rounded-lg border border-[#293354] bg-[#10172d] px-3 text-sm text-white outline-none focus:border-[#6558e9]";
@@ -114,132 +100,6 @@ function AdminFrame({
       <p className="mt-3 text-sm text-[#8995b3]">{description}</p>
       {children}
     </main>
-  );
-}
-
-function num(value: string, fallback = 0) {
-  const n = Number(value);
-  return Number.isFinite(n) && n >= 0 ? n : fallback;
-}
-
-function roundNice(value: number) {
-  if (!Number.isFinite(value)) return 0;
-  const rounded = Math.round(value * 1_000_000) / 1_000_000;
-  return Object.is(rounded, -0) ? 0 : rounded;
-}
-
-function apiRatesToBundle(rates: ApiRates): BundleForm {
-  const ttsPer = 100;
-  const sttPerMin = 1;
-  const llmPer = 1000;
-  return {
-    ttsCredits: String(roundNice((rates.tts_characters ?? 0) * ttsPer)),
-    ttsPerChars: String(ttsPer),
-    sttCredits: String(roundNice((rates.stt_seconds ?? 0) * 60 * sttPerMin)),
-    sttPerMinutes: String(sttPerMin),
-    llmCredits: String(roundNice((rates.llm_tokens ?? 0) * llmPer)),
-    llmPerTokens: String(llmPer),
-  };
-}
-
-function bundleToApiRates(form: BundleForm): ApiRates {
-  const ttsPer = Math.max(num(form.ttsPerChars, 1), 1e-9);
-  const sttMinutes = Math.max(num(form.sttPerMinutes, 1), 1e-9);
-  const llmPer = Math.max(num(form.llmPerTokens, 1), 1e-9);
-  return {
-    tts_characters: roundNice(num(form.ttsCredits) / ttsPer),
-    stt_seconds: roundNice(num(form.sttCredits) / (sttMinutes * 60)),
-    llm_tokens: roundNice(num(form.llmCredits) / llmPer),
-  };
-}
-
-function formatCredits(value: number) {
-  return roundNice(value).toLocaleString(undefined, { maximumFractionDigits: 6 });
-}
-
-function RateCard({
-  title,
-  subtitle,
-  accentBar,
-  icon,
-  credits,
-  quantity,
-  quantityLabel,
-  onCredits,
-  onQuantity,
-  unitRateLabel,
-  unitRate,
-  formula,
-}: {
-  title: string;
-  subtitle: string;
-  accentBar: string;
-  icon: ReactNode;
-  credits: string;
-  quantity: string;
-  quantityLabel: string;
-  onCredits: (v: string) => void;
-  onQuantity: (v: string) => void;
-  unitRateLabel: string;
-  unitRate: string;
-  formula: string;
-}) {
-  return (
-    <article className="relative overflow-hidden rounded-2xl border border-[#243056] bg-[#0e152c]">
-      <div className={`absolute inset-x-0 top-0 h-1 ${accentBar}`} />
-      <div className="p-5">
-        <div className="flex items-start gap-3">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/5">
-            {icon}
-          </span>
-          <div className="min-w-0">
-            <h3 className="text-sm font-bold tracking-wide text-white">{title}</h3>
-            <p className="mt-1 text-[12px] leading-relaxed text-[#7f8ba8]">{subtitle}</p>
-          </div>
-        </div>
-
-        <div className="mt-5 rounded-xl border border-[#2a3558] bg-[#0b1224] p-3.5">
-          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#6f7c9c]">
-            Charge rule
-          </p>
-          <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-2.5">
-            <label className="grid gap-1.5">
-              <span className="text-[11px] font-medium text-[#8b97b4]">Credits</span>
-              <input
-                type="number"
-                min="0"
-                step="any"
-                className={input}
-                value={credits}
-                onChange={(e) => onCredits(e.target.value)}
-              />
-            </label>
-            <span className="pb-3 text-[12px] font-semibold text-[#6f7c9c]">per</span>
-            <label className="grid gap-1.5">
-              <span className="text-[11px] font-medium text-[#8b97b4]">{quantityLabel}</span>
-              <input
-                type="number"
-                min="0.001"
-                step="any"
-                className={input}
-                value={quantity}
-                onChange={(e) => onQuantity(e.target.value)}
-              />
-            </label>
-          </div>
-        </div>
-
-        <div className="mt-4 space-y-2">
-          <p className="rounded-lg bg-[#121a33] px-3 py-2.5 text-[12px] leading-relaxed text-[#b7c1d8]">
-            {formula}
-          </p>
-          <p className="px-1 text-[11px] text-[#6f7c9c]">
-            Stored as <span className="font-mono text-[#c5cee3]">{unitRate}</span>{" "}
-            {unitRateLabel}
-          </p>
-        </div>
-      </div>
-    </article>
   );
 }
 
@@ -304,7 +164,7 @@ export function AdminPlans() {
             <tr>
               <th className="px-5 py-4">Plan</th>
               <th className="px-5 py-4">Price</th>
-              <th className="px-5 py-4">Credits</th>
+              <th className="px-5 py-4">TTS / STT rates</th>
               <th className="px-5 py-4">Services</th>
               <th className="px-5 py-4">Status</th>
               <th className="px-5 py-4">Actions</th>
@@ -318,13 +178,19 @@ export function AdminPlans() {
               >
                 <td className="px-5 py-4">
                   <p className="font-semibold text-white">{plan.name}</p>
-                  <p className="text-xs text-[#74809e]">{plan.code}</p>
+                  <p className="text-xs text-[#74809e]">
+                    {plan.code}
+                    {plan.is_default ? " · default" : ""}
+                    {plan.contact_only ? " · contact" : ""}
+                  </p>
                 </td>
                 <td className="px-5 py-4 text-white">
                   {(plan.price_minor / 100).toFixed(2)} {plan.currency}
                 </td>
                 <td className="px-5 py-4 text-[#b6c0d6]">
-                  {Number(plan.monthly_credits).toLocaleString()}
+                  {plan.contact_only
+                    ? "—"
+                    : `₹${Number(plan.tts_credits_per_1000_chars ?? 30)}/1k TTS · ₹${Number(plan.stt_credits_per_minute ?? 1)}/min STT · ₹${Number(plan.llm_credits_per_1000_tokens ?? 1)}/1k LLM`}
                 </td>
                 <td className="px-5 py-4 text-xs text-[#a99af3]">
                   {Object.entries(plan.features || {})
@@ -407,6 +273,7 @@ export function AdminPlans() {
 export function AdminPlanEditor({ editId }: { editId?: string }) {
   const router = useRouter();
   const [form, setForm] = useState<FormState>(blank);
+  const [rateBundle, setRateBundle] = useState<BundleForm>(defaultPlanRateBundle);
   const [loading, setLoading] = useState(Boolean(editId));
   const [saving, setSaving] = useState(false);
 
@@ -427,7 +294,10 @@ export function AdminPlanEditor({ editId }: { editId?: string }) {
             planKind: plan.plan_kind || "service",
             features: plan.features || blank.features,
             benefits: (plan.benefits || []).join("\n"),
+            isDefault: Boolean(plan.is_default),
+            contactOnly: Boolean(plan.contact_only),
           });
+          setRateBundle(planRatesToBundle(plan));
         }
       })
       .finally(() => setLoading(false));
@@ -436,16 +306,28 @@ export function AdminPlanEditor({ editId }: { editId?: string }) {
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     setSaving(true);
+    const ratesDisabled = form.contactOnly || form.planKind === "wallet_topup";
+    const stored = ratesDisabled ? null : bundleToStoredPlanRates(rateBundle);
     const body = {
-      ...form,
+      code: form.code,
+      name: form.name,
+      description: form.description,
+      currency: form.currency,
+      billingInterval: form.billingInterval,
+      planKind: form.planKind,
+      features: form.features,
       priceMinor: Math.round(Number(form.price) * 100),
       credits: Number(form.credits),
       benefits: form.benefits
         .split("\n")
         .map((item) => item.trim())
         .filter(Boolean),
+      ttsCreditsPer1000Chars: stored?.ttsCreditsPer1000Chars ?? null,
+      sttCreditsPerMinute: stored?.sttCreditsPerMinute ?? null,
+      llmCreditsPer1000Tokens: stored?.llmCreditsPer1000Tokens ?? null,
+      isDefault: form.isDefault && !form.contactOnly,
+      contactOnly: form.contactOnly,
     };
-    delete (body as { price?: string }).price;
     await apiRequest(
       editId ? "/billing/admin/plans/" + editId : "/billing/admin/plans",
       {
@@ -545,12 +427,49 @@ export function AdminPlanEditor({ editId }: { editId?: string }) {
                   setForm({ ...form, billingInterval: e.target.value })
                 }
               >
-                <option value="one_time">One time</option>
+                <option value="one_time">One time / PAYG</option>
                 <option value="monthly">Monthly</option>
                 <option value="yearly">Yearly</option>
               </select>
             </label>
           </div>
+
+          {form.planKind === "service" && !form.contactOnly && (
+            <div className="mt-6">
+              <h2 className="text-sm font-bold text-white">Usage rates (wallet)</h2>
+              <p className="mt-1 mb-4 text-xs text-[#74809e]">
+                Same configuration previously under Usage settings. 1 credit = ₹1.
+              </p>
+              <PlanRatesEditor value={rateBundle} onChange={setRateBundle} />
+            </div>
+          )}
+
+          <div className="mt-4 flex flex-wrap gap-5 text-sm text-[#b6c0d6]">
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={form.isDefault}
+                disabled={form.contactOnly}
+                onChange={(e) => setForm({ ...form, isDefault: e.target.checked })}
+              />
+              Default plan for new users
+            </label>
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={form.contactOnly}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    contactOnly: e.target.checked,
+                    isDefault: e.target.checked ? false : form.isDefault,
+                  })
+                }
+              />
+              Contact-only Custom tier
+            </label>
+          </div>
+
           <div className="mt-6 grid gap-5 md:grid-cols-2">
             <label className="grid gap-1 text-xs text-[#8995b3]">
               Customer benefits (one per line)
@@ -612,216 +531,26 @@ export function AdminPlanEditor({ editId }: { editId?: string }) {
 }
 
 export function AdminUsageSettings() {
-  const [form, setForm] = useState<BundleForm>(defaultBundle);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [error, setError] = useState("");
-  const [showAdvanced, setShowAdvanced] = useState(false);
-
-  const rates = bundleToApiRates(form);
-  const preview = {
-    tts1k: rates.tts_characters * 1000,
-    stt1m: rates.stt_seconds * 60,
-    llm1k: rates.llm_tokens * 1000,
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    setError("");
-    void apiRequest<ApiRates>("/billing/admin/rates", { auth: true })
-      .then((data) => setForm(apiRatesToBundle(data)))
-      .catch((err) =>
-        setError(err instanceof Error ? err.message : "Failed to load rates"),
-      )
-      .finally(() => setLoading(false));
-  }, []);
-
-  const save = async () => {
-    setSaving(true);
-    setError("");
-    setSaved(false);
-    try {
-      const body = bundleToApiRates(form);
-      if (
-        !Number.isFinite(body.tts_characters) ||
-        !Number.isFinite(body.stt_seconds) ||
-        !Number.isFinite(body.llm_tokens)
-      ) {
-        throw new Error("Enter valid non-negative numbers.");
-      }
-      await apiRequest("/billing/admin/rates", { method: "PUT", auth: true, body });
-      setSaved(true);
-      window.setTimeout(() => setSaved(false), 2500);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save rates");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const setField = (key: keyof BundleForm, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-    setSaved(false);
-  };
-
   return (
     <AdminFrame
-      title="Usage settings"
-      description="Define credit burn in plain language. Example: 10 credits for every 100 characters, or 50 credits per minute of audio."
+      title="Usage settings moved"
+      description="Configure TTS, STT, and LLM wallet rates on each plan under Plans and pricing."
     >
-      {loading ? (
-        <p className="mt-8 text-sm text-[#74809e]">Loading rates…</p>
-      ) : (
-        <div className="mt-8 space-y-5">
-          <section className="rounded-2xl border border-[#202846] bg-[#0c1225] p-6 sm:p-7">
-            {/* <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <h2 className="text-lg font-bold text-white">Credit rates</h2>
-                <p className="mt-1.5 max-w-xl text-[13px] leading-relaxed text-[#7f8ba8]">
-                  Set how many credits each service consumes. Values are converted to
-                  per-character, per-second, and per-token rates for the billing API.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowAdvanced((v) => !v)}
-                className="rounded-lg border border-[#2f3a5c] px-3 py-2 text-xs font-semibold text-[#a99af3] transition hover:border-[#6558e9] hover:bg-[#151c36] hover:text-white"
-              >
-                {showAdvanced ? "Hide API values" : "Show API values"}
-              </button>
-            </div> */}
-
-            <div className="mt-6 grid gap-4 xl:grid-cols-3">
-              <RateCard
-                title="Text to speech"
-                subtitle="Credits for generated characters"
-                accentBar="bg-[#38bdf8]"
-                icon={<Volume2 size={18} className="text-[#38bdf8]" />}
-                credits={form.ttsCredits}
-                quantity={form.ttsPerChars}
-                quantityLabel="Characters"
-                onCredits={(v) => setField("ttsCredits", v)}
-                onQuantity={(v) => setField("ttsPerChars", v)}
-                unitRate={formatCredits(rates.tts_characters)}
-                unitRateLabel="credit / character"
-                formula={`${form.ttsCredits || "0"} credits / ${form.ttsPerChars || "0"} characters`}
-              />
-              <RateCard
-                title="Speech to text"
-                subtitle="Credits for audio duration"
-                accentBar="bg-[#a78bfa]"
-                icon={<Mic2 size={18} className="text-[#a78bfa]" />}
-                credits={form.sttCredits}
-                quantity={form.sttPerMinutes}
-                quantityLabel="Minutes"
-                onCredits={(v) => setField("sttCredits", v)}
-                onQuantity={(v) => setField("sttPerMinutes", v)}
-                unitRate={formatCredits(rates.stt_seconds)}
-                unitRateLabel="credit / second"
-                formula={`${form.sttCredits || "0"} credits / ${form.sttPerMinutes || "0"} minute(s)`}
-              />
-              <RateCard
-                title="LLM"
-                subtitle="Credits for tokens processed"
-                accentBar="bg-[#f472b6]"
-                icon={<Bot size={18} className="text-[#f472b6]" />}
-                credits={form.llmCredits}
-                quantity={form.llmPerTokens}
-                quantityLabel="Tokens"
-                onCredits={(v) => setField("llmCredits", v)}
-                onQuantity={(v) => setField("llmPerTokens", v)}
-                unitRate={formatCredits(rates.llm_tokens)}
-                unitRateLabel="credit / token"
-                formula={`${form.llmCredits || "0"} credits / ${form.llmPerTokens || "0"} tokens`}
-              />
-            </div>
-
-            {showAdvanced && (
-              <div className="mt-5 grid gap-3 rounded-xl border border-dashed border-[#2f3a5c] bg-[#0a1020] p-4 sm:grid-cols-3">
-                {(
-                  [
-                    ["tts_characters", rates.tts_characters],
-                    ["stt_seconds", rates.stt_seconds],
-                    ["llm_tokens", rates.llm_tokens],
-                  ] as const
-                ).map(([key, value]) => (
-                  <div key={key} className="rounded-lg bg-[#121a33] px-3.5 py-3">
-                    <p className="font-mono text-[11px] text-[#6f7c9c]">{key}</p>
-                    <p className="mt-1 font-mono text-sm text-white">
-                      {formatCredits(value)}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[#202846] pt-5">
-              <div className="min-h-[18px] text-xs">
-                {error ? (
-                  <span className="text-rose-300">{error}</span>
-                ) : saved ? (
-                  <span className="text-emerald-300">Rates saved successfully</span>
-                ) : (
-                  <span className="text-[#6f7c9c]">
-                    Changes apply to new usage after save
-                  </span>
-                )}
-              </div>
-              <button
-                type="button"
-                disabled={saving}
-                onClick={() => void save()}
-                className="inline-flex items-center gap-2 rounded-xl bg-[#5d50e8] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_10px_28px_rgba(93,80,232,.28)] transition hover:bg-[#6a5cf4] disabled:opacity-50"
-              >
-                <Save size={15} /> {saving ? "Saving…" : "Save rates"}
-              </button>
-            </div>
-          </section>
-
-          {/* <section className="rounded-2xl border border-[#202846] bg-[#0c1225] p-6 sm:p-7">
-            <h2 className="text-lg font-bold text-white">Live preview</h2>
-            <p className="mt-1.5 text-[13px] text-[#7f8ba8]">
-              Estimated credit burn with the rates above (before plan discounts).
-            </p>
-            <div className="mt-6 grid gap-3 sm:grid-cols-3">
-              {(
-                [
-                  {
-                    label: "TTS · 1,000 chars",
-                    value: preview.tts1k,
-                    bar: "bg-[#38bdf8]",
-                  },
-                  {
-                    label: "STT · 1 minute",
-                    value: preview.stt1m,
-                    bar: "bg-[#a78bfa]",
-                  },
-                  {
-                    label: "LLM · 1,000 tokens",
-                    value: preview.llm1k,
-                    bar: "bg-[#f472b6]",
-                  },
-                ] as const
-              ).map((item) => (
-                <div
-                  key={item.label}
-                  className="relative overflow-hidden rounded-2xl border border-[#243056] bg-[#0e152c] p-5"
-                >
-                  <div className={`absolute inset-x-0 top-0 h-1 ${item.bar}`} />
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#6f7c9c]">
-                    {item.label}
-                  </p>
-                  <p className="mt-3 text-3xl font-bold tracking-tight text-white">
-                    {formatCredits(item.value)}
-                  </p>
-                  <p className="mt-1 text-[12px] text-[#8b97b4]">credits</p>
-                </div>
-              ))}
-            </div>
-          </section> */}
-        </div>
-      )}
+      <div className="mt-8 rounded-2xl border border-[#293354] bg-[#101832] p-6">
+        <p className="text-sm text-[#aeb9d2]">
+          Global usage settings are no longer used. Open a plan to edit charge rules (credits per
+          characters / minutes / tokens). Assign that plan to users from User management.
+        </p>
+        <button
+          type="button"
+          onClick={() => {
+            window.location.href = "/platform/admin/plans";
+          }}
+          className="mt-5 rounded-lg bg-[#5d50e8] px-4 py-2.5 text-sm font-semibold text-white"
+        >
+          Go to Plans and pricing
+        </button>
+      </div>
     </AdminFrame>
   );
 }

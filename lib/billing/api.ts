@@ -28,6 +28,11 @@ export type BillingPlan = {
   billing_interval: string;
   plan_kind: "service" | "wallet_topup";
   monthly_credits: string;
+  tts_credits_per_1000_chars?: string | null;
+  stt_credits_per_minute?: string | null;
+  llm_credits_per_1000_tokens?: string | null;
+  is_default?: boolean;
+  contact_only?: boolean;
   active: boolean;
   features?: { stt: boolean; tts: boolean; llm: boolean };
   benefits?: string[];
@@ -40,6 +45,10 @@ export type AdminUserWallet = {
   email: string;
   fullName: string;
   balanceCredits: number;
+  planUuid?: string | null;
+  planName?: string | null;
+  planCode?: string | null;
+  subscriptionUuid?: string | null;
 };
 
 export type AdminGrantCreditsResult = {
@@ -74,4 +83,10 @@ export const billingApi = {
       `/billing/admin/users/${encodeURIComponent(userUuid)}/credits`,
       { method: "POST", auth: true, body },
     ),
+  adminAssignPlan: (userUuid: string, planUuid: string) =>
+    apiRequest<{ planName: string; planCode: string }>(
+      `/billing/admin/users/${encodeURIComponent(userUuid)}/plan`,
+      { method: "PUT", auth: true, body: { planUuid } },
+    ),
+  adminPlans: () => apiRequest<BillingPlan[]>("/billing/admin/plans", { auth: true }),
 };
