@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #0a0d1a;
+  --color-bg-deep: #070914;
+  --color-surface: #141a30;
+  --color-surface-2: #1d2444;
+  --color-border: #2b3358;
+  --color-text: #f2f3fb;
+  --color-muted: #9299bd;
+  --color-faint: #5f678e;
+  --color-brand-a: #5b4fe9;
+  --color-brand-b: #9b5cf6;
+  --color-cyan: #38bdf8;
+  --color-success: #34d399;
+  --color-danger: #f1466b;
+  --color-platform: #0b0e1b;
+  --color-sidebar: #0d1020;
+  --font-sans: var(--font-body), Arial, Helvetica, sans-serif;
+  --font-heading: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --max-width-content: 1180px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-bg text-text font-sans antialiased;
+  }
+
+  a {
+    @apply text-inherit no-underline;
+  }
+
+  button {
+    @apply text-inherit;
+    font: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  a,
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

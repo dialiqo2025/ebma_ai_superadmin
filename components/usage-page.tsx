@@ -1,0 +1,37 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Activity, Coins, Gauge, Info, RefreshCw } from "lucide-react";
+import { billingApi, type BillingSummary, type BillingUsage } from "@/lib/billing/api";
+import Link from "next/link";
+
+const labels: Record<string, string> = { tts_characters: "TTS characters", stt_seconds: "STT seconds", llm_tokens: "LLM tokens" };
+const formatPricingExample = (value: string) => value.replace(/\.00(?= credits)/g, "");
+const formatCharge = (value: string) => Number(value).toLocaleString(undefined, { maximumFractionDigits: 6 });
+
+const usageDisplay = (item: BillingUsage) => {
+  const quantity = Number(item.quantity);
+  if (item.usage_type === "tts_characters") return `${Math.round(quantity).toLocaleString()} characters`;
+  if (item.usage_type === "stt_seconds") return `${quantity.toFixed(2)} sec · ${(quantity / 60).toFixed(2)} min`;
+  return `${Math.round(quantity).toLocaleString()} tokens`;
+};
+
+export function UsagePage() {
+  const [summary, setSummary] = useState<BillingSummary | null>(null);
+  const [items, setItems] = useState<BillingUsage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showPricing, setShowPricing] = useState(false);
+  const [type, setType] = useState("");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const load = async () => { setLoading(true); try { const [nextSummary, nextUsage] = await Promise.all([billingApi.summary(), billingApi.usage({ type: type || undefined, from: from || undefined, to: to || undefined })]); setSummary(nextSummary); setItems(nextUsage.items); } finally { setLoading(false); } };
+  useEffect(() => { void load(); }, []);
+
+  return <main className="mx-auto max-w-5xl text-[#d7def0]">
+    <div className="mb-8 flex items-start justify-between"><div><p className="font-mono text-[11px] tracking-[.24em] text-[#8f82ff]">BILLING & USAGE</p><h1 className="mt-3 text-4xl font-extrabold text-white">Usage overview</h1><p className="mt-3 text-sm text-[#8995b3]">Track credits consumed across EBMA services.</p></div><div className="flex gap-2"><button type="button" onClick={() => setShowPricing((value) => !value)} className="rounded-lg border border-[#293354] p-2 text-[#8491ad] hover:text-white" title="Pricing information"><Info size={16} /></button><button type="button" onClick={() => void load()} className="rounded-lg border border-[#293354] p-2 text-[#8491ad] hover:text-white" title="Refresh"><RefreshCw size={16} className={loading ? "animate-spin" : ""} /></button></div></div>
+    {showPricing && summary && <section className="mb-6 rounded-2xl border border-[#39416a] bg-[#121936] p-5 shadow-xl"><div className="flex items-start justify-between"><div><p className="text-sm font-bold text-white">Credit pricing</p><p className="mt-1 text-xs text-[#8995b3]">Every successful request is measured in its native unit.</p></div><button type="button" onClick={() => setShowPricing(false)} className="text-xs text-[#8491ad] hover:text-white">Close</button></div><div className="mt-4 grid gap-3 sm:grid-cols-3">{Object.entries(summary.pricing).map(([key, price]) => <div key={key} className="rounded-xl border border-[#293354] bg-[#0b1125] p-3"><p className="text-xs font-semibold text-[#cbd4e8]">{labels[key] ?? key}</p><p className="mt-2 font-mono text-sm text-[#a99af3]">{price.creditsPerUnit} cr / {price.unit}</p><p className="mt-1 text-xs text-[#74809e]">{formatPricingExample(price.example)}</p></div>)}</div></section>}
+    <div className="grid gap-4 sm:grid-cols-3"><div className="rounded-2xl border border-[#202846] bg-[#0c1225] p-5"><Coins className="text-[#8f82ff]" size={20} /><p className="mt-5 text-xs text-[#7885a6]">Credits remaining</p><p className="mt-1 text-2xl font-bold text-white">{summary?.balanceCredits.toFixed(2) ?? "—"}</p>{summary?.overageCredits ? <p className="mt-1 text-xs text-amber-300">{summary.overageCredits.toFixed(2)} credit overage</p> : null}</div><div className="rounded-2xl border border-[#202846] bg-[#0c1225] p-5"><Activity className="text-[#00b6dc]" size={20} /><p className="mt-5 text-xs text-[#7885a6]">Credits used</p><p className="mt-1 text-2xl font-bold text-white">{summary?.usedCredits.toFixed(2) ?? "—"}</p></div><div className="rounded-2xl border border-[#202846] bg-[#0c1225] p-5"><Gauge className="text-emerald-400" size={20} /><p className="mt-5 text-xs text-[#7885a6]">Filtered events</p><p className="mt-1 text-2xl font-bold text-white">{items.length}</p></div></div>
+    <section className="mt-6 overflow-hidden rounded-2xl border border-[#202846] bg-[#0c1225]"><div className="grid grid-cols-1 gap-4 border-b border-[#202846] px-5 py-4 sm:grid-cols-[minmax(180px,1.3fr)_minmax(150px,1fr)_minmax(150px,1fr)_auto] sm:items-end"><label className="flex min-w-0 flex-col gap-1.5 text-[10px] uppercase tracking-wider text-[#74809e]">Service<select value={type} onChange={(event) => setType(event.target.value)} className="h-10 w-full rounded-lg border border-[#293354] bg-[#10172d] px-3 text-xs normal-case tracking-normal text-white outline-none focus:border-[#6558e9]"><option value="">All services</option><option value="tts_characters">TTS</option><option value="stt_seconds">STT</option><option value="llm_tokens">LLM</option></select></label><label className="flex min-w-0 flex-col gap-1.5 text-[10px] uppercase tracking-wider text-[#74809e]">From<input type="date" value={from} onChange={(event) => setFrom(event.target.value)} className="h-10 w-full rounded-lg border border-[#293354] bg-[#10172d] px-3 text-xs text-white outline-none focus:border-[#6558e9]" /></label><label className="flex min-w-0 flex-col gap-1.5 text-[10px] uppercase tracking-wider text-[#74809e]">To<input type="date" value={to} onChange={(event) => setTo(event.target.value)} className="h-10 w-full rounded-lg border border-[#293354] bg-[#10172d] px-3 text-xs text-white outline-none focus:border-[#6558e9]" /></label><button type="button" onClick={() => void load()} className="h-10 whitespace-nowrap rounded-lg bg-[#5d50e8] px-5 text-xs font-semibold text-white transition-colors hover:bg-[#6a5cf4]">Apply filters</button></div><div className="border-b border-[#202846] px-5 py-4 text-sm font-bold text-white">Usage records</div><div className="hidden grid-cols-[1.2fr_1fr_1fr_auto] border-b border-[#202846] px-5 py-3 text-[10px] uppercase tracking-wider text-[#74809e] sm:grid"><span>Service</span><span>Used</span><span>When</span><span>Cost</span></div><div className="divide-y divide-[#202846]">{items.length ? items.map((item) => <div key={item.usage_uuid} className="grid gap-2 px-5 py-4 text-sm sm:grid-cols-[1.2fr_1fr_1fr_auto] sm:items-center"><div><p className="font-medium text-white">{labels[item.usage_type] ?? item.usage_type}</p><p className="mt-1 text-xs text-[#74809e] sm:hidden">{new Date(item.created_at).toLocaleString()}</p></div><span className="text-xs text-[#aeb9d2]">{usageDisplay(item)}</span><span className="hidden text-xs text-[#74809e] sm:block">{new Date(item.created_at).toLocaleString()}</span><span className="font-mono text-[#a99af3]">{formatCharge(item.charged_credits)} cr</span></div>) : <p className="px-5 py-10 text-center text-sm text-[#74809e]">No usage records match these filters.</p>}</div></section>
+    <Link href="/platform/plans?kind=wallet_topup" className="fixed bottom-6 right-6 z-20 rounded-full border border-[#6558e9] bg-[#171c35] px-4 py-3 text-xs font-semibold text-[#c7c0ff] shadow-xl hover:bg-[#242b50]">Recharge wallet</Link>
+  </main>;
+}

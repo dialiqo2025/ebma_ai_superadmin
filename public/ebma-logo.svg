@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 100" width="280" height="100">
+  <defs>
+    <linearGradient id="raygrad" x1="10" y1="10" x2="110" y2="110" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#5B4FE9"/><stop offset="100%" stop-color="#9B5CF6"/></linearGradient>
+    <linearGradient id="hubgrad" x1="45" y1="45" x2="75" y2="75" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#9B5CF6"/><stop offset="100%" stop-color="#5B4FE9"/></linearGradient>
+    <linearGradient id="textgrad" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#7C70F6"/><stop offset="100%" stop-color="#B978FF"/></linearGradient>
+  </defs>
+  <g transform="translate(2,15) scale(0.6)">
+    <g transform="rotate(0 60 60)"><rect x="55.5" y="14" width="9" height="31" rx="4.5" fill="url(#raygrad)"/></g><g transform="rotate(45 60 60)"><rect x="56.5" y="22" width="7" height="23" rx="3.5" fill="url(#raygrad)"/></g><g transform="rotate(90 60 60)"><rect x="55.5" y="14" width="9" height="31" rx="4.5" fill="url(#raygrad)"/></g><g transform="rotate(135 60 60)"><rect x="56.5" y="22" width="7" height="23" rx="3.5" fill="url(#raygrad)"/></g><g transform="rotate(180 60 60)"><rect x="55.5" y="14" width="9" height="31" rx="4.5" fill="url(#raygrad)"/></g><g transform="rotate(225 60 60)"><rect x="56.5" y="22" width="7" height="23" rx="3.5" fill="url(#raygrad)"/></g><g transform="rotate(270 60 60)"><rect x="55.5" y="14" width="9" height="31" rx="4.5" fill="url(#raygrad)"/></g><g transform="rotate(315 60 60)"><rect x="56.5" y="22" width="7" height="23" rx="3.5" fill="url(#raygrad)"/></g><circle cx="60" cy="60" r="12.5" fill="url(#hubgrad)"/>
+  </g>
+  <g transform="translate(64,0)"><text x="0" y="78" font-family="Space Grotesk, Arial, sans-serif" font-weight="700" font-size="76" letter-spacing="-3" fill="url(#textgrad)">ebma</text></g>
+</svg>
