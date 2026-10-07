@@ -27,7 +27,7 @@ function CopyButton({ value, label }: { value: string; label: string }) {
     <button
       type="button"
       onClick={() => void copy()}
-      className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-brand-border px-2.5 py-1.5 text-[12px] text-muted hover:bg-brand-soft hover:text-text"
+      className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-brand-border bg-surface px-2.5 py-1.5 text-[12px] text-muted hover:bg-surface-raised hover:text-text"
     >
       {copied ? <Check size={12} className="text-success" /> : <Copy size={12} />}
       {copied ? "Copied" : label}
@@ -72,7 +72,7 @@ export function CurlSnippet({ steps, description, defaultOpen = false }: { steps
                   </span>
                   <CopyButton value={step.command} label="Copy" />
                 </div>
-                <pre className="overflow-x-auto rounded-lg border border-brand-border bg-brand-soft p-3 font-mono text-[12px] leading-6 text-muted">
+                <pre className="overflow-x-auto rounded-lg border border-brand-border bg-surface p-3 font-mono text-[12px] leading-6 text-muted">
                   {step.command}
                 </pre>
                 {step.note && <p className="mt-1.5 text-[11px] text-accent">{step.note}</p>}

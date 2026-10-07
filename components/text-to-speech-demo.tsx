@@ -330,7 +330,7 @@ export function TextToSpeechDemo() {
         </p>
       </section>
 
-      <section className="mx-auto max-w-4xl">
+      <section className="mx-auto w-full max-w-7xl">
         <div className="rounded-2xl border border-brand-border bg-brand-soft p-5 sm:p-7">
           <div className="mb-2 flex items-center justify-between">
             <span className="font-mono text-[12px] tracking-wider text-muted">
@@ -360,10 +360,10 @@ export function TextToSpeechDemo() {
                   disabled={translating || compose.busy}
                   onClick={() => void onSelectLanguage(opt.value)}
                   className={cx(
-                    "rounded-full border px-3 py-1 text-[12px] transition-colors disabled:opacity-50",
+                    "rounded-full border px-3 py-1 text-[12px] transition-all disabled:cursor-not-allowed",
                     active
-                      ? "border-brand-border bg-brand-soft text-text"
-                      : "border-brand-border bg-brand-soft text-muted hover:border-brand-border hover:bg-brand-soft",
+                      ? "border-transparent bg-brand-gradient font-semibold text-on-brand shadow-[0_4px_12px_rgba(113,40,207,0.22)] disabled:opacity-100"
+                      : "border-brand-border bg-surface text-muted hover:border-border-strong hover:bg-surface-raised disabled:opacity-50",
                   )}
                 >
                   {opt.label}

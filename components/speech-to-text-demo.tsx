@@ -102,12 +102,14 @@ function Dropdown({
   options,
   onChange,
   disabled,
+  emphasizeValue = false,
 }: {
   label: string;
   value: string;
   options: { value: string; label: string }[];
   onChange: (v: string) => void;
   disabled?: boolean;
+  emphasizeValue?: boolean;
 }) {
   return (
     <div className="flex flex-col gap-2">
@@ -117,12 +119,17 @@ function Dropdown({
       <div className="relative">
         <select
           disabled={disabled}
-          className="min-w-[140px] cursor-pointer appearance-none rounded-lg border border-brand-border bg-brand-soft py-2.5 pr-10 pl-3.5 text-[14px] font-semibold text-text outline-none transition-colors hover:border-brand-border focus:border-brand-border disabled:cursor-not-allowed disabled:opacity-50"
+          className={cx(
+            "min-w-[140px] cursor-pointer appearance-none rounded-lg border bg-surface py-2.5 pr-10 pl-3.5 text-[14px] font-semibold text-text outline-none transition-colors hover:border-border-strong focus:border-border-strong disabled:cursor-not-allowed",
+            emphasizeValue
+              ? "border-2 border-border-strong font-bold disabled:opacity-100"
+              : "border-brand-border disabled:opacity-70",
+          )}
           value={value}
           onChange={(e) => onChange(e.target.value)}
         >
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value} className="bg-brand-soft">
+            <option key={opt.value} value={opt.value} className="bg-surface">
               {opt.label}
             </option>
           ))}
@@ -303,7 +310,7 @@ function SegmentBlock({
 }
 
 const RESULT_ACTION_BTN =
-  "rounded-full border border-border/35 bg-transparent px-4 py-1.5 text-[13px] font-medium text-text transition-colors hover:border-border/55 hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40";
+  "rounded-full border border-brand-border bg-surface px-4 py-1.5 text-[13px] font-medium text-text transition-colors hover:border-border-strong hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-65";
 
 function transcriptPlainText(item: SttTranscription) {
   const segments = item.result?.segments ?? [];
@@ -910,7 +917,7 @@ export function SpeechToTextDemo() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-5xl">
+      <section className="mx-auto w-full max-w-7xl">
         <div className="rounded-2xl border border-brand-border bg-brand-soft p-5 sm:p-7">
           {inputMode === "live" ? (
             <>
@@ -919,6 +926,7 @@ export function SpeechToTextDemo() {
                   label="LANGUAGE"
                   value={language}
                   disabled={controlsDisabled}
+                  emphasizeValue
                   options={languages.map((l) => ({ value: l.code, label: l.name }))}
                   onChange={setLanguage}
                 />
@@ -1045,7 +1053,7 @@ export function SpeechToTextDemo() {
               <div className="mt-5 flex gap-3">
                 <button
                   type="button"
-                  className="rounded-lg border border-brand-border bg-transparent px-4 py-2 text-[13px] font-medium text-muted transition-colors hover:border-brand-border hover:bg-brand-soft"
+                  className="rounded-lg border border-brand-border bg-surface px-4 py-2 text-[13px] font-medium text-muted transition-colors hover:border-border-strong hover:bg-surface-raised"
                   onClick={copyLiveTranscript}
                 >
                   Copy transcript
@@ -1053,7 +1061,7 @@ export function SpeechToTextDemo() {
                 <button
                   type="button"
                   disabled={live.listening || live.busy || actionsDisabled}
-                  className="rounded-lg border border-brand-border bg-transparent px-4 py-2 text-[13px] font-medium text-muted transition-colors hover:border-brand-border hover:bg-brand-soft disabled:opacity-40"
+                  className="rounded-lg border border-brand-border bg-surface px-4 py-2 text-[13px] font-medium text-muted transition-colors hover:border-border-strong hover:bg-surface-raised disabled:opacity-65"
                   onClick={clearLive}
                 >
                   Clear
@@ -1061,7 +1069,6 @@ export function SpeechToTextDemo() {
               </div>
 
               <CurlSnippet
-                defaultOpen
                 steps={curlSteps}
                 description="Start a live session from your own server. The body follows the language and output settings above."
               />
@@ -1073,6 +1080,7 @@ export function SpeechToTextDemo() {
                   label="LANGUAGE"
                   value={language}
                   disabled={uploadBusy || actionsDisabled}
+                  emphasizeValue
                   options={languages.map((l) => ({ value: l.code, label: l.name }))}
                   onChange={setLanguage}
                 />
@@ -1237,7 +1245,6 @@ export function SpeechToTextDemo() {
               )}
 
               <CurlSnippet
-                defaultOpen
                 steps={curlSteps}
                 description="Transcribe a file from your own app. The fields follow the language, speaker settings and file chosen above."
               />

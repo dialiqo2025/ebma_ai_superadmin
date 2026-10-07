@@ -459,7 +459,7 @@ export function PlatformShell({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <div className="mx-auto w-[min(1210px,calc(100%-60px))] py-10 pb-16 max-[820px]:w-[calc(100%-34px)] max-[560px]:pt-7">
+        <div className="mx-auto w-[min(1560px,calc(100%-60px))] py-10 pb-16 max-[820px]:w-[calc(100%-34px)] max-[560px]:pt-7">
           {children}
         </div>
       </section>

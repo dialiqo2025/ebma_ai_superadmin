@@ -147,7 +147,7 @@ export function SubscriptionsPage() {
   };
 
   return (
-    <main className="mx-auto max-w-6xl text-text">
+    <main className="mx-auto w-full max-w-none text-text">
       <p className="font-mono text-[11px] tracking-[.24em] text-accent">BILLING</p>
       <h1 className="mt-3 text-4xl font-extrabold text-text">My plan</h1>
       <p className="mt-3 text-sm text-muted">

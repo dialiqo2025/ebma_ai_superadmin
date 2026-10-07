@@ -2,7 +2,16 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Coins, CreditCard, Search, UserPlus, X } from "lucide-react";
+import {
+  Coins,
+  CreditCard,
+  Search,
+  UserCheck,
+  UserPlus,
+  UserX,
+  Users,
+  X,
+} from "lucide-react";
 import { apiRequest } from "@/lib/api";
 import {
   billingApi,
@@ -20,6 +29,7 @@ type AdminUser = {
 };
 
 type UserResponse = { data: AdminUser[]; total_users_count: number };
+type UserSummary = { total_users: number; total_active_users: number };
 
 type FormState = {
   fullName: string;
@@ -53,6 +63,7 @@ export function AdminUsers() {
   const { user, ready } = useAuth();
   const router = useRouter();
   const [users, setUsers] = useState<AdminUser[]>([]);
+  const [summary, setSummary] = useState<UserSummary | null>(null);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<FormState>(emptyForm);
@@ -79,11 +90,23 @@ export function AdminUsers() {
   const load = async () => {
     setLoading(true);
     try {
-      const result = await apiRequest<UserResponse>(
-        `/user?search=${encodeURIComponent(search)}&page=1&page_size=50&includeTenants=true`,
-        { auth: true },
-      );
+      const [result, userSummary] = await Promise.all([
+        apiRequest<UserResponse>(
+          `/user?search=${encodeURIComponent(search)}&page=1&page_size=50&includeTenants=true`,
+          { auth: true },
+        ),
+        Promise.all([
+          apiRequest<UserResponse>("/user?page=1&page_size=1&includeTenants=true", { auth: true }),
+          apiRequest<UserResponse>("/user?page=1&page_size=1&includeTenants=true&isActive=true", { auth: true }),
+        ])
+          .then(([allUsers, activeUsers]) => ({
+            total_users: allUsers.total_users_count,
+            total_active_users: activeUsers.total_users_count,
+          }))
+          .catch(() => null),
+      ]);
       setUsers(result.data);
+      if (userSummary) setSummary(userSummary);
     } finally {
       setLoading(false);
     }
@@ -94,9 +117,11 @@ export function AdminUsers() {
   }, [ready, user, router]);
 
   useEffect(() => {
-    if (user?.role === "superAdmin") void load();
+    if (user?.role !== "superAdmin") return;
+    const timer = window.setTimeout(() => void load(), 350);
+    return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, search]);
 
   if (!ready || !user || user.role !== "superAdmin") return null;
 
@@ -276,7 +301,7 @@ export function AdminUsers() {
   };
 
   return (
-    <main className="mx-auto max-w-6xl text-text">
+    <main className="mx-auto w-full max-w-none text-text">
       <div className="mb-8 flex items-start justify-between gap-4">
         <div>
           <p className="font-mono text-[11px] tracking-[.24em] text-accent">
@@ -299,37 +324,50 @@ export function AdminUsers() {
         </button>
       </div>
 
+      <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {[
+          { label: "Registered users", value: summary?.total_users, icon: Users, color: "text-accent" },
+          { label: "Active users", value: summary?.total_active_users, icon: UserCheck, color: "text-success" },
+          {
+            label: "Disabled users",
+            value: summary ? Math.max(0, summary.total_users - summary.total_active_users) : undefined,
+            icon: UserX,
+            color: "text-muted",
+          },
+        ].map(({ label, value, icon: Icon, color }) => (
+          <div key={label} className="flex items-center gap-4 rounded-xl border border-brand-border bg-surface p-4">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-surface-raised">
+              <Icon size={19} className={color} />
+            </span>
+            <div>
+              <p className="text-xs text-muted">{label}</p>
+              <p className="mt-1 text-2xl font-bold leading-none text-text">{value?.toLocaleString() ?? "—"}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
       {error && (
         <p className="mb-4 rounded-lg border border-danger-border bg-danger-soft px-4 py-3 text-sm text-danger">
           {error}
         </p>
       )}
 
-      <div className="mb-5 flex gap-2">
+      <div className="mb-5 flex w-full max-w-lg gap-2">
         <div className="flex flex-1 items-center gap-2 rounded-lg border border-brand-border bg-surface px-3">
           <Search size={16} className="text-accent" />
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") void load();
-            }}
             placeholder="Search name or email"
             className="h-10 w-full bg-transparent text-sm text-text outline-none placeholder:text-accent"
           />
         </div>
-        <button
-          type="button"
-          onClick={() => void load()}
-          className="rounded-lg border border-brand-border px-4 text-xs text-muted hover:text-text"
-        >
-          Search
-        </button>
       </div>
 
       <div className="overflow-x-auto rounded-2xl border border-brand-border bg-surface">
-        <div className="min-w-[720px]">
-          <div className="grid grid-cols-[minmax(0,1.1fr)_minmax(0,1.5fr)_88px_88px_minmax(240px,1fr)] border-b border-[#202846] px-5 py-3 text-[10px] uppercase tracking-wider text-[#74809e]">
+        <div className="min-w-[980px]">
+          <div className="grid grid-cols-[minmax(180px,1.1fr)_minmax(260px,1.6fr)_110px_110px_minmax(390px,1.4fr)] border-b border-brand-border px-5 py-3 text-[10px] uppercase tracking-wider text-accent">
             <span>User</span>
             <span>Email</span>
             <span>Role</span>
@@ -344,7 +382,7 @@ export function AdminUsers() {
             users.map((record) => (
               <div
                 key={record.user_uuid}
-                className="grid grid-cols-[minmax(0,1.1fr)_minmax(0,1.5fr)_88px_88px_minmax(240px,1fr)] items-center gap-3 border-b border-brand-border px-5 py-4 text-sm last:border-0"
+                className="grid grid-cols-[minmax(180px,1.1fr)_minmax(260px,1.6fr)_110px_110px_minmax(390px,1.4fr)] items-center gap-3 border-b border-brand-border px-5 py-4 text-sm last:border-0"
               >
                 <div className="min-w-0 truncate font-medium text-text" title={record.fullName}>
                   {record.fullName}
@@ -370,7 +408,7 @@ export function AdminUsers() {
                   <button
                     type="button"
                     onClick={() => void openPlanModal(record)}
-                    className="inline-flex items-center gap-1 text-xs text-[#c4b5fd] hover:text-white"
+                    className="inline-flex items-center gap-1 text-xs text-muted hover:text-text"
                   >
                     <CreditCard size={13} /> Assign plan
                   </button>

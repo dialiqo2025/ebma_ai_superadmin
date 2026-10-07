@@ -95,7 +95,7 @@ function AdminFrame({
   if (!ready || user?.role !== "superAdmin") return null;
 
   return (
-    <main className="mx-auto max-w-6xl text-text">
+    <main className="mx-auto w-full max-w-none text-text">
       <p className="font-mono text-[11px] tracking-[.24em] text-accent">
         CONTROL PANEL
       </p>

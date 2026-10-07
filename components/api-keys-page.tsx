@@ -52,7 +52,7 @@ export function ApiKeysPage() {
   const sampleKey = created?.secret ?? "ebma_sk_your_key";
   const curl = `curl -X POST ${API_BASE_URL}/tts/generations \\\n  -H "Authorization: Bearer ${sampleKey}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"text":"नमस्ते, आप कैसे हैं?","language":"hi","voiceMode":"default","outputFormat":"wav"}'`;
 
-  return <main className="mx-auto max-w-5xl text-text">
+  return <main className="mx-auto w-full max-w-none text-text">
     <p className="font-mono text-[11px] tracking-[.24em] text-accent">WORKSPACE / DEVELOPERS</p>
     <h1 className="mt-3 text-4xl font-extrabold text-text">API keys</h1>
     <p className="mt-3 text-sm text-muted">Call EBMA speech, voice and LLM APIs from your own apps. Usage is charged to your wallet.</p>

@@ -142,8 +142,23 @@
 .bg-theme-header { background-color: var(--theme-header); }
 .bg-theme-overlay { background-color: var(--theme-overlay); }
 button.bg-brand-soft:not(.border-0) {
-  background-color: var(--theme-surface-high);
+  background-color: var(--theme-surface);
   border: 1px solid var(--theme-border);
+}
+button.bg-brand-soft:not(.border-0):hover:not(:disabled) {
+  background-color: var(--theme-surface-high);
+}
+input.bg-brand-soft,
+textarea.bg-brand-soft,
+select.bg-brand-soft,
+pre.bg-brand-soft,
+code.bg-brand-soft {
+  background-color: var(--theme-surface);
+  border-color: var(--theme-border);
+}
+select option:checked {
+  background-color: var(--theme-nav-active);
+  color: var(--theme-text);
 }
 [class*="bg-[linear-gradient(90deg,rgba(91,79,233"] { background-image: var(--theme-brand-gradient-short); }
 [class*="linear-gradient(145deg,#0d1020"] { background-image: var(--theme-auth-visual); }
