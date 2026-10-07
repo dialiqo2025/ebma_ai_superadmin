@@ -32,77 +32,77 @@ function cx(...classes: (string | false | undefined)[]) {
 }
 
 const labelClass =
-  "[&>span:first-child]:mb-2 [&>span:first-child]:block [&>span:first-child]:text-[12px] [&>span:first-child]:font-[750] [&>span:first-child]:uppercase [&>span:first-child]:tracking-[0.08em] [&>span:first-child]:text-[#adb2c9]";
+  "[&>span:first-child]:mb-2 [&>span:first-child]:block [&>span:first-child]:text-[12px] [&>span:first-child]:font-[750] [&>span:first-child]:uppercase [&>span:first-child]:tracking-[0.08em] [&>span:first-child]:text-muted";
 
 const inputClass =
-  "h-[47px] w-full rounded-[10px] border border-[#2b3356] bg-[#151a30] px-[13px] text-xs text-white outline-none transition duration-200 placeholder:text-[#8b98ae] focus:border-[#6f62e7] focus:shadow-[0_0_0_3px_rgba(91,79,233,.11)]";
+  "h-[47px] w-full rounded-[10px] border border-brand-border bg-brand-soft px-[13px] text-xs text-text outline-none transition duration-200 placeholder:text-muted focus:border-brand-border focus:shadow-[0_0_0_3px_rgba(91,79,233,.11)]";
 
 function FieldHint({ message }: { message?: string }) {
   if (!message) return null;
-  return <span className="mt-1.5 block text-[12px] text-[#ef6a82]">{message}</span>;
+  return <span className="mt-1.5 block text-[12px] text-danger">{message}</span>;
 }
 
 function AuthVisual() {
   return (
-    <div className="relative overflow-hidden border-r border-[#252d4c] bg-[radial-gradient(circle_at_30%_45%,rgba(91,79,233,.2),transparent_33%),linear-gradient(145deg,#0d1020,#080a14)] max-[820px]:hidden">
+    <div className="relative overflow-hidden border-r border-brand-border bg-[radial-gradient(circle_at_30%_45%,rgba(91,79,233,.2),transparent_33%),linear-gradient(145deg,#0d1020,#080a14)] max-[820px]:hidden">
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.12] [background-image:linear-gradient(rgba(130,140,190,.16)_1px,transparent_1px),linear-gradient(90deg,rgba(130,140,190,.16)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:linear-gradient(to_bottom,black,transparent_78%)]"
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute -bottom-[190px] -right-[100px] h-[480px] w-[480px] rounded-full bg-[#583be1] opacity-[0.12] blur-[150px]"
+        className="pointer-events-none absolute -bottom-[190px] -right-[100px] h-[480px] w-[480px] rounded-full bg-brand-soft opacity-[0.12] blur-[150px]"
         aria-hidden
       />
 
       <Link
         href="/home"
-        className="absolute left-[42px] top-[38px] z-[2] flex items-center gap-[7px] text-[12px] text-[#8189aa] transition hover:text-white"
+        className="absolute left-[42px] top-[38px] z-[2] flex items-center gap-[7px] text-[12px] text-muted transition hover:text-text"
       >
         <ArrowLeft size={16} />
         Back to home
       </Link>
 
       <div className="absolute left-[10%] right-[8%] top-1/2 z-[2] -translate-y-[56%]">
-        <div className="flex w-max items-center gap-2 rounded-full border border-[rgba(155,92,246,.3)] bg-[rgba(91,79,233,.1)] px-3 py-2 text-[12px] font-[750] uppercase tracking-[0.1em] text-[#b5adff]">
+        <div className="flex w-max items-center gap-2 rounded-full border border-brand-border bg-brand-soft px-3 py-2 text-[12px] font-[750] uppercase tracking-[0.1em] text-accent">
           <Sparkles size={14} />
           Build what&apos;s next
         </div>
         <h1 className="mb-0 mt-6 font-heading text-[clamp(39px,4vw,56px)] font-[610] leading-[1.12] tracking-[-0.045em]">
           Every great conversation
           <br />
-          starts with <span className="text-[#a982f6]">understanding.</span>
+          starts with <span className="text-accent">understanding.</span>
         </h1>
-        <p className="mt-6 max-w-[540px] text-[15px] leading-[1.75] text-[#9198b8]">
+        <p className="mt-6 max-w-[540px] text-[15px] leading-[1.75] text-muted">
           Join teams building faster, more natural voice and language experiences with ebma AI.
         </p>
         <div className="mt-[42px] grid grid-cols-2 gap-[26px]">
           <div className="flex gap-3">
-            <span className="grid h-9 w-9 min-w-9 place-items-center rounded-[10px] border border-[#343b64] bg-[#171c34] text-[#9c78ef] [&_svg]:h-[17px] [&_svg]:w-[17px]">
+            <span className="grid h-9 w-9 min-w-9 place-items-center rounded-[10px] border border-brand-border bg-brand-soft text-accent [&_svg]:h-[17px] [&_svg]:w-[17px]">
               <ShieldCheck />
             </span>
-            <p className="m-0 text-[12px] leading-normal text-[#a0acc0]">
-              <strong className="mb-1 block text-[12px] text-[#d2d5e6]">Private by design</strong>
+            <p className="m-0 text-[12px] leading-normal text-muted">
+              <strong className="mb-1 block text-[12px] text-muted">Private by design</strong>
               Your data is encrypted and never used to train public models.
             </p>
           </div>
           <div className="flex gap-3">
-            <span className="grid h-9 w-9 min-w-9 place-items-center rounded-[10px] border border-[#343b64] bg-[#171c34] text-[#9c78ef] [&_svg]:h-[17px] [&_svg]:w-[17px]">
+            <span className="grid h-9 w-9 min-w-9 place-items-center rounded-[10px] border border-brand-border bg-brand-soft text-accent [&_svg]:h-[17px] [&_svg]:w-[17px]">
               <LockKeyhole />
             </span>
-            <p className="m-0 text-[10px] leading-normal text-[#707899]">
-              <strong className="mb-1 block text-[11px] text-[#d2d5e6]">Passwordless access</strong>
+            <p className="m-0 text-[10px] leading-normal text-accent">
+              <strong className="mb-1 block text-[11px] text-muted">Passwordless access</strong>
               Sign in with a one-time code — no password to remember.
             </p>
           </div>
         </div>
       </div>
 
-      <div className="absolute bottom-[37px] left-[10%] z-[2] text-[#8c93b2]">
-        <div className="text-[12px] tracking-[5px] text-[#a178ee]">✦ ✦ ✦</div>
+      <div className="absolute bottom-[37px] left-[10%] z-[2] text-muted">
+        <div className="text-[12px] tracking-[5px] text-accent">✦ ✦ ✦</div>
         <p className="my-2 font-heading text-xs font-medium">
           “The foundation for human-first AI experiences.”
         </p>
-        <span className="text-[12px] uppercase tracking-[0.1em] text-[#8b98ae]">
+        <span className="text-[12px] uppercase tracking-[0.1em] text-muted">
           ebma intelligence platform
         </span>
       </div>
@@ -287,10 +287,10 @@ export function AuthPage() {
   };
 
   return (
-    <main className="grid min-h-screen grid-cols-1 bg-[#090b17] min-[821px]:grid-cols-[1.04fr_0.96fr]">
+    <main className="grid min-h-screen grid-cols-1 bg-page min-[821px]:grid-cols-[1.04fr_0.96fr]">
       <AuthVisual />
 
-      <div className="relative flex min-h-screen items-center justify-center bg-[#0d1020] p-[50px] max-[820px]:px-[30px] max-[820px]:py-[55px] max-[560px]:items-start max-[560px]:px-5 max-[560px]:pb-[70px] max-[560px]:pt-[45px]">
+      <div className="relative flex min-h-screen items-center justify-center bg-surface p-[50px] max-[820px]:px-[30px] max-[820px]:py-[55px] max-[560px]:items-start max-[560px]:px-5 max-[560px]:pb-[70px] max-[560px]:pt-[45px]">
         <div className="w-full max-w-[440px]">
           <div className="mb-[46px] max-[560px]:mb-[42px]">
             <Brand />
@@ -302,7 +302,7 @@ export function AuthPage() {
                 <h2 className="mb-[9px] font-heading text-[31px] font-[620] tracking-[-0.035em]">
                   {mode === "login" ? "Welcome back" : "Create your account"}
                 </h2>
-                <p className="m-0 text-xs leading-[1.6] text-[#838bab]">
+                <p className="m-0 text-xs leading-[1.6] text-muted">
                   {mode === "login"
                     ? "Enter your email and we’ll send a one-time code."
                     : "Start building with voice and language AI today."}
@@ -314,8 +314,8 @@ export function AuthPage() {
                   className={cx(
                     "mb-4 rounded-lg border px-3 py-2 text-[12px] leading-relaxed",
                     formError
-                      ? "border-[#5a2a3a] bg-[#2a1520] text-[#ef6a82]"
-                      : "border-[#2a4a3a] bg-[#152a20] text-[#4dd0a3]",
+                      ? "border-danger-border bg-brand-soft text-danger"
+                      : "border-success-border bg-success-soft text-success",
                   )}
                 >
                   {formError || formSuccess}
@@ -355,7 +355,7 @@ export function AuthPage() {
                 <label className={labelClass}>
                   <span>Work email</span>
                   <div className="relative">
-                    <Mail size={17} className="absolute left-[13px] top-[15px] text-[#9aa5b8]" />
+                    <Mail size={17} className="absolute left-[13px] top-[15px] text-muted" />
                     <input
                       type="email"
                       value={email}
@@ -369,18 +369,18 @@ export function AuthPage() {
                 </label>
 
                 {mode === "signup" && (
-                  <label className="flex cursor-pointer items-start gap-2 text-[10px] text-[#777f9f]">
+                  <label className="flex cursor-pointer items-start gap-2 text-[10px] text-accent">
                     <input type="checkbox" required className="peer sr-only" />
-                    <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded border border-[#353d63] bg-[#171c33] text-transparent peer-checked:border-brand-a peer-checked:bg-brand-a peer-checked:text-white">
+                    <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded border border-brand-border bg-brand-soft text-transparent peer-checked:border-brand-a peer-checked:bg-brand-a peer-checked:text-text">
                       <Check size={12} />
                     </span>
                     <span className="mt-0.5">
                       I agree to the{" "}
-                      <a href="#" className="text-[12px] text-[#a89af4]">
+                      <a href="#" className="text-[12px] text-accent">
                         Terms
                       </a>{" "}
                       and{" "}
-                      <a href="#" className="text-[12px] text-[#a89af4]">
+                      <a href="#" className="text-[12px] text-accent">
                         Privacy Policy
                       </a>
                       .
@@ -405,8 +405,8 @@ export function AuthPage() {
                 </Button>
               </form>
 
-              <p className="mt-[18px] flex items-center justify-center gap-1.5 text-[12px] text-[#8b98ae]">
-                <ShieldCheck size={14} className="text-[#6c64a6]" />
+              <p className="mt-[18px] flex items-center justify-center gap-1.5 text-[12px] text-muted">
+                <ShieldCheck size={14} className="text-accent" />
                 Passwordless sign-in with a one-time email code.
               </p>
             </>
@@ -416,7 +416,7 @@ export function AuthPage() {
             <div className="relative text-center">
               <button
                 type="button"
-                className="absolute -top-[35px] flex cursor-pointer items-center gap-1.5 border-0 bg-transparent p-0 text-[12px] text-[#a0acc0]"
+                className="absolute -top-[35px] flex cursor-pointer items-center gap-1.5 border-0 bg-transparent p-0 text-[12px] text-muted"
                 onClick={() => {
                   clearMessages();
                   setStep("form");
@@ -426,17 +426,17 @@ export function AuthPage() {
                 Back
               </button>
 
-              <div className="mx-auto mb-[22px] grid h-[55px] w-[55px] place-items-center rounded-2xl border border-[#393d72] bg-[linear-gradient(145deg,#242451,#161b34)] text-[#a981f5] shadow-[0_0_45px_rgba(91,79,233,.13)]">
+              <div className="mx-auto mb-[22px] grid h-[55px] w-[55px] place-items-center rounded-2xl border border-brand-border bg-brand-soft text-accent shadow-[0_0_45px_rgba(91,79,233,.13)]">
                 <Mail />
               </div>
 
               <h2 className="mb-[9px] font-heading text-[31px] font-[620] tracking-[-0.035em]">
                 {otpPurpose === "signup" ? "Verify your email" : "Check your inbox"}
               </h2>
-              <p className="m-0 text-xs leading-[1.6] text-[#838bab]">
+              <p className="m-0 text-xs leading-[1.6] text-muted">
                 We sent a 6-digit verification code to
                 <br />
-                <strong className="text-[#cfd2e3]">{email}</strong>
+                <strong className="text-muted">{email}</strong>
               </p>
 
               {(formError || formSuccess) && (
@@ -444,8 +444,8 @@ export function AuthPage() {
                   className={cx(
                     "mt-4 rounded-lg border px-3 py-2 text-left text-[12px] leading-relaxed",
                     formError
-                      ? "border-[#5a2a3a] bg-[#2a1520] text-[#ef6a82]"
-                      : "border-[#2a4a3a] bg-[#152a20] text-[#4dd0a3]",
+                      ? "border-danger-border bg-brand-soft text-danger"
+                      : "border-success-border bg-success-soft text-success",
                   )}
                 >
                   {formError || formSuccess}
@@ -466,7 +466,7 @@ export function AuthPage() {
                       inputMode="numeric"
                       maxLength={1}
                       aria-label={`OTP digit ${index + 1}`}
-                      className="h-[57px] w-[51px] rounded-[10px] border border-[#30385d] bg-[#151a30] text-center font-heading text-xl font-semibold text-white outline-none focus:border-[#7a6dec] focus:shadow-[0_0_0_3px_rgba(91,79,233,.12)] max-[560px]:h-[52px] max-[560px]:w-[43px]"
+                      className="h-[57px] w-[51px] rounded-[10px] border border-brand-border bg-brand-soft text-center font-heading text-xl font-semibold text-text outline-none focus:border-brand-border focus:shadow-[0_0_0_3px_rgba(91,79,233,.12)] max-[560px]:h-[52px] max-[560px]:w-[43px]"
                     />
                   ))}
                 </div>
@@ -489,10 +489,10 @@ export function AuthPage() {
                 </Button>
               </form>
 
-              <p className="mt-5 text-[12px] text-[#9aa5b8]">
+              <p className="mt-5 text-[12px] text-muted">
                 Didn&apos;t receive it?{" "}
                 {seconds > 0 ? (
-                  <span className="text-[#949bb7]">
+                  <span className="text-muted">
                     Resend in 0:{seconds.toString().padStart(2, "0")}
                   </span>
                 ) : (
@@ -500,17 +500,17 @@ export function AuthPage() {
                     type="button"
                     onClick={resendOtp}
                     disabled={loading}
-                    className="cursor-pointer border-0 bg-transparent text-[12px] text-[#a99bf5] disabled:opacity-50"
+                    className="cursor-pointer border-0 bg-transparent text-[12px] text-accent disabled:opacity-50"
                   >
                     Resend code
                   </button>
                 )}
               </p>
 
-              <div className="mt-8 flex gap-2.5 rounded-[10px] border border-[#272f50] bg-[#13182c] p-3 text-left text-[12px] leading-normal text-[#a0acc0]">
-                <LockKeyhole size={16} className="min-w-4 text-[#8276d8]" />
+              <div className="mt-8 flex gap-2.5 rounded-[10px] border border-brand-border bg-brand-soft p-3 text-left text-[12px] leading-normal text-muted">
+                <LockKeyhole size={16} className="min-w-4 text-accent" />
                 <span>
-                  <strong className="block text-[12px] text-[#afb4cd]">Secure verification</strong>
+                  <strong className="block text-[12px] text-muted">Secure verification</strong>
                   Enter the 6-digit code exactly as sent to your email.
                 </span>
               </div>

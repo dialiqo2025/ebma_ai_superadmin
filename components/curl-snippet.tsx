@@ -27,9 +27,9 @@ function CopyButton({ value, label }: { value: string; label: string }) {
     <button
       type="button"
       onClick={() => void copy()}
-      className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-[#2a3552] px-2.5 py-1.5 text-[12px] text-[#9aa5b8] hover:bg-[#101830] hover:text-white"
+      className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-brand-border px-2.5 py-1.5 text-[12px] text-muted hover:bg-brand-soft hover:text-text"
     >
-      {copied ? <Check size={12} className="text-emerald-300" /> : <Copy size={12} />}
+      {copied ? <Check size={12} className="text-success" /> : <Copy size={12} />}
       {copied ? "Copied" : label}
     </button>
   );
@@ -41,25 +41,25 @@ export function CurlSnippet({ steps, description, defaultOpen = false }: { steps
   const all = [setup, ...steps.map((s) => `# ${s.title}\n${s.command}`)].join("\n\n");
 
   return (
-    <div className="mt-5 rounded-xl border border-[#1b2540] bg-[#080e20]">
+    <div className="mt-5 rounded-xl border border-brand-border bg-brand-soft">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center gap-2 px-4 py-3 text-left text-[11px] font-semibold tracking-wider text-[#8b98ae] hover:text-white"
+        className="flex w-full items-center gap-2 px-4 py-3 text-left text-[11px] font-semibold tracking-wider text-muted hover:text-text"
       >
         <ChevronRight size={14} className={`shrink-0 transition-transform ${open ? "rotate-90" : ""}`} />
         <Terminal size={14} className="shrink-0" />
         CURL REQUEST
       </button>
       {open && (
-        <div className="border-t border-[#1b2540] px-4 py-4">
+        <div className="border-t border-brand-border px-4 py-4">
           <div className="flex flex-wrap items-start justify-between gap-3">
-            <p className="max-w-2xl text-[12px] leading-relaxed text-[#8b98ae]">
+            <p className="max-w-2xl text-[12px] leading-relaxed text-muted">
               {description} Create a key on the{" "}
-              <Link href="/platform/api-keys" className="text-[#a99af3] hover:text-white">
+              <Link href="/platform/api-keys" className="text-accent hover:text-text">
                 API keys
               </Link>{" "}
-              page and run <code className="font-mono text-[#c9d1e8]">{setup}</code> first.
+              page and run <code className="font-mono text-muted">{setup}</code> first.
             </p>
             <CopyButton value={all} label="Copy all" />
           </div>
@@ -67,15 +67,15 @@ export function CurlSnippet({ steps, description, defaultOpen = false }: { steps
             {steps.map((step, index) => (
               <div key={step.title}>
                 <div className="mb-1.5 flex items-center justify-between gap-3">
-                  <span className="font-mono text-[11px] tracking-wider text-[#5b6b85]">
+                  <span className="font-mono text-[11px] tracking-wider text-accent">
                     {index + 1}. {step.title.toUpperCase()}
                   </span>
                   <CopyButton value={step.command} label="Copy" />
                 </div>
-                <pre className="overflow-x-auto rounded-lg border border-[#1b2540] bg-[#060b1d] p-3 font-mono text-[12px] leading-6 text-[#c9d1e8]">
+                <pre className="overflow-x-auto rounded-lg border border-brand-border bg-brand-soft p-3 font-mono text-[12px] leading-6 text-muted">
                   {step.command}
                 </pre>
-                {step.note && <p className="mt-1.5 text-[11px] text-[#6b7a94]">{step.note}</p>}
+                {step.note && <p className="mt-1.5 text-[11px] text-accent">{step.note}</p>}
               </div>
             ))}
           </div>

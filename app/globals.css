@@ -1,82 +1,153 @@
 @import "tailwindcss";
 
-@theme {
-  --color-bg: #0a0d1a;
-  --color-bg-deep: #070914;
-  --color-surface: #141a30;
-  --color-surface-2: #1d2444;
-  --color-border: #2b3358;
-  --color-text: #f2f3fb;
-  --color-muted: #9299bd;
-  --color-faint: #5f678e;
-  --color-brand-a: #5b4fe9;
-  --color-brand-b: #9b5cf6;
-  --color-cyan: #38bdf8;
-  --color-success: #34d399;
-  --color-danger: #f1466b;
-  --color-platform: #0b0e1b;
-  --color-sidebar: #0d1020;
-  --font-sans: var(--font-body), Arial, Helvetica, sans-serif;
-  --font-heading: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+/*
+ * EBMA brand controls. Change these tokens to retheme both dashboard modes.
+ * The palette follows the identity guide: blue → purple → cyan on warm ivory
+ * in light mode, and the same gradient on charcoal in dark mode.
+ */
+:root {
+  color-scheme: dark;
+  --theme-page: #202020;
+  --theme-page-deep: #191919;
+  --theme-sidebar: #292929;
+  --theme-nav-active: #393939;
+  --theme-surface: #272727;
+  --theme-surface-raised: #303030;
+  --theme-surface-high: #393939;
+  --theme-border: #464646;
+  --theme-border-strong: #5b5b5b;
+  --theme-text: #f5f3ef;
+  --theme-muted: #aaa7a2;
+  --theme-faint: #85817c;
+  --theme-blue: #123bd4;
+  --theme-purple: #922be5;
+  --theme-cyan: #087fa8;
+  --theme-accent: #bd8df4;
+  --theme-accent-strong: #982be3;
+  --theme-accent-soft: #303030;
+  --theme-accent-border: var(--theme-border);
+  --theme-brand-gradient: linear-gradient(105deg, var(--theme-blue) 0%, var(--theme-purple) 54%, var(--theme-cyan) 100%);
+  --theme-brand-gradient-short: linear-gradient(110deg, var(--theme-blue) 0%, var(--theme-purple) 100%);
+  --theme-auth-visual: radial-gradient(circle at 30% 45%, rgb(146 43 229 / 14%), transparent 33%), linear-gradient(145deg, #252525, #191919);
+  --theme-landing-hero: radial-gradient(circle at 72% 32%, rgb(146 43 229 / 12%), transparent 29%), linear-gradient(180deg, #202020, #191919);
+  --theme-header: rgb(32 32 32 / 92%);
+  --theme-overlay: rgb(0 0 0 / 70%);
+  --theme-danger: #ff7186;
+  --theme-danger-soft: rgb(205 46 78 / 17%);
+  --theme-danger-border: rgb(218 73 101 / 40%);
+  --theme-success: #61d7a4;
+  --theme-success-soft: rgb(39 151 100 / 16%);
+  --theme-success-border: rgb(58 166 113 / 40%);
+  --theme-warning: #f3bf62;
+  --theme-warning-soft: rgb(189 132 32 / 17%);
+  --theme-warning-border: rgb(189 132 32 / 42%);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --theme-page: #f7f4ef;
+  --theme-page-deep: #f1ede7;
+  --theme-sidebar: #fffefa;
+  --theme-nav-active: #f7f4ef;
+  --theme-surface: #fffefa;
+  --theme-surface-raised: #f1ede7;
+  --theme-surface-high: #e9e4dd;
+  --theme-border: #e0dbd3;
+  --theme-border-strong: #c9c2b9;
+  --theme-text: #242321;
+  --theme-muted: #625f5a;
+  --theme-faint: #827c74;
+  --theme-accent: var(--theme-muted);
+  --theme-accent-strong: #7128cf;
+  --theme-accent-soft: #f1ede7;
+  --theme-accent-border: var(--theme-border);
+  --theme-auth-visual: radial-gradient(circle at 30% 45%, rgb(146 43 229 / 10%), transparent 33%), linear-gradient(145deg, #fffefa, #f1ede7);
+  --theme-landing-hero: radial-gradient(circle at 72% 32%, rgb(146 43 229 / 9%), transparent 29%), linear-gradient(180deg, #fffefa, #f7f4ef);
+  --theme-header: rgb(255 254 250 / 94%);
+  --theme-overlay: rgb(36 35 33 / 46%);
+  --theme-danger: #b72143;
+  --theme-danger-soft: #fbe9ed;
+  --theme-danger-border: #e9b9c3;
+  --theme-success: #147449;
+  --theme-success-soft: #e7f5ed;
+  --theme-success-border: #b2ddc4;
+  --theme-warning: #895600;
+  --theme-warning-soft: #fff3d8;
+  --theme-warning-border: #e6ce9d;
+}
+
+@theme inline {
+  --color-bg: var(--theme-page);
+  --color-bg-deep: var(--theme-page-deep);
+  --color-platform: var(--theme-page);
+  --color-sidebar: var(--theme-sidebar);
+  --color-nav-active: var(--theme-nav-active);
+  --color-surface: var(--theme-surface);
+  --color-surface-2: var(--theme-surface-raised);
+  --color-border: var(--theme-border);
+  --color-border-strong: var(--theme-border-strong);
+  --color-page: var(--theme-page);
+  --color-surface-raised: var(--theme-surface-raised);
+  --color-surface-high: var(--theme-surface-high);
+  --color-text: var(--theme-text);
+  --color-muted: var(--theme-muted);
+  --color-faint: var(--theme-faint);
+  --color-brand: var(--theme-accent-strong);
+  --color-brand-a: var(--theme-blue);
+  --color-brand-b: var(--theme-purple);
+  --color-brand-c: var(--theme-cyan);
+  --color-on-brand: #fff;
+  --color-brand-soft: var(--theme-accent-soft);
+  --color-brand-border: var(--theme-accent-border);
+  --color-accent: var(--theme-accent);
+  --color-cyan: var(--theme-cyan);
+  --color-danger: var(--theme-danger);
+  --color-danger-soft: var(--theme-danger-soft);
+  --color-danger-border: var(--theme-danger-border);
+  --color-success: var(--theme-success);
+  --color-success-soft: var(--theme-success-soft);
+  --color-success-border: var(--theme-success-border);
+  --color-warning: var(--theme-warning);
+  --color-warning-soft: var(--theme-warning-soft);
+  --color-warning-border: var(--theme-warning-border);
+  --font-sans: var(--font-roboto);
+  --font-heading: var(--font-roboto);
   --max-width-content: 1180px;
 }
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
-  }
+  html { scroll-behavior: smooth; }
+  body { @apply bg-bg text-text font-sans antialiased; }
+  a { @apply text-inherit no-underline; -webkit-tap-highlight-color: transparent; }
+  button { @apply text-inherit; font: inherit; -webkit-tap-highlight-color: transparent; }
+  a, button:not(:disabled) { cursor: pointer; }
+  button:disabled { cursor: not-allowed; }
+  ::selection { color: var(--theme-text); background: var(--theme-accent-soft); }
+}
 
-  body {
-    @apply bg-bg text-text font-sans antialiased;
-  }
-
-  a {
-    @apply text-inherit no-underline;
-  }
-
-  button {
-    @apply text-inherit;
-    font: inherit;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  a {
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  a,
-  button:not(:disabled) {
-    cursor: pointer;
-  }
-
-  button:disabled {
-    cursor: not-allowed;
-  }
+/* Keep white foregrounds legible on the brand gradient in light mode. */
+:root[data-theme="light"] [class~="text-text"][class*="bg-[linear-gradient"],
+:root[data-theme="light"] [class~="text-text"][class~="bg-brand"],
+:root[data-theme="light"] [class~="text-text"][class~="bg-brand-gradient"],
+:root[data-theme="light"] [class~="text-text"][class~="bg-brand-gradient-short"] {
+  color: #fff !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation: none !important;
-    transition: none !important;
-  }
+  *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
 }
 
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+.bg-brand-gradient { background-image: var(--theme-brand-gradient); }
+.bg-brand-gradient-short { background-image: var(--theme-brand-gradient-short); }
+.bg-theme-header { background-color: var(--theme-header); }
+.bg-theme-overlay { background-color: var(--theme-overlay); }
+button.bg-brand-soft:not(.border-0) {
+  background-color: var(--theme-surface-high);
+  border: 1px solid var(--theme-border);
 }
+[class*="bg-[linear-gradient(90deg,rgba(91,79,233"] { background-image: var(--theme-brand-gradient-short); }
+[class*="linear-gradient(145deg,#0d1020"] { background-image: var(--theme-auth-visual); }
+[class*="linear-gradient(180deg,#090b17"] { background-image: var(--theme-landing-hero); }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+@keyframes fade-up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes spin { to { transform: rotate(360deg); } }

@@ -17,7 +17,7 @@ import { translateText } from "@/lib/translate";
 import type { TtsGeneration, TtsOutputFormat, TtsStatus } from "@/lib/tts";
 
 const BRAND_GRADIENT =
-  "bg-[linear-gradient(90deg,#2660ea_0%,#5b3ef5_48%,#00b6dc_100%)]";
+  "bg-brand-gradient";
 
 const LANGUAGE_OPTIONS = [
   { value: "hi", label: "Hindi" },
@@ -65,7 +65,7 @@ function Toggle({
         onClick={onToggle}
         className={cx(
           "relative h-[22px] w-10 rounded-full border-0 p-0 transition-colors disabled:opacity-50",
-          on ? "bg-[#4f46e5]" : "bg-[#243049]",
+          on ? "bg-brand-gradient" : "bg-surface-high",
         )}
       >
         <span
@@ -75,7 +75,7 @@ function Toggle({
           )}
         />
       </button>
-      <span className="text-sm text-slate-300">{label}</span>
+      <span className="text-sm text-muted">{label}</span>
     </label>
   );
 }
@@ -83,13 +83,13 @@ function Toggle({
 function statusTone(status: TtsStatus) {
   switch (status) {
     case "completed":
-      return "text-emerald-300 border-emerald-700/40";
+      return "text-success border-success-border";
     case "failed":
-      return "text-[#ef6a82] border-[#5a2430]";
+      return "text-danger border-danger-border";
     case "processing":
-      return "text-sky-300 border-sky-800/40";
+      return "text-cyan border-brand-border";
     default:
-      return "text-amber-200 border-amber-800/40";
+      return "text-warning border-warning-border";
   }
 }
 
@@ -125,12 +125,12 @@ function GenerationRow({
   return (
     <div
       className={cx(
-        "rounded-xl border border-[#1b2540] bg-[#080e20] px-4 py-3",
+        "rounded-xl border border-brand-border bg-brand-soft px-4 py-3",
         deleting && "opacity-70",
       )}
     >
       <button type="button" onClick={onSelect} className="w-full text-left" disabled={deleting}>
-        <p className="line-clamp-2 text-[13px] text-white">{item.text}</p>
+        <p className="line-clamp-2 text-[13px] text-text">{item.text}</p>
         <div className="mt-2 flex flex-wrap items-center gap-2">
           <span
             className={cx(
@@ -140,7 +140,7 @@ function GenerationRow({
           >
             {item.status}
           </span>
-          <span className="font-mono text-[12px] text-[#9aa8bf]">
+          <span className="font-mono text-[12px] text-muted">
             {item.language} · {item.voiceMode} · {item.outputFormat}
           </span>
         </div>
@@ -151,7 +151,7 @@ function GenerationRow({
             type="button"
             disabled={busy || deleting || loadingUuid === item.generationUuid}
             onClick={onPlay}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[#2a3552] px-2.5 py-1.5 text-[12px] text-[#9aa5b8] hover:bg-[#101830] disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border px-2.5 py-1.5 text-[12px] text-muted hover:bg-brand-soft disabled:opacity-50"
           >
             <Play size={12} fill="currentColor" />
             {playingUuid === item.generationUuid ? "Playing…" : "Play"}
@@ -162,7 +162,7 @@ function GenerationRow({
             type="button"
             disabled={busy || deleting || loadingUuid === item.generationUuid}
             onClick={onDownload}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[#2a3552] px-2.5 py-1.5 text-[12px] text-[#9aa5b8] hover:bg-[#101830] disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border px-2.5 py-1.5 text-[12px] text-muted hover:bg-brand-soft disabled:opacity-50"
           >
             <Download size={12} /> Download
           </button>
@@ -172,7 +172,7 @@ function GenerationRow({
             type="button"
             disabled={busy || deleting || usageBlocked}
             onClick={onRegenerate}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[#2a3552] px-2.5 py-1.5 text-[12px] text-[#9aa5b8] hover:bg-[#101830] disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border px-2.5 py-1.5 text-[12px] text-muted hover:bg-brand-soft disabled:opacity-50"
           >
             <RefreshCcw size={12} /> Generate
           </button>
@@ -182,7 +182,7 @@ function GenerationRow({
             type="button"
             disabled={busy || deleting}
             onClick={onDelete}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[#2a3552] px-2.5 py-1.5 text-[12px] text-[#ef6a82] hover:bg-[#101830] disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border px-2.5 py-1.5 text-[12px] text-danger hover:bg-brand-soft disabled:opacity-50"
           >
             {deleting ? (
               <>
@@ -197,7 +197,7 @@ function GenerationRow({
         )}
       </div>
       {item.error?.message && (
-        <p className="mt-2 text-[12px] text-[#ef6a82]">{item.error.message}</p>
+        <p className="mt-2 text-[12px] text-danger">{item.error.message}</p>
       )}
     </div>
   );
@@ -305,12 +305,12 @@ export function TextToSpeechDemo() {
                     : "Ready.";
 
   return (
-    <div className="text-[#cad5e2]">
+    <div className="text-muted">
       <section
         className="relative pb-8 text-center"
         style={{
           backgroundImage:
-            "radial-gradient(55% 55% at 50% 0%, rgba(38, 96, 234, 0.16), transparent 70%)",
+            "radial-gradient(55% 55% at 50% 0%, color-mix(in srgb, var(--theme-purple) 16%, transparent), transparent 70%)",
         }}
       >
         <p
@@ -321,22 +321,22 @@ export function TextToSpeechDemo() {
         >
           EXPRESSIVE SPEECH SYNTHESIS
         </p>
-        <h1 className="mt-5 text-4xl font-extrabold leading-none tracking-tight text-white sm:text-[56px]">
+        <h1 className="mt-5 text-4xl font-extrabold leading-none tracking-tight text-text sm:text-[56px]">
           Text to Speech
         </h1>
-        <p className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-[#cad5e2]">
+        <p className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-muted">
           Type text, pick language and voice settings, then generate speech. Audio is fetched with
           your session — never a naked public URL.
         </p>
       </section>
 
       <section className="mx-auto max-w-4xl">
-        <div className="rounded-2xl border border-[#161f36] bg-[#0b1326] p-5 sm:p-7">
+        <div className="rounded-2xl border border-brand-border bg-brand-soft p-5 sm:p-7">
           <div className="mb-2 flex items-center justify-between">
-            <span className="font-mono text-[12px] tracking-wider text-[#9aa8bf]">
+            <span className="font-mono text-[12px] tracking-wider text-muted">
               TEXT TO SPEAK
             </span>
-            <span className="font-mono text-[12px] text-[#9aa8bf]">
+            <span className="font-mono text-[12px] text-muted">
               {compose.text.length} / {compose.maxChars}
             </span>
           </div>
@@ -346,7 +346,7 @@ export function TextToSpeechDemo() {
             maxLength={compose.maxChars}
             onChange={(e) => compose.setText(e.target.value)}
             rows={5}
-            className="w-full resize-y rounded-xl border border-[#1b2540] bg-[#060b1d] px-4 py-3 text-[15px] leading-relaxed text-white outline-none transition-colors placeholder:text-[#9aa8bf] hover:border-[#2a3c63] focus:border-[#4b6ef5]"
+            className="w-full resize-y rounded-xl border border-brand-border bg-brand-soft px-4 py-3 text-[15px] leading-relaxed text-text outline-none transition-colors placeholder:text-muted hover:border-brand-border focus:border-brand-border"
             placeholder="Type or paste text to synthesize…"
           />
 
@@ -362,8 +362,8 @@ export function TextToSpeechDemo() {
                   className={cx(
                     "rounded-full border px-3 py-1 text-[12px] transition-colors disabled:opacity-50",
                     active
-                      ? "border-[#4b6ef5] bg-[#1a2a55] text-white"
-                      : "border-[#2a3552] bg-[#121a2e] text-[#c8d0e0] hover:border-[#3a4972] hover:bg-[#162038]",
+                      ? "border-brand-border bg-brand-soft text-text"
+                      : "border-brand-border bg-brand-soft text-muted hover:border-brand-border hover:bg-brand-soft",
                   )}
                 >
                   {opt.label}
@@ -372,21 +372,21 @@ export function TextToSpeechDemo() {
             })}
           </div>
           {translating && (
-            <p className="mt-2 text-[12px] text-[#aab6c9]">Translating…</p>
+            <p className="mt-2 text-[12px] text-muted">Translating…</p>
           )}
 
           <div className="mt-5 grid gap-4 sm:grid-cols-1">
             <label className="flex flex-col gap-2 sm:max-w-xs">
-              <span className="font-mono text-[12px] tracking-wider text-[#9aa8bf]">FORMAT</span>
+              <span className="font-mono text-[12px] tracking-wider text-muted">FORMAT</span>
               <select
                 value={compose.outputFormat}
                 onChange={(e) =>
                   compose.setOutputFormat(e.target.value as TtsOutputFormat)
                 }
-                className="appearance-none rounded-lg border border-[#1b2540] bg-[#060b1d] px-4 py-2.5 text-[14px] font-semibold text-white outline-none hover:border-[#2a3c63] focus:border-[#4b6ef5]"
+                className="appearance-none rounded-lg border border-brand-border bg-brand-soft px-4 py-2.5 text-[14px] font-semibold text-text outline-none hover:border-brand-border focus:border-brand-border"
               >
                 {formats.map((fmt) => (
-                  <option key={fmt} value={fmt} className="bg-[#0b1326]">
+                  <option key={fmt} value={fmt} className="bg-brand-soft">
                     {fmt.toUpperCase()}
                   </option>
                 ))}
@@ -396,8 +396,8 @@ export function TextToSpeechDemo() {
 
           <div className="mt-5 flex flex-wrap items-end gap-6">
             <div className="flex flex-col gap-2">
-              <span className="font-mono text-[12px] tracking-wider text-[#9aa8bf]">VOICE</span>
-              <div className="flex overflow-hidden rounded-lg border border-[#1b2540]">
+              <span className="font-mono text-[12px] tracking-wider text-muted">VOICE</span>
+              <div className="flex overflow-hidden rounded-lg border border-brand-border">
                 <button
                   type="button"
                   onClick={() => {
@@ -408,8 +408,8 @@ export function TextToSpeechDemo() {
                   className={cx(
                     "px-4 py-2.5 text-[13px] font-semibold transition-colors",
                     compose.voiceMode === "default"
-                      ? cx(BRAND_GRADIENT, "text-white shadow-[0_8px_20px_-8px_rgba(38,96,234,0.55)]")
-                      : "bg-[#060b1d] text-[#9aa5b8] hover:bg-[#0d1428]",
+                      ? cx(BRAND_GRADIENT, "text-on-brand shadow-[0_8px_20px_-8px_rgba(38,96,234,0.55)]")
+                      : "bg-brand-soft text-muted hover:bg-brand-soft",
                   )}
                 >
                   Default voice
@@ -418,10 +418,10 @@ export function TextToSpeechDemo() {
                   type="button"
                   onClick={() => compose.setVoiceMode("clone")}
                   className={cx(
-                    "border-l border-[#1b2540] px-4 py-2.5 text-[13px] font-semibold transition-colors",
+                    "border-l border-brand-border px-4 py-2.5 text-[13px] font-semibold transition-colors",
                     compose.voiceMode === "clone"
-                      ? cx(BRAND_GRADIENT, "text-white")
-                      : "bg-[#060b1d] text-[#9aa5b8] hover:bg-[#0d1428]",
+                      ? cx(BRAND_GRADIENT, "text-on-brand")
+                      : "bg-brand-soft text-muted hover:bg-brand-soft",
                   )}
                 >
                   Clone a voice
@@ -445,14 +445,14 @@ export function TextToSpeechDemo() {
             <div className="mt-4 space-y-3">
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="flex flex-col gap-2">
-                  <span className="font-mono text-[12px] tracking-wider text-[#9aa8bf]">
+                  <span className="font-mono text-[12px] tracking-wider text-muted">
                     VOICE SAMPLE (WAV, MP3, FLAC OR OGG; 5 TO 15 S OF CLEAR SPEECH)
                   </span>
-                  <div className="flex items-center gap-3 rounded-lg border border-[#1b2540] bg-[#060b1d] px-3 py-2.5">
+                  <div className="flex items-center gap-3 rounded-lg border border-brand-border bg-brand-soft px-3 py-2.5">
                     <input
                       type="file"
                       accept=".wav,.mp3,.flac,.ogg,audio/wav,audio/mpeg,audio/flac,audio/ogg"
-                      className="max-w-full text-[13px] text-[#c5d0e0] file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-[#1a2a55] file:px-3 file:py-1.5 file:text-[12px] file:font-semibold file:text-white"
+                      className="max-w-full text-[13px] text-muted file:mr-3 file:cursor-pointer file:rounded-md file:border-0 file:bg-brand-soft file:px-3 file:py-1.5 file:text-[12px] file:font-semibold file:text-text"
                       onChange={(e) => {
                         const file = e.target.files?.[0] ?? null;
                         compose.setVoiceSample(file);
@@ -460,7 +460,7 @@ export function TextToSpeechDemo() {
                       }}
                     />
                   </div>
-                  <span className="text-[12px] text-[#aab6c9]">
+                  <span className="text-[12px] text-muted">
                     {compose.voiceSample
                       ? compose.voiceSample.name
                       : "No file chosen"}
@@ -468,18 +468,18 @@ export function TextToSpeechDemo() {
                 </label>
 
                 <label className="flex flex-col gap-2">
-                  <span className="font-mono text-[12px] tracking-wider text-[#9aa8bf]">
+                  <span className="font-mono text-[12px] tracking-wider text-muted">
                     WHAT IS SAID IN THE SAMPLE (OPTIONAL; IMPROVES THE MATCH)
                   </span>
                   <input
                     value={compose.sampleTranscript}
                     onChange={(e) => compose.setSampleTranscript(e.target.value)}
                     placeholder="Optional transcript of the sample…"
-                    className="rounded-lg border border-[#1b2540] bg-[#060b1d] px-4 py-2.5 text-[14px] text-white outline-none hover:border-[#2a3c63] focus:border-[#4b6ef5]"
+                    className="rounded-lg border border-brand-border bg-brand-soft px-4 py-2.5 text-[14px] text-text outline-none hover:border-brand-border focus:border-brand-border"
                   />
                 </label>
               </div>
-              <p className="text-[12px] leading-relaxed text-[#a0acc0]">
+              <p className="text-[12px] leading-relaxed text-muted">
                 Only clone voices you have the right to use. The sample is used for this
                 request only and is deleted straight afterwards.
               </p>
@@ -489,7 +489,7 @@ export function TextToSpeechDemo() {
           <button
             type="button"
             onClick={() => setAdvancedOpen((v) => !v)}
-            className="mt-4 flex w-full items-center gap-2 rounded-lg border border-[#1b2540] bg-[#080e20] px-3 py-2.5 text-left text-[12px] font-semibold tracking-wider text-[#aab6c9] transition-colors hover:border-[#2a3c63]"
+            className="mt-4 flex w-full items-center gap-2 rounded-lg border border-brand-border bg-brand-soft px-3 py-2.5 text-left text-[12px] font-semibold tracking-wider text-muted transition-colors hover:border-brand-border"
           >
             <ChevronRight
               size={14}
@@ -498,8 +498,8 @@ export function TextToSpeechDemo() {
             ADVANCED
           </button>
           {advancedOpen && (
-            <div className="mt-2 grid gap-3 rounded-lg border border-[#1b2540] bg-[#080e20] px-4 py-3 sm:grid-cols-2">
-              <label className="flex flex-col gap-1.5 text-[12px] text-[#aab6c9]">
+            <div className="mt-2 grid gap-3 rounded-lg border border-brand-border bg-brand-soft px-4 py-3 sm:grid-cols-2">
+              <label className="flex flex-col gap-1.5 text-[12px] text-muted">
                 Speed ({compose.speed.toFixed(1)})
                 <input
                   type="range"
@@ -508,10 +508,10 @@ export function TextToSpeechDemo() {
                   step={speed.step}
                   value={compose.speed}
                   onChange={(e) => compose.setSpeed(Number(e.target.value))}
-                  className="accent-[#4b6ef5]"
+                  className="accent-accent"
                 />
               </label>
-              <label className="flex flex-col gap-1.5 text-[12px] text-[#aab6c9]">
+              <label className="flex flex-col gap-1.5 text-[12px] text-muted">
                 Pitch ({compose.pitch.toFixed(1)})
                 <input
                   type="range"
@@ -520,7 +520,7 @@ export function TextToSpeechDemo() {
                   step={pitch.step}
                   value={compose.pitch}
                   onChange={(e) => compose.setPitch(Number(e.target.value))}
-                  className="accent-[#4b6ef5]"
+                  className="accent-accent"
                 />
               </label>
             </div>
@@ -544,7 +544,7 @@ export function TextToSpeechDemo() {
               }
               className={cx(
                 BRAND_GRADIENT,
-                "flex items-center gap-2 rounded-xl px-6 py-3 text-[15px] font-bold text-white shadow-[0_10px_25px_-10px_rgba(38,96,234,0.5)] transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:scale-100",
+                "flex items-center gap-2 rounded-xl px-6 py-3 text-[15px] font-bold text-text shadow-[0_10px_25px_-10px_rgba(38,96,234,0.5)] transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:scale-100",
               )}
             >
               <Play size={16} fill="currentColor" />
@@ -554,17 +554,17 @@ export function TextToSpeechDemo() {
               <span
                 className={cx(
                   "h-1.5 w-1.5 rounded-full",
-                  compose.busy ? "bg-emerald-400" : "bg-[#3e4c64]",
+                  compose.busy ? "bg-success" : "bg-brand-soft",
                 )}
               />
-              <span className="font-mono text-[13px] text-[#aab6c9]">{statusLine}</span>
+              <span className="font-mono text-[13px] text-muted">{statusLine}</span>
             </div>
           </div>
 
-          <div className="mt-6 min-h-[72px] rounded-xl border border-dashed border-[#1b2540] bg-[#080e20] px-4 py-5">
+          <div className="mt-6 min-h-[72px] rounded-xl border border-dashed border-brand-border bg-brand-soft px-4 py-5">
             {compose.current ? (
               <div className="space-y-3">
-                <p className="text-[13px] text-white">{compose.current.text}</p>
+                <p className="text-[13px] text-text">{compose.current.text}</p>
                 <div className="flex flex-wrap items-center gap-2">
                   <span
                     className={cx(
@@ -581,14 +581,14 @@ export function TextToSpeechDemo() {
                         onClick={() =>
                           void compose.audio.play(compose.current!.generationUuid)
                         }
-                        className="rounded-lg border border-[#2a3552] px-2.5 py-1.5 text-[12px] text-[#9aa5b8] hover:bg-[#101830]"
+                        className="rounded-lg border border-brand-border px-2.5 py-1.5 text-[12px] text-muted hover:bg-brand-soft"
                       >
                         Play
                       </button>
                       <button
                         type="button"
                         onClick={() => void compose.audio.download(compose.current!)}
-                        className="rounded-lg border border-[#2a3552] px-2.5 py-1.5 text-[12px] text-[#9aa5b8] hover:bg-[#101830]"
+                        className="rounded-lg border border-brand-border px-2.5 py-1.5 text-[12px] text-muted hover:bg-brand-soft"
                       >
                         Download
                       </button>
@@ -602,7 +602,7 @@ export function TextToSpeechDemo() {
                       onClick={() =>
                         void compose.regenerate(compose.current!.generationUuid)
                       }
-                      className="rounded-lg border border-[#2a3552] px-2.5 py-1.5 text-[12px] text-[#9aa5b8] hover:bg-[#101830] disabled:opacity-50"
+                      className="rounded-lg border border-brand-border px-2.5 py-1.5 text-[12px] text-muted hover:bg-brand-soft disabled:opacity-50"
                     >
                       Retry generate
                     </button>
@@ -610,16 +610,16 @@ export function TextToSpeechDemo() {
                 </div>
               </div>
             ) : (
-              <p className="text-center text-[13px] text-[#a8b4c8]">
+              <p className="text-center text-[13px] text-muted">
                 Your generated clips appear here.
               </p>
             )}
           </div>
         </div>
 
-        <div className="mt-6 rounded-2xl border border-[#161f36] bg-[#0b1326] p-5 sm:p-6">
+        <div className="mt-6 rounded-2xl border border-brand-border bg-brand-soft p-5 sm:p-6">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="font-heading text-[15px] font-semibold text-white">
+            <h2 className="font-heading text-[15px] font-semibold text-text">
               Generation history
             </h2>
             <div className="flex flex-wrap items-center gap-2">
@@ -629,7 +629,7 @@ export function TextToSpeechDemo() {
                   history.setPage(1);
                   history.setStatus(e.target.value as TtsStatus | "");
                 }}
-                className="rounded-lg border border-[#1b2540] bg-[#060b1d] px-3 py-1.5 text-[12px] text-[#9aa5b8]"
+                className="rounded-lg border border-brand-border bg-brand-soft px-3 py-1.5 text-[12px] text-muted"
               >
                 <option value="">All statuses</option>
                 <option value="queued">queued</option>
@@ -646,7 +646,7 @@ export function TextToSpeechDemo() {
                   }
                 }}
                 placeholder="Search text…"
-                className="w-40 rounded-lg border border-[#1b2540] bg-[#060b1d] px-3 py-1.5 text-[12px] text-white outline-none"
+                className="w-40 rounded-lg border border-brand-border bg-brand-soft px-3 py-1.5 text-[12px] text-text outline-none"
               />
               <button
                 type="button"
@@ -654,7 +654,7 @@ export function TextToSpeechDemo() {
                   history.setPage(1);
                   void history.refresh();
                 }}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-[#2a3552] px-2.5 py-1.5 text-[12px] text-[#9aa5b8] hover:bg-[#101830]"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border px-2.5 py-1.5 text-[12px] text-muted hover:bg-brand-soft"
               >
                 <RefreshCcw size={12} /> Refresh
               </button>
@@ -662,13 +662,13 @@ export function TextToSpeechDemo() {
           </div>
 
           {history.error && (
-            <p className="mb-3 text-[12px] text-[#ef6a82]">{history.error}</p>
+            <p className="mb-3 text-[12px] text-danger">{history.error}</p>
           )}
           {history.loading && (
-            <p className="mb-3 text-[12px] text-[#aab6c9]">Loading…</p>
+            <p className="mb-3 text-[12px] text-muted">Loading…</p>
           )}
           {history.items.length === 0 && !history.loading ? (
-            <p className="text-[13px] text-[#a8b4c8]">No generations yet.</p>
+            <p className="text-[13px] text-muted">No generations yet.</p>
           ) : (
             <div className="space-y-2">
               {history.items.map((item) => (
@@ -692,7 +692,7 @@ export function TextToSpeechDemo() {
             </div>
           )}
 
-          <div className="mt-4 flex items-center justify-between text-[12px] text-[#aab6c9]">
+          <div className="mt-4 flex items-center justify-between text-[12px] text-muted">
             <span>
               Page {history.page} / {Math.max(1, history.totalPages)}
             </span>
@@ -701,7 +701,7 @@ export function TextToSpeechDemo() {
                 type="button"
                 disabled={history.page <= 1}
                 onClick={() => history.setPage((p) => Math.max(1, p - 1))}
-                className="rounded-lg border border-[#2a3552] px-2.5 py-1 disabled:opacity-40"
+                className="rounded-lg border border-brand-border px-2.5 py-1 disabled:opacity-40"
               >
                 Prev
               </button>
@@ -709,7 +709,7 @@ export function TextToSpeechDemo() {
                 type="button"
                 disabled={!history.hasNextPage}
                 onClick={() => history.setPage((p) => p + 1)}
-                className="rounded-lg border border-[#2a3552] px-2.5 py-1 disabled:opacity-40"
+                className="rounded-lg border border-brand-border px-2.5 py-1 disabled:opacity-40"
               >
                 Next
               </button>
@@ -717,13 +717,13 @@ export function TextToSpeechDemo() {
           </div>
 
           {selected && (
-            <div className="mt-5 rounded-xl border border-[#1b2540] bg-[#060b1d] p-4">
+            <div className="mt-5 rounded-xl border border-brand-border bg-brand-soft p-4">
               <div className="mb-2 flex items-center justify-between">
-                <h3 className="text-[13px] font-semibold text-white">Detail</h3>
+                <h3 className="text-[13px] font-semibold text-text">Detail</h3>
                 <button
                   type="button"
                   onClick={() => setSelected(null)}
-                  className="text-[12px] text-[#aab6c9]"
+                  className="text-[12px] text-muted"
                 >
                   Close
                 </button>
@@ -737,7 +737,7 @@ export function TextToSpeechDemo() {
                       setSelected({ ...selected, text: e.target.value })
                     }
                     rows={3}
-                    className="w-full rounded-lg border border-[#1b2540] bg-[#080e20] px-3 py-2 text-[13px] text-white outline-none"
+                    className="w-full rounded-lg border border-brand-border bg-brand-soft px-3 py-2 text-[13px] text-text outline-none"
                   />
                   <div className="flex flex-wrap gap-2">
                     <button
@@ -761,7 +761,7 @@ export function TextToSpeechDemo() {
                             void history.refresh();
                           })
                       }
-                      className="rounded-lg border border-[#2a3552] px-2.5 py-1.5 text-[12px] text-[#9aa5b8] hover:bg-[#101830] disabled:opacity-50"
+                      className="rounded-lg border border-brand-border px-2.5 py-1.5 text-[12px] text-muted hover:bg-brand-soft disabled:opacity-50"
                     >
                       Save edit
                     </button>
@@ -773,19 +773,19 @@ export function TextToSpeechDemo() {
                           void history.refresh();
                         })
                       }
-                      className="rounded-lg border border-[#2a3552] px-2.5 py-1.5 text-[12px] text-[#9aa5b8] hover:bg-[#101830] disabled:opacity-50"
+                      className="rounded-lg border border-brand-border px-2.5 py-1.5 text-[12px] text-muted hover:bg-brand-soft disabled:opacity-50"
                     >
                       Generate
                     </button>
                   </div>
                 </div>
               ) : (
-                <p className="text-[13px] text-[#cad5e2]">{selected.text}</p>
+                <p className="text-[13px] text-muted">{selected.text}</p>
               )}
-              <p className="mt-2 font-mono text-[12px] text-[#9aa8bf]">
+              <p className="mt-2 font-mono text-[12px] text-muted">
                 {selected.generationUuid}
               </p>
-              <p className="mt-1 font-mono text-[12px] text-[#9aa8bf]">
+              <p className="mt-1 font-mono text-[12px] text-muted">
                 {selected.language} · speed {selected.speed} · pitch {selected.pitch} ·{" "}
                 {selected.status}
               </p>

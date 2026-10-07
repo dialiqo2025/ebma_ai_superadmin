@@ -276,14 +276,14 @@ export function AdminUsers() {
   };
 
   return (
-    <main className="mx-auto max-w-6xl text-[#d7def0]">
+    <main className="mx-auto max-w-6xl text-text">
       <div className="mb-8 flex items-start justify-between gap-4">
         <div>
-          <p className="font-mono text-[11px] tracking-[.24em] text-[#8f82ff]">
+          <p className="font-mono text-[11px] tracking-[.24em] text-accent">
             CONTROL PANEL / USERS
           </p>
-          <h1 className="mt-3 text-4xl font-extrabold text-white">User management</h1>
-          <p className="mt-3 text-sm text-[#8995b3]">
+          <h1 className="mt-3 text-4xl font-extrabold text-text">User management</h1>
+          <p className="mt-3 text-sm text-muted">
             Review accounts, adjust access, and grant wallet credits.
           </p>
         </div>
@@ -293,21 +293,21 @@ export function AdminUsers() {
             setError("");
             setOpen(true);
           }}
-          className="flex shrink-0 items-center gap-2 rounded-lg bg-[#5d50e8] px-4 py-2.5 text-xs font-semibold text-white"
+          className="flex shrink-0 items-center gap-2 rounded-lg bg-brand-gradient px-4 py-2.5 text-xs font-semibold text-on-brand hover:brightness-110"
         >
           <UserPlus size={15} /> Create user
         </button>
       </div>
 
       {error && (
-        <p className="mb-4 rounded-lg border border-rose-400/30 bg-rose-400/10 px-4 py-3 text-sm text-rose-200">
+        <p className="mb-4 rounded-lg border border-danger-border bg-danger-soft px-4 py-3 text-sm text-danger">
           {error}
         </p>
       )}
 
       <div className="mb-5 flex gap-2">
-        <div className="flex flex-1 items-center gap-2 rounded-lg border border-[#293354] bg-[#10172d] px-3">
-          <Search size={16} className="text-[#74809e]" />
+        <div className="flex flex-1 items-center gap-2 rounded-lg border border-brand-border bg-surface px-3">
+          <Search size={16} className="text-accent" />
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
@@ -315,19 +315,19 @@ export function AdminUsers() {
               if (event.key === "Enter") void load();
             }}
             placeholder="Search name or email"
-            className="h-10 w-full bg-transparent text-sm text-white outline-none placeholder:text-[#596783]"
+            className="h-10 w-full bg-transparent text-sm text-text outline-none placeholder:text-accent"
           />
         </div>
         <button
           type="button"
           onClick={() => void load()}
-          className="rounded-lg border border-[#293354] px-4 text-xs text-[#b6c0d6] hover:text-white"
+          className="rounded-lg border border-brand-border px-4 text-xs text-muted hover:text-text"
         >
           Search
         </button>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-[#202846] bg-[#0c1225]">
+      <div className="overflow-x-auto rounded-2xl border border-brand-border bg-surface">
         <div className="min-w-[720px]">
           <div className="grid grid-cols-[minmax(0,1.1fr)_minmax(0,1.5fr)_88px_88px_minmax(240px,1fr)] border-b border-[#202846] px-5 py-3 text-[10px] uppercase tracking-wider text-[#74809e]">
             <span>User</span>
@@ -337,30 +337,30 @@ export function AdminUsers() {
             <span>Actions</span>
           </div>
           {loading ? (
-            <p className="px-5 py-10 text-center text-sm text-[#74809e]">Loading users…</p>
+            <p className="px-5 py-10 text-center text-sm text-accent">Loading users…</p>
           ) : users.length === 0 ? (
-            <p className="px-5 py-10 text-center text-sm text-[#74809e]">No users found.</p>
+            <p className="px-5 py-10 text-center text-sm text-accent">No users found.</p>
           ) : (
             users.map((record) => (
               <div
                 key={record.user_uuid}
-                className="grid grid-cols-[minmax(0,1.1fr)_minmax(0,1.5fr)_88px_88px_minmax(240px,1fr)] items-center gap-3 border-b border-[#202846] px-5 py-4 text-sm last:border-0"
+                className="grid grid-cols-[minmax(0,1.1fr)_minmax(0,1.5fr)_88px_88px_minmax(240px,1fr)] items-center gap-3 border-b border-brand-border px-5 py-4 text-sm last:border-0"
               >
-                <div className="min-w-0 truncate font-medium text-white" title={record.fullName}>
+                <div className="min-w-0 truncate font-medium text-text" title={record.fullName}>
                   {record.fullName}
                 </div>
-                <div className="min-w-0 truncate text-[#9aa6c2]" title={record.email}>
+                <div className="min-w-0 truncate text-muted" title={record.email}>
                   {formatDisplayEmail(record.email)}
                 </div>
                 <div>
-                  <span className="rounded-full border border-[#39416a] px-2 py-1 text-[10px] text-[#a99af3]">
+                  <span className="rounded-full border border-brand-border px-2 py-1 text-[10px] text-accent">
                     {record.role}
                   </span>
                 </div>
                 <div>
                   <span
                     className={
-                      record.user_enabled ? "text-emerald-300" : "text-rose-300"
+                      record.user_enabled ? "text-success" : "text-danger"
                     }
                   >
                     {record.user_enabled ? "Active" : "Disabled"}
@@ -377,21 +377,21 @@ export function AdminUsers() {
                   <button
                     type="button"
                     onClick={() => void openCreditModal(record)}
-                    className="inline-flex items-center gap-1 text-xs text-[#7dd3fc] hover:text-white"
+                    className="inline-flex items-center gap-1 text-xs text-cyan hover:text-text"
                   >
                     <Coins size={13} /> Add credits
                   </button>
                   <button
                     type="button"
                     onClick={() => void toggleUser(record)}
-                    className="text-xs text-[#a99af3] hover:text-white"
+                    className="text-xs text-accent hover:text-text"
                   >
                     {record.user_enabled ? "Disable" : "Enable"}
                   </button>
                   <button
                     type="button"
                     onClick={() => void deleteUser(record)}
-                    className="text-xs text-rose-300 hover:text-rose-100"
+                    className="text-xs text-danger hover:text-danger"
                   >
                     Delete
                   </button>
@@ -403,13 +403,13 @@ export function AdminUsers() {
       </div>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-theme-overlay p-4">
           <form
             onSubmit={createUser}
-            className="w-full max-w-md rounded-2xl border border-[#293354] bg-[#0c1225] p-6 shadow-2xl"
+            className="w-full max-w-md rounded-2xl border border-brand-border bg-surface p-6 shadow-2xl"
           >
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white">Create user</h2>
+              <h2 className="text-lg font-bold text-text">Create user</h2>
               <button type="button" onClick={() => setOpen(false)} aria-label="Close">
                 <X size={18} />
               </button>
@@ -422,25 +422,25 @@ export function AdminUsers() {
                   ["password", "Temporary password", "password"],
                 ] as const
               ).map(([key, label, type]) => (
-                <label key={key} className="block text-xs text-[#8995b3]">
+                <label key={key} className="block text-xs text-muted">
                   {label}
                   <input
                     required
                     value={form[key]}
                     type={type}
                     onChange={(event) => setForm({ ...form, [key]: event.target.value })}
-                    className="mt-1 h-10 w-full rounded-lg border border-[#293354] bg-[#10172d] px-3 text-sm text-white outline-none"
+                    className="mt-1 h-10 w-full rounded-lg border border-brand-border bg-surface px-3 text-sm text-text outline-none"
                   />
                 </label>
               ))}
-              <label className="block text-xs text-[#8995b3]">
+              <label className="block text-xs text-muted">
                 Role
                 <select
                   value={form.role}
                   onChange={(event) =>
                     setForm({ ...form, role: event.target.value as FormState["role"] })
                   }
-                  className="mt-1 h-10 w-full rounded-lg border border-[#293354] bg-[#10172d] px-3 text-sm text-white outline-none"
+                  className="mt-1 h-10 w-full rounded-lg border border-brand-border bg-surface px-3 text-sm text-text outline-none"
                 >
                   <option value="user">User</option>
                   <option value="admin">Admin</option>
@@ -450,7 +450,7 @@ export function AdminUsers() {
             </div>
             <button
               disabled={saving}
-              className="mt-5 w-full rounded-lg bg-[#5d50e8] py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+              className="mt-5 w-full rounded-lg bg-brand-gradient py-2.5 text-sm font-semibold text-on-brand hover:brightness-110 disabled:opacity-50"
             >
               {saving ? "Creating…" : "Create user"}
             </button>
@@ -459,13 +459,13 @@ export function AdminUsers() {
       )}
 
       {(creditUser || walletLoading) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-theme-overlay p-4">
           <form
             onSubmit={grantCredits}
-            className="w-full max-w-md rounded-2xl border border-[#293354] bg-[#0c1225] p-6 shadow-2xl"
+            className="w-full max-w-md rounded-2xl border border-brand-border bg-surface p-6 shadow-2xl"
           >
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white">Add credits</h2>
+              <h2 className="text-lg font-bold text-text">Add credits</h2>
               <button
                 type="button"
                 onClick={closeCreditModal}
@@ -477,29 +477,29 @@ export function AdminUsers() {
             </div>
 
             {walletLoading ? (
-              <p className="mt-6 text-sm text-[#74809e]">Loading wallet…</p>
+              <p className="mt-6 text-sm text-accent">Loading wallet…</p>
             ) : creditUser && wallet ? (
               <>
-                <p className="mt-2 truncate text-sm text-[#8995b3]" title={wallet.email}>
+                <p className="mt-2 truncate text-sm text-muted" title={wallet.email}>
                   {wallet.fullName} · {formatDisplayEmail(wallet.email)}
                 </p>
-                <div className="mt-4 rounded-xl border border-[#243056] bg-[#101832] p-4">
-                  <p className="text-[11px] uppercase tracking-wider text-[#74809e]">
+                <div className="mt-4 rounded-xl border border-brand-border bg-surface p-4">
+                  <p className="text-[11px] uppercase tracking-wider text-accent">
                     Current balance
                   </p>
-                  <p className="mt-1 text-2xl font-bold text-white">
+                  <p className="mt-1 text-2xl font-bold text-text">
                     {wallet.balanceCredits.toLocaleString()}{" "}
-                    <span className="text-sm font-medium text-[#a99af3]">credits</span>
+                    <span className="text-sm font-medium text-accent">credits</span>
                   </p>
                 </div>
 
                 {creditSuccess && (
-                  <p className="mt-4 rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm text-emerald-200">
+                  <p className="mt-4 rounded-lg border border-success-border bg-success-soft px-3 py-2 text-sm text-success">
                     {creditSuccess}
                   </p>
                 )}
 
-                <label className="mt-4 block text-xs text-[#8995b3]">
+                <label className="mt-4 block text-xs text-muted">
                   Credits to add
                   <input
                     required
@@ -509,17 +509,17 @@ export function AdminUsers() {
                     value={creditAmount}
                     onChange={(event) => setCreditAmount(event.target.value)}
                     placeholder="e.g. 500"
-                    className="mt-1 h-10 w-full rounded-lg border border-[#293354] bg-[#10172d] px-3 text-sm text-white outline-none"
+                    className="mt-1 h-10 w-full rounded-lg border border-brand-border bg-surface px-3 text-sm text-text outline-none"
                   />
                 </label>
-                <label className="mt-3 block text-xs text-[#8995b3]">
+                <label className="mt-3 block text-xs text-muted">
                   Note (optional)
                   <textarea
                     rows={2}
                     value={creditNote}
                     onChange={(event) => setCreditNote(event.target.value)}
                     placeholder="Reason for adjustment"
-                    className="mt-1 w-full rounded-lg border border-[#293354] bg-[#10172d] px-3 py-2 text-sm text-white outline-none"
+                    className="mt-1 w-full rounded-lg border border-brand-border bg-surface px-3 py-2 text-sm text-text outline-none"
                   />
                 </label>
 
@@ -527,14 +527,14 @@ export function AdminUsers() {
                   <button
                     type="button"
                     onClick={closeCreditModal}
-                    className="flex-1 rounded-lg border border-[#293354] py-2.5 text-sm text-[#b6c0d6] hover:text-white"
+                    className="flex-1 rounded-lg border border-brand-border py-2.5 text-sm text-muted hover:text-text"
                   >
                     Close
                   </button>
                   <button
                     type="submit"
                     disabled={creditSaving}
-                    className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#5d50e8] py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-brand-gradient py-2.5 text-sm font-semibold text-on-brand hover:brightness-110 disabled:opacity-50"
                   >
                     <Coins size={15} />
                     {creditSaving ? "Adding…" : "Add credits"}

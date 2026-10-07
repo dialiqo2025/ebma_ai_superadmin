@@ -27,6 +27,7 @@ import {
 } from "react";
 import { useAuth } from "@/lib/auth";
 import { Brand } from "./brand";
+import { ThemeToggle } from "./theme-toggle";
 import {adminNav, platformNav, type PlatformNavItem } from "./platform-nav";
 // import { adminNav, platformNav } from "./platform-nav";
 import { billingApi, type BillingSummary } from "@/lib/billing/api";
@@ -182,7 +183,7 @@ export function PlatformShell({ children }: { children: ReactNode }) {
   if (!ready || !isAuthenticated) {
     return (
       <div className="grid h-screen place-items-center bg-bg">
-        <span className="inline-block h-[18px] w-[18px] animate-[spin_.7s_linear_infinite] rounded-full border-2 border-white/30 border-t-white" />
+        <span className="inline-block h-[18px] w-[18px] animate-[spin_.7s_linear_infinite] rounded-full border-2 border-border border-t-brand" />
       </div>
     );
   }
@@ -196,15 +197,15 @@ export function PlatformShell({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen bg-platform">
       <aside
         className={cx(
-          "fixed inset-y-0 left-0 z-30 flex h-screen w-[238px] flex-col overflow-hidden border-r border-[#242b4b] bg-sidebar px-3.5 transition-transform duration-250 max-[1050px]:w-[210px] max-[820px]:-translate-x-full",
+          "fixed inset-y-0 left-0 z-30 flex h-screen w-[238px] flex-col overflow-hidden border-r border-[#f1ede7] bg-sidebar px-3.5 transition-transform duration-250 max-[1050px]:w-[210px] max-[820px]:-translate-x-full",
           sidebarOpen && "max-[820px]:translate-x-0",
         )}
       >
-        <div className="flex h-[68px] items-center px-2 [&_img]:w-[91px] [&_img]:h-auto">
+        <div className="flex h-[68px] items-center px-2 [&_img]:w-[135px] [&_img]:h-auto">
           <Brand href="/platform" />
           <button
             type="button"
-            className="ml-auto hidden border-0 bg-transparent text-[#a8b4c8] max-[820px]:block"
+            className="ml-auto hidden border-0 bg-transparent text-muted max-[820px]:block"
             onClick={() => setSidebarOpen(false)}
             aria-label="Close sidebar"
           >
@@ -220,16 +221,16 @@ export function PlatformShell({ children }: { children: ReactNode }) {
             const active = isActive(pathname, item.href);
             const locked = Boolean(item.capability && capabilities && !capabilities.capabilities[item.capability]);
             const className = cx(
-              "relative flex h-[39px] items-center gap-[11px] rounded-lg border-0 bg-transparent px-[11px] text-left text-[12px] font-semibold text-[#a8b4c8] transition-colors hover:bg-[#151a30] hover:text-[#d5d8e7]",
+              "relative flex h-[39px] items-center gap-[11px] rounded-lg border-0 px-[11px] text-left text-[12px] font-semibold text-muted transition-colors hover:bg-brand-soft hover:text-text",
               active &&
-                "bg-[linear-gradient(90deg,rgba(91,79,233,.23),rgba(91,79,233,.05))] text-[#e6e7f1] before:absolute before:-left-3.5 before:h-[22px] before:w-[3px] before:rounded-r before:bg-[#7669ed] [&_svg]:text-[#9d8ff6]",
+                "bg-nav-active text-text before:absolute before:-left-3.5 before:h-[22px] before:w-[3px] before:rounded-r before:bg-brand [&_svg]:text-accent",
             );
             const content = (
               <>
                 <item.icon size={18} />
                 {item.label}
                 {item.beta && (
-                  <span className="ml-auto rounded border border-[#474176] px-1 py-0.5 text-[12px] text-[#a99af3]">
+                  <span className="ml-auto rounded border border-brand-border px-1 py-0.5 text-[12px] text-accent">
                     BETA
                   </span>
                 )}
@@ -242,15 +243,15 @@ export function PlatformShell({ children }: { children: ReactNode }) {
             ) : (
               <Link key={item.label} href={item.href} className={className} title={locked ? `${item.label} is not included in your current plan` : undefined}>
                 {content}
-                {locked && <LockKeyhole size={12} className="ml-auto text-[#d19a55]" />}
+                {locked && <LockKeyhole size={12} className="ml-auto text-warning" />}
               </Link>
             );
             })}
           </nav>
 
           {user?.role === "superAdmin" && (
-            <div className="mt-5 border-t border-[#242b4b] pt-4">
-            <p className="px-[11px] pb-2 text-[8px] font-bold uppercase tracking-[0.16em] text-[#596783]">
+            <div className="mt-5 border-t border-brand-border pt-4">
+            <p className="px-[11px] pb-2 text-[8px] font-bold uppercase tracking-[0.16em] text-muted">
               Admin modules
             </p>
             <nav className="grid gap-1">
@@ -261,8 +262,8 @@ export function PlatformShell({ children }: { children: ReactNode }) {
                     key={item.href}
                     href={item.href}
                     className={cx(
-                      "relative flex h-[34px] items-center gap-[11px] rounded-lg px-[11px] text-[10px] font-semibold text-[#737b9d] transition-colors hover:bg-[#151a30] hover:text-[#d5d8e7]",
-                      active && "bg-[#171d36] text-[#e6e7f1] [&_svg]:text-[#9d8ff6]",
+                      "relative flex h-[34px] items-center gap-[11px] rounded-lg px-[11px] text-[10px] font-semibold text-muted transition-colors hover:bg-brand-soft hover:text-text",
+                      active && "bg-nav-active text-text [&_svg]:text-accent",
                     )}
                   >
                     <item.icon size={16} />
@@ -277,21 +278,21 @@ export function PlatformShell({ children }: { children: ReactNode }) {
 
         <div className="mt-3 flex shrink-0 flex-col gap-2 pb-3">
           {user?.role !== "superAdmin" && (
-            <div className="rounded-[10px] border border-[#2c3456] bg-[linear-gradient(145deg,#171c35,#12162a)] p-3">
-              <div className="flex items-center gap-1.5 text-[7px] uppercase tracking-[0.08em] text-[#9d91ed]">
+            <div className="rounded-[10px] border border-brand-border bg-[linear-gradient(145deg,var(--theme-surface-raised),var(--theme-surface))] p-3">
+              <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-accent">
                 <Sparkles size={14} /> Credit balance
               </div>
-              <strong className="mt-2.5 mb-2 block text-[9px]">
+              <strong className="mt-2.5 mb-2 block text-[13px] leading-5 font-semibold text-text">
                 {billingSummary
                   ? `${billingSummary.balanceCredits.toLocaleString()} credits left`
                   : "Loading credits…"}
               </strong>
               {billingSummary && billingSummary.balanceCredits <= 0 && (
-                <p className="mb-2 text-[9px] text-amber-300">
+                <p className="mb-2 text-[10px] leading-4 text-warning">
                   Credits exhausted · recharge to continue
                 </p>
               )}
-              <span className="block h-1 overflow-hidden rounded bg-[#242c4b]">
+              <span className="block h-1.5 overflow-hidden rounded-full bg-brand-soft">
                 <i
                   className="block h-full bg-[linear-gradient(90deg,var(--color-brand-a),var(--color-brand-b))]"
                   style={{
@@ -313,13 +314,13 @@ export function PlatformShell({ children }: { children: ReactNode }) {
               </span>
               {/* <Link
                 href="/platform/plans?kind=service"
-                className="mt-2 flex items-center gap-1 border-0 bg-transparent p-0 pt-2 text-[8px] text-[#8e96b7] hover:text-white"
+                className="mt-2 flex items-center gap-1 border-0 bg-transparent p-0 pt-2 text-[10px] font-medium text-muted hover:text-text"
               >
                 View plans <ArrowRight size={14} />
               </Link>
               <Link
                 href="/platform/plans?kind=wallet_topup"
-                className="flex items-center gap-1 p-0 text-[8px] text-[#8e96b7] hover:text-white"
+                className="flex items-center gap-1 p-0 text-[8px] text-muted hover:text-text"
               >
                 Recharge wallet <ArrowRight size={14} />
               </Link> */}
@@ -328,35 +329,35 @@ export function PlatformShell({ children }: { children: ReactNode }) {
 
           <div ref={profileRef} className="relative">
             {profileOpen && (
-              <div className="absolute right-0 bottom-[calc(100%+8px)] left-0 z-40 overflow-hidden rounded-xl border border-[#2a3358] bg-[#151a30] py-1.5 shadow-[0_16px_40px_rgba(0,0,0,.45)]">
+              <div className="absolute right-0 bottom-[calc(100%+8px)] left-0 z-40 overflow-hidden rounded-xl border border-brand-border bg-brand-soft py-1.5 shadow-[0_16px_40px_rgba(0,0,0,.45)]">
                 <Link
                   href="/platform/subscriptions"
-                  className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-[12px] font-medium text-[#d8dbe9] transition-colors hover:bg-[#1c2340]"
+                  className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-[12px] font-medium text-text transition-colors hover:bg-brand-soft"
                   onClick={() => setProfileOpen(false)}
                 >
-                  <CreditCard size={16} className="text-[#9aa3c0]" />
+                  <CreditCard size={16} className="text-muted" />
                   My plan
                 </Link>
                 <Link
                   href="/platform/settings"
-                  className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-[12px] font-medium text-[#d8dbe9] transition-colors hover:bg-[#1c2340]"
+                  className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-[12px] font-medium text-text transition-colors hover:bg-brand-soft"
                   onClick={() => setProfileOpen(false)}
                 >
-                  <Settings size={16} className="text-[#9aa3c0]" />
+                  <Settings size={16} className="text-muted" />
                   Settings
                 </Link>
                 <button
                   type="button"
-                  className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-[12px] font-medium text-[#d8dbe9] transition-colors hover:bg-[#1c2340]"
+                  className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-[12px] font-medium text-text transition-colors hover:bg-brand-soft"
                   onClick={() => setProfileOpen(false)}
                 >
-                  <Headphones size={16} className="text-[#9aa3c0]" />
+                  <Headphones size={16} className="text-muted" />
                   Support
                 </button>
-                <div className="my-1 border-t border-[#2a3358]" />
+                <div className="my-1 border-t border-brand-border" />
                 <button
                   type="button"
-                  className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-[12px] font-medium text-[#ef6a82] transition-colors hover:bg-[#1c2340]"
+                  className="flex w-full items-center gap-2.5 px-3.5 py-2.5 text-left text-[12px] font-medium text-danger transition-colors hover:bg-brand-soft"
                   onClick={() => logout(true)}
                 >
                   <LogOut size={16} />
@@ -371,18 +372,18 @@ export function PlatformShell({ children }: { children: ReactNode }) {
               aria-haspopup="menu"
               onClick={() => setProfileOpen((open) => !open)}
               className={cx(
-                "flex w-full items-center gap-2.5 rounded-xl border border-[#293152] bg-[#14192e] px-2.5 py-2 text-left transition-colors hover:bg-[#1a2038]",
-                profileOpen && "bg-[#1a2038]",
+                "flex w-full items-center gap-2.5 rounded-xl border border-brand-border bg-brand-soft px-2.5 py-2 text-left transition-colors hover:bg-brand-soft",
+                profileOpen && "bg-brand-soft",
               )}
             >
-              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#4a5568] text-[12px] font-semibold text-white">
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand-soft text-[12px] font-semibold text-text">
                 {displayName.slice(0, 1).toUpperCase()}
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-[12px] font-semibold text-[#e8eaf4]">
+                <span className="block truncate text-[12px] font-semibold text-text">
                   {displayName}
                 </span>
-                <span className="mt-0.5 block truncate text-[9px] text-[#6d7595]">
+                <span className="mt-0.5 block truncate text-[9px] text-accent">
                   {capabilities?.plan
                     ? capabilities.plan.replace(/_/g, " ")
                     : "Loading plan…"}
@@ -391,7 +392,7 @@ export function PlatformShell({ children }: { children: ReactNode }) {
               <ChevronDown
                 size={15}
                 className={cx(
-                  "shrink-0 text-[#8b93b0] transition-transform",
+                  "shrink-0 text-muted transition-transform",
                   profileOpen && "rotate-180",
                 )}
               />
@@ -403,18 +404,18 @@ export function PlatformShell({ children }: { children: ReactNode }) {
       {sidebarOpen && (
         <button
           type="button"
-          className="fixed inset-0 z-[25] hidden border-0 bg-[rgba(2,3,9,.65)] max-[820px]:block"
+          className="fixed inset-0 z-[25] hidden border-0 bg-theme-overlay max-[820px]:block"
           onClick={() => setSidebarOpen(false)}
           aria-label="Close sidebar overlay"
         />
       )}
 
       <section className="min-h-screen w-[calc(100%-238px)] ml-[238px] max-[1050px]:ml-[210px] max-[1050px]:w-[calc(100%-210px)] max-[820px]:ml-0 max-[820px]:w-full">
-        <header className="sticky top-0 z-[15] flex h-[68px] items-center justify-between border-b border-[#242b4b] bg-[rgba(13,16,32,.9)] px-7 backdrop-blur-[12px] max-[820px]:px-[17px]">
+        <header className="sticky top-0 z-[15] flex h-[68px] items-center justify-between border-b border-[#f1ede7] bg-theme-header px-7 backdrop-blur-[12px] max-[820px]:px-[17px]">
           <div className="flex items-center">
             <button
               type="button"
-              className="mr-1.5 hidden h-[34px] w-[34px] place-items-center border-0 bg-transparent text-[#838bab] max-[820px]:grid"
+              className="mr-1.5 hidden h-[34px] w-[34px] place-items-center border-0 bg-transparent text-muted max-[820px]:grid"
               onClick={() => setSidebarOpen(true)}
               aria-label="Open sidebar"
             >
@@ -423,36 +424,37 @@ export function PlatformShell({ children }: { children: ReactNode }) {
             <button
               type="button"
               onClick={openSearch}
-              className="flex h-[34px] w-[250px] cursor-text items-center gap-2 rounded-lg border border-[#272f50] bg-[#111529] px-2.5 text-left text-[12px] text-[#a0acc0] transition-colors hover:border-[#3a4570] max-[560px]:hidden"
+              className="flex h-[34px] w-[250px] cursor-text items-center gap-2 rounded-lg border border-brand-border bg-brand-soft px-2.5 text-left text-[12px] text-muted transition-colors hover:border-brand-border max-[560px]:hidden"
             >
-              <Search size={16} className="shrink-0 text-[#8b98ae]" />
+              <Search size={16} className="shrink-0 text-muted" />
               <span className="flex-1 truncate">Search pages…</span>
-              <kbd className="ml-auto rounded border border-[#30385b] px-1.5 py-0.5 text-[12px] text-[#9aa5b8]">
+              <kbd className="ml-auto rounded border border-brand-border px-1.5 py-0.5 text-[12px] text-muted">
                 {modKeyLabel} K
               </kbd>
             </button>
             <button
               type="button"
               onClick={openSearch}
-              className="mr-1 hidden h-[34px] w-[34px] place-items-center border-0 bg-transparent text-[#a0acc0] max-[560px]:grid"
+              className="mr-1 hidden h-[34px] w-[34px] place-items-center border-0 bg-transparent text-muted max-[560px]:grid"
               aria-label="Search"
             >
               <Search size={18} />
             </button>
           </div>
           <div className="ml-auto flex items-center gap-1.5">
+            <ThemeToggle compact />
             <button
               type="button"
-              className="grid h-[33px] w-[33px] place-items-center border-0 bg-transparent text-[#a0acc0] max-[560px]:hidden"
+              className="grid h-[33px] w-[33px] place-items-center border-0 bg-transparent text-muted max-[560px]:hidden"
             >
               <CircleHelp size={19} />
             </button>
             <button
               type="button"
-              className="relative grid h-[33px] w-[33px] place-items-center border-0 bg-transparent text-[#a0acc0]"
+              className="relative grid h-[33px] w-[33px] place-items-center border-0 bg-transparent text-muted"
             >
               <Bell size={19} />
-              <i className="absolute top-[5px] right-[7px] h-[5px] w-[5px] rounded-full border border-[#0d1020] bg-[#a56cf3]" />
+              <i className="absolute top-[5px] right-[7px] h-[5px] w-[5px] rounded-full border border-brand-border bg-brand" />
             </button>
           </div>
         </header>
@@ -463,7 +465,7 @@ export function PlatformShell({ children }: { children: ReactNode }) {
       </section>
 
       {searchOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center bg-[rgba(2,3,9,.72)] px-4 pt-[12vh]">
+        <div className="fixed inset-0 z-50 flex items-start justify-center bg-theme-overlay px-4 pt-[12vh]">
           <button
             type="button"
             className="absolute inset-0 border-0 bg-transparent"
@@ -474,7 +476,7 @@ export function PlatformShell({ children }: { children: ReactNode }) {
             role="dialog"
             aria-modal="true"
             aria-label="Search pages"
-            className="relative z-10 w-full max-w-lg overflow-hidden rounded-2xl border border-[#2a3358] bg-[#12172b] shadow-[0_24px_60px_rgba(0,0,0,.55)]"
+            className="relative z-10 w-full max-w-lg overflow-hidden rounded-2xl border border-brand-border bg-brand-soft shadow-[0_24px_60px_rgba(0,0,0,.55)]"
             onKeyDown={(event) => {
               if (event.key === "Escape") {
                 event.preventDefault();
@@ -502,23 +504,23 @@ export function PlatformShell({ children }: { children: ReactNode }) {
               }
             }}
           >
-            <div className="flex items-center gap-2 border-b border-[#2a3358] px-4 py-3">
-              <Search size={18} className="shrink-0 text-[#8b98ae]" />
+            <div className="flex items-center gap-2 border-b border-brand-border px-4 py-3">
+              <Search size={18} className="shrink-0 text-muted" />
               <input
                 ref={searchInputRef}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search pages…"
-                className="h-9 w-full border-0 bg-transparent text-[14px] text-white outline-none placeholder:text-[#8b98ae]"
+                className="h-9 w-full border-0 bg-transparent text-[14px] text-text outline-none placeholder:text-muted"
               />
-              <kbd className="rounded border border-[#30385b] px-1.5 py-0.5 text-[11px] text-[#9aa5b8]">
+              <kbd className="rounded border border-brand-border px-1.5 py-0.5 text-[11px] text-muted">
                 Esc
               </kbd>
             </div>
 
             <div className="max-h-[320px] overflow-y-auto p-2">
               {filteredSearch.length === 0 ? (
-                <p className="px-3 py-6 text-center text-[13px] text-[#a0acc0]">
+                <p className="px-3 py-6 text-center text-[13px] text-muted">
                   No matching pages.
                 </p>
               ) : (
@@ -535,24 +537,24 @@ export function PlatformShell({ children }: { children: ReactNode }) {
                       className={cx(
                         "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[13px] transition-colors",
                         active
-                          ? "bg-[#1c2440] text-white"
-                          : "text-[#d5d8e7] hover:bg-[#171d33]",
+                          ? "bg-brand-soft text-text"
+                          : "text-text hover:bg-brand-soft",
                         disabled && "cursor-not-allowed opacity-45",
                       )}
                     >
-                      <item.icon size={17} className="shrink-0 text-[#9aa3c0]" />
+                      <item.icon size={17} className="shrink-0 text-muted" />
                       <span className="min-w-0 flex-1 truncate font-medium">
                         {item.label}
                       </span>
                       {item.beta && (
-                        <span className="rounded border border-[#474176] px-1 py-0.5 text-[11px] text-[#a99af3]">
+                        <span className="rounded border border-brand-border px-1 py-0.5 text-[11px] text-accent">
                           BETA
                         </span>
                       )}
                       {disabled ? (
-                        <span className="text-[11px] text-[#8b98ae]">Soon</span>
+                        <span className="text-[11px] text-muted">Soon</span>
                       ) : (
-                        <span className="truncate text-[11px] text-[#8b98ae]">
+                        <span className="truncate text-[11px] text-muted">
                           {item.href}
                         </span>
                       )}

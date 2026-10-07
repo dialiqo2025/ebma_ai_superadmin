@@ -70,7 +70,7 @@ export function CapabilityNotice({
   return (
     <UsageGateContext.Provider value={value}>
       {blocked && (
-        <div className="mx-auto mb-4 flex max-w-6xl items-start justify-between gap-4 rounded-xl border border-[#755a2d] bg-[#2a2113] px-4 py-3 text-sm text-[#f0ca82]">
+        <div className="mx-auto mb-4 flex max-w-6xl items-start justify-between gap-4 rounded-xl border border-warning-border bg-warning-soft px-4 py-3 text-sm text-warning">
           <div className="flex items-start gap-3">
             <LockKeyhole size={17} className="mt-0.5 shrink-0" />
             <div>
@@ -79,7 +79,7 @@ export function CapabilityNotice({
                   ? "Your credits are exhausted"
                   : `${capability.toUpperCase()} is not included in your current plan`}
               </p>
-              <p className="mt-1 text-xs text-[#c8a96b]">
+              <p className="mt-1 text-xs text-warning">
                 {creditsLocked
                   ? "Recharge your wallet or choose a service plan to continue. Actions below are disabled until credits are available."
                   : "You can view this module, but actions are disabled until you upgrade your plan."}
@@ -88,7 +88,7 @@ export function CapabilityNotice({
           </div>
           <Link
             href={planHref}
-            className="shrink-0 rounded-lg bg-[#5d50e8] px-3 py-2 text-xs font-semibold text-white hover:bg-[#6a5cf4]"
+            className="shrink-0 rounded-lg bg-brand-soft px-3 py-2 text-xs font-semibold text-text hover:bg-brand-soft"
           >
             {creditsLocked ? "Recharge" : "View plans"}
           </Link>

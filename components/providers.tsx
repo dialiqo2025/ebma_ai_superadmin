@@ -1,7 +1,8 @@
 "use client";
 
 import { AuthProvider } from "@/lib/auth";
+import { ThemeProvider } from "./theme-provider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  return <AuthProvider>{children}</AuthProvider>;
+  return <ThemeProvider><AuthProvider>{children}</AuthProvider></ThemeProvider>;
 }

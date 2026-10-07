@@ -15,11 +15,11 @@ import type {
 } from "@/lib/stt";
 
 const TAB_GRADIENT =
-  "bg-[linear-gradient(90deg,#3b82f6_0%,#7c3aed_100%)]";
+  "bg-brand-gradient-short";
 const ACTION_GRADIENT =
-  "bg-[linear-gradient(90deg,#2563eb_0%,#7c3aed_55%,#06b6d4_100%)]";
+  "bg-brand-gradient";
 const LABEL_GRADIENT =
-  "bg-[linear-gradient(90deg,#60a5fa_0%,#a78bfa_100%)]";
+  "bg-brand-gradient";
 
 const FALLBACK_LANGUAGES = [
   { code: "auto", name: "Automatic detection" },
@@ -76,15 +76,15 @@ function languageLabel(code: string, languages: { code: string; name: string }[]
 function transcriptionStatusTone(status: SttTranscriptionStatus) {
   switch (status) {
     case "completed":
-      return "text-emerald-300 border-emerald-700/40";
+      return "text-success border-success-border";
     case "failed":
-      return "text-[#ef6a82] border-[#5a2430]";
+      return "text-danger border-danger-border";
     case "cancelled":
-      return "text-[#9aa5b8] border-[#2a3552]";
+      return "text-muted border-brand-border";
     case "processing":
-      return "text-sky-300 border-sky-800/40";
+      return "text-cyan border-brand-border";
     default:
-      return "text-amber-200 border-amber-800/40";
+      return "text-warning border-warning-border";
   }
 }
 
@@ -111,24 +111,24 @@ function Dropdown({
 }) {
   return (
     <div className="flex flex-col gap-2">
-      <span className="text-[12px] font-medium tracking-[0.14em] text-[#a0acc0]">
+      <span className="text-[12px] font-medium tracking-[0.14em] text-muted">
         {label}
       </span>
       <div className="relative">
         <select
           disabled={disabled}
-          className="min-w-[140px] cursor-pointer appearance-none rounded-lg border border-[#1e2a44] bg-[#0a1224] py-2.5 pr-10 pl-3.5 text-[14px] font-semibold text-white outline-none transition-colors hover:border-[#2f4066] focus:border-[#4b6ef5] disabled:cursor-not-allowed disabled:opacity-50"
+          className="min-w-[140px] cursor-pointer appearance-none rounded-lg border border-brand-border bg-brand-soft py-2.5 pr-10 pl-3.5 text-[14px] font-semibold text-text outline-none transition-colors hover:border-brand-border focus:border-brand-border disabled:cursor-not-allowed disabled:opacity-50"
           value={value}
           onChange={(e) => onChange(e.target.value)}
         >
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value} className="bg-[#0b1326]">
+            <option key={opt.value} value={opt.value} className="bg-brand-soft">
               {opt.label}
             </option>
           ))}
         </select>
         <svg
-          className="pointer-events-none absolute top-1/2 right-3 h-3.5 w-3.5 -translate-y-1/2 text-[#aab6c9]"
+          className="pointer-events-none absolute top-1/2 right-3 h-3.5 w-3.5 -translate-y-1/2 text-muted"
           viewBox="0 0 20 20"
           fill="none"
         >
@@ -164,7 +164,7 @@ function Toggle({
         onClick={onToggle}
         className={cx(
           "relative h-[22px] w-10 rounded-full border-0 p-0 transition-colors disabled:opacity-50",
-          on ? "bg-[#4f46e5]" : "bg-[#243049]",
+          on ? "bg-brand-gradient" : "bg-surface-high",
         )}
       >
         <span
@@ -174,47 +174,47 @@ function Toggle({
           )}
         />
       </button>
-      <span className="text-sm text-[#c5d0e0]">{label}</span>
+      <span className="text-sm text-muted">{label}</span>
     </label>
   );
 }
 
 const SPEAKER_COLORS = [
   {
-    bg: "bg-indigo-900/55",
-    text: "text-indigo-200",
-    border: "border-indigo-400/45",
-    bar: "bg-indigo-400",
+    bg: "bg-brand-soft",
+    text: "text-accent",
+    border: "border-brand-border",
+    bar: "bg-brand",
   },
   {
-    bg: "bg-emerald-900/55",
-    text: "text-emerald-200",
-    border: "border-emerald-400/45",
-    bar: "bg-emerald-400",
+    bg: "bg-success-soft",
+    text: "text-success",
+    border: "border-success-border",
+    bar: "bg-success",
   },
   {
-    bg: "bg-amber-900/55",
-    text: "text-amber-200",
-    border: "border-amber-400/45",
-    bar: "bg-amber-400",
+    bg: "bg-warning-soft",
+    text: "text-warning",
+    border: "border-warning-border",
+    bar: "bg-warning",
   },
   {
-    bg: "bg-rose-900/55",
-    text: "text-rose-200",
-    border: "border-rose-400/45",
-    bar: "bg-rose-400",
+    bg: "bg-danger-soft",
+    text: "text-danger",
+    border: "border-danger-border",
+    bar: "bg-danger",
   },
   {
-    bg: "bg-cyan-900/55",
-    text: "text-cyan-200",
-    border: "border-cyan-400/45",
-    bar: "bg-cyan-400",
+    bg: "bg-brand-soft",
+    text: "text-cyan",
+    border: "border-brand-border",
+    bar: "bg-cyan",
   },
   {
-    bg: "bg-violet-900/55",
-    text: "text-violet-200",
-    border: "border-violet-400/45",
-    bar: "bg-violet-400",
+    bg: "bg-brand-soft",
+    text: "text-accent",
+    border: "border-brand-border",
+    bar: "bg-brand",
   },
   {
     bg: "bg-orange-900/55",
@@ -258,7 +258,7 @@ function SegmentBlock({
   return (
     <div
       className={cx(
-        "border-b border-[#1a243a] py-5 last:border-b-0",
+        "border-b border-brand-border py-5 last:border-b-0",
         tone ? "border-l-2 pl-3" : undefined,
         tone?.border,
       )}
@@ -276,16 +276,16 @@ function SegmentBlock({
             {speaker}
           </span>
         ) : null}
-        <span className="rounded-md bg-[#1d4ed8] px-2 py-0.5 text-[12px] font-semibold text-white">
+        <span className="rounded-md bg-brand-soft px-2 py-0.5 text-[12px] font-semibold text-text">
           {timeLabel}
         </span>
         {language ? (
-          <span className="rounded-md bg-[#1a2438] px-2 py-0.5 text-[12px] font-medium text-[#9aa8bf]">
+          <span className="rounded-md bg-brand-soft px-2 py-0.5 text-[12px] font-medium text-muted">
             {language}
           </span>
         ) : null}
         {durationLabel ? (
-          <span className="rounded-md bg-[#1a2438] px-2 py-0.5 text-[12px] font-medium text-[#9aa8bf]">
+          <span className="rounded-md bg-brand-soft px-2 py-0.5 text-[12px] font-medium text-muted">
             {durationLabel}
           </span>
         ) : null}
@@ -293,7 +293,7 @@ function SegmentBlock({
       <p
         className={cx(
           "text-[22px] leading-relaxed tracking-tight",
-          muted ? "text-[#aab6c9]" : "text-white",
+          muted ? "text-muted" : "text-text",
         )}
       >
         {text}
@@ -303,7 +303,7 @@ function SegmentBlock({
 }
 
 const RESULT_ACTION_BTN =
-  "rounded-full border border-[#c5cedd]/35 bg-transparent px-4 py-1.5 text-[13px] font-medium text-white transition-colors hover:border-[#c5cedd]/55 hover:bg-white/[0.04] disabled:cursor-not-allowed disabled:opacity-40";
+  "rounded-full border border-border/35 bg-transparent px-4 py-1.5 text-[13px] font-medium text-text transition-colors hover:border-border/55 hover:bg-surface-raised disabled:cursor-not-allowed disabled:opacity-40";
 
 function transcriptPlainText(item: SttTranscription) {
   const segments = item.result?.segments ?? [];
@@ -513,11 +513,11 @@ function TranscriptionResult({
     <div>
       <div className="mb-4 flex flex-wrap gap-2">
         {item.audioSeconds != null && (
-          <span className="rounded-md bg-[#1a2438] px-2.5 py-1 text-[12px] font-medium text-[#c5d0e0]">
+          <span className="rounded-md bg-brand-soft px-2.5 py-1 text-[12px] font-medium text-muted">
             {formatClock(item.audioSeconds)} of audio
           </span>
         )}
-        <span className="rounded-md bg-[#1a2438] px-2.5 py-1 text-[12px] font-medium text-[#c5d0e0]">
+        <span className="rounded-md bg-brand-soft px-2.5 py-1 text-[12px] font-medium text-muted">
           {item.filename}
         </span>
         <span
@@ -570,7 +570,7 @@ function TranscriptionResult({
       ) : item.transcript ? (
         <SegmentBlock timeLabel="0:00" text={item.transcript} />
       ) : (
-        <p className="text-sm text-[#a8b4c8]">No transcript text returned.</p>
+        <p className="text-sm text-muted">No transcript text returned.</p>
       )}
 
       {completed && (
@@ -857,12 +857,12 @@ export function SpeechToTextDemo() {
     .join(", ")} and more), up to ${formatBytes(fileTx.fileOpts.maxUploadBytes)} and ${fileTx.fileOpts.maxAudioMinutes} minutes.`;
 
   return (
-    <div className="text-[#cad5e2]">
+    <div className="text-muted">
       <section
         className="relative pb-7 text-center"
         style={{
           backgroundImage:
-            "radial-gradient(55% 55% at 50% 0%, rgba(38, 96, 234, 0.16), transparent 70%), linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px)",
+            "radial-gradient(55% 55% at 50% 0%, color-mix(in srgb, var(--theme-purple) 16%, transparent), transparent 70%), linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px)",
           backgroundSize: "auto, 48px 48px, 48px 48px",
         }}
       >
@@ -874,23 +874,23 @@ export function SpeechToTextDemo() {
         >
           REAL-TIME SPEECH RECOGNITION
         </p>
-        <h1 className="mt-4 text-4xl font-extrabold leading-none tracking-tight text-white sm:text-[52px]">
+        <h1 className="mt-4 text-4xl font-extrabold leading-none tracking-tight text-text sm:text-[52px]">
           Speech to Text
         </h1>
-        <p className="mx-auto mt-5 max-w-lg text-[15px] leading-relaxed text-[#b7c3d6]">
+        <p className="mx-auto mt-5 max-w-lg text-[15px] leading-relaxed text-muted">
           Speak in any of 27 Indian languages and watch your words appear, phrase by phrase, the
           moment you pause.
         </p>
 
-        <div className="mt-7 inline-flex rounded-full border border-[#1b2740] bg-[#0a1224] p-1">
+        <div className="mt-7 inline-flex rounded-full border border-brand-border bg-brand-soft p-1">
           <button
             type="button"
             onClick={() => setInputMode("live")}
             className={cx(
               "rounded-full px-5 py-2 text-[13px] font-semibold transition-colors",
               inputMode === "live"
-                ? cx(TAB_GRADIENT, "text-white shadow-[0_8px_24px_-10px_rgba(59,130,246,0.8)]")
-                : "text-[#c5d0e0] hover:text-white",
+                ? cx(TAB_GRADIENT, "text-on-brand shadow-[0_8px_24px_-10px_rgba(59,130,246,0.8)]")
+                : "text-muted hover:text-text",
             )}
           >
             Live microphone
@@ -901,8 +901,8 @@ export function SpeechToTextDemo() {
             className={cx(
               "rounded-full px-5 py-2 text-[13px] font-semibold transition-colors",
               inputMode === "upload"
-                ? cx(TAB_GRADIENT, "text-white shadow-[0_8px_24px_-10px_rgba(59,130,246,0.8)]")
-                : "text-[#c5d0e0] hover:text-white",
+                ? cx(TAB_GRADIENT, "text-on-brand shadow-[0_8px_24px_-10px_rgba(59,130,246,0.8)]")
+                : "text-muted hover:text-text",
             )}
           >
             Upload a file
@@ -911,7 +911,7 @@ export function SpeechToTextDemo() {
       </section>
 
       <section className="mx-auto max-w-5xl">
-        <div className="rounded-2xl border border-[#172033] bg-[#0b1324] p-5 sm:p-7">
+        <div className="rounded-2xl border border-brand-border bg-brand-soft p-5 sm:p-7">
           {inputMode === "live" ? (
             <>
               <div className="flex flex-wrap items-end gap-5">
@@ -959,7 +959,7 @@ export function SpeechToTextDemo() {
                     }
                     className={cx(
                       ACTION_GRADIENT,
-                      "flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-[15px] font-bold text-white shadow-[0_12px_28px_-12px_rgba(37,99,235,0.75)] transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:scale-100",
+                      "flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-[15px] font-bold text-on-brand shadow-[0_12px_28px_-12px_rgba(37,99,235,0.75)] transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:scale-100",
                     )}
                     onClick={() => void onToggleListen()}
                   >
@@ -970,7 +970,7 @@ export function SpeechToTextDemo() {
                         ? "Stop listening"
                         : "Start listening"}
                   </button>
-                  <div className="h-[3px] w-full overflow-hidden rounded-full bg-[#1d293d] sm:w-44">
+                  <div className="h-[3px] w-full overflow-hidden rounded-full bg-brand-soft sm:w-44">
                     <div
                       className={cx(ACTION_GRADIENT, "h-full rounded-full")}
                       style={{
@@ -988,13 +988,13 @@ export function SpeechToTextDemo() {
                 <span
                   className={cx(
                     "h-1.5 w-1.5 shrink-0 rounded-full",
-                    live.listening || live.busy ? "bg-emerald-400" : "bg-[#3e4c64]",
+                    live.listening || live.busy ? "bg-success" : "bg-brand-soft",
                   )}
                 />
-                <span className="text-[13px] text-[#aab6c9]">{statusText}</span>
+                <span className="text-[13px] text-muted">{statusText}</span>
               </div>
 
-              <div className="mt-5 min-h-[280px] rounded-xl border border-[#162033] bg-[#080e1c] px-5 py-2 sm:px-6">
+              <div className="mt-5 min-h-[280px] rounded-xl border border-brand-border bg-brand-soft px-5 py-2 sm:px-6">
                 {hasLiveContent ? (
                   <div>
                     {live.finals.map((seg: SttSegment) => (
@@ -1024,8 +1024,8 @@ export function SpeechToTextDemo() {
                   </div>
                 ) : (
                   <div className="flex min-h-[260px] flex-col items-center justify-center text-center">
-                    <p className="max-w-sm text-sm leading-relaxed text-[#a8b4c8]">
-                      Press <span className="font-semibold text-slate-300">Start listening</span>{" "}
+                    <p className="max-w-sm text-sm leading-relaxed text-muted">
+                      Press <span className="font-semibold text-muted">Start listening</span>{" "}
                       and speak. Phrases appear here when you pause.
                     </p>
                   </div>
@@ -1045,7 +1045,7 @@ export function SpeechToTextDemo() {
               <div className="mt-5 flex gap-3">
                 <button
                   type="button"
-                  className="rounded-lg border border-[#2a3552] bg-transparent px-4 py-2 text-[13px] font-medium text-[#c5d0e0] transition-colors hover:border-[#3a4972] hover:bg-[#101830]"
+                  className="rounded-lg border border-brand-border bg-transparent px-4 py-2 text-[13px] font-medium text-muted transition-colors hover:border-brand-border hover:bg-brand-soft"
                   onClick={copyLiveTranscript}
                 >
                   Copy transcript
@@ -1053,7 +1053,7 @@ export function SpeechToTextDemo() {
                 <button
                   type="button"
                   disabled={live.listening || live.busy || actionsDisabled}
-                  className="rounded-lg border border-[#2a3552] bg-transparent px-4 py-2 text-[13px] font-medium text-[#c5d0e0] transition-colors hover:border-[#3a4972] hover:bg-[#101830] disabled:opacity-40"
+                  className="rounded-lg border border-brand-border bg-transparent px-4 py-2 text-[13px] font-medium text-muted transition-colors hover:border-brand-border hover:bg-brand-soft disabled:opacity-40"
                   onClick={clearLive}
                 >
                   Clear
@@ -1096,14 +1096,14 @@ export function SpeechToTextDemo() {
                   />
                 )}
                 {!fileTx.diarizeAvailable && (
-                  <p className="pb-2.5 text-[12px] text-[#aab6c9]">
+                  <p className="pb-2.5 text-[12px] text-muted">
                     Speaker identification unavailable on this ASR.
                   </p>
                 )}
               </div>
 
               {identifySpeakers && fileTx.diarizeAvailable && (
-                <p className="mt-3 text-[12px] leading-relaxed text-[#aab6c9]">
+                <p className="mt-3 text-[12px] leading-relaxed text-muted">
                   Tip: if you know how many people speak, choose the number — it makes
                   speaker labels more accurate.
                 </p>
@@ -1144,24 +1144,24 @@ export function SpeechToTextDemo() {
                 className={cx(
                   "mt-5 flex w-full flex-col items-center justify-center rounded-xl border border-dashed px-6 py-12 text-center transition-colors disabled:opacity-60",
                   dragging
-                    ? "border-[#60a5fa] bg-[#0f1a33]"
-                    : "border-[#3b82f6]/70 bg-transparent hover:border-[#60a5fa] hover:bg-[#0c1528]",
+                    ? "border-brand-border bg-brand-soft"
+                    : "border-brand-border/70 bg-transparent hover:border-brand-border hover:bg-brand-soft",
                 )}
               >
-                <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#132445] text-[#60a5fa]">
+                <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-brand-soft text-cyan">
                   <Upload size={22} />
                 </span>
-                <p className="text-[16px] text-white">
+                <p className="text-[16px] text-text">
                   <span className="font-bold">Choose a file</span> or drop it here
                 </p>
-                <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-[#aab6c9]">
+                <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-muted">
                   {dropzoneHint}
                 </p>
-                <p className="mt-1 text-[12px] text-[#a0acc0]">
+                <p className="mt-1 text-[12px] text-muted">
                   English words and numbers stay in Latin script.
                 </p>
                 {selectedFile ? (
-                  <p className="mt-3 text-[12px] text-[#93c5fd]">
+                  <p className="mt-3 text-[12px] text-cyan">
                     {selectedFile.name} · {formatBytes(selectedFile.size)}
                   </p>
                 ) : null}
@@ -1175,7 +1175,7 @@ export function SpeechToTextDemo() {
                     onClick={() => void onGenerateTranscript()}
                     className={cx(
                       ACTION_GRADIENT,
-                      "flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-[15px] font-bold text-white shadow-[0_12px_28px_-12px_rgba(37,99,235,0.75)] transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:scale-100",
+                      "flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-[15px] font-bold text-on-brand shadow-[0_12px_28px_-12px_rgba(37,99,235,0.75)] transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:scale-100",
                     )}
                   >
                     {fileTx.uploading
@@ -1192,7 +1192,7 @@ export function SpeechToTextDemo() {
                         setFilePickError("");
                         fileTx.clearCurrent();
                       }}
-                      className="rounded-lg border border-[#2a3552] px-4 py-2 text-[13px] text-[#9aa5b8] hover:bg-[#101830]"
+                      className="rounded-lg border border-brand-border px-4 py-2 text-[13px] text-muted hover:bg-brand-soft"
                     >
                       Clear file
                     </button>
@@ -1207,20 +1207,20 @@ export function SpeechToTextDemo() {
                       className={cx(
                         "h-1.5 w-1.5 shrink-0 rounded-full",
                         fileTx.current?.status === "completed"
-                          ? "bg-emerald-400"
+                          ? "bg-success"
                           : fileTx.current?.status === "failed"
-                            ? "bg-[#ef6a82]"
+                            ? "bg-danger-soft"
                             : uploadBusy
-                              ? "bg-sky-400"
-                              : "bg-[#3e4c64]",
+                              ? "bg-cyan"
+                              : "bg-brand-soft",
                       )}
                     />
-                    <span className="truncate text-[13px] text-[#c5d0e0]">
+                    <span className="truncate text-[13px] text-muted">
                       {uploadStatusText}
                     </span>
                   </div>
                   {(uploadBusy || fileTx.current?.status === "completed") && (
-                    <div className="h-[4px] w-40 shrink-0 overflow-hidden rounded-full bg-[#1d293d] sm:w-52">
+                    <div className="h-[4px] w-40 shrink-0 overflow-hidden rounded-full bg-brand-soft sm:w-52">
                       <div
                         className={cx(TAB_GRADIENT, "h-full rounded-full transition-all")}
                         style={{
@@ -1243,7 +1243,7 @@ export function SpeechToTextDemo() {
               />
 
               {showUploadBelow && (
-                <div className="mt-5 min-h-[220px] rounded-xl border border-[#162033] bg-[#080e1c] px-5 py-5 sm:px-6">
+                <div className="mt-5 min-h-[220px] rounded-xl border border-brand-border bg-brand-soft px-5 py-5 sm:px-6">
                   <TranscriptionResult
                     item={fileTx.current!}
                     onCopy={() => {
@@ -1290,28 +1290,28 @@ export function SpeechToTextDemo() {
               )}
 
               {showHistory && (
-                <div className="mt-6 border-t border-[#1a243a] pt-5">
+                <div className="mt-6 border-t border-brand-border pt-5">
                   <div className="mb-3 flex items-center justify-between gap-3">
-                    <h2 className="text-[14px] font-semibold text-white">
+                    <h2 className="text-[14px] font-semibold text-text">
                       Transcription history
                     </h2>
                     <button
                       type="button"
                       onClick={() => void fileTx.refreshHistory()}
-                      className="text-[12px] text-[#9aa5b8] hover:text-white"
+                      className="text-[12px] text-muted hover:text-text"
                     >
                       Refresh
                     </button>
                   </div>
                   {fileTx.historyError && (
-                    <p className="mb-2 text-[12px] text-[#ef6a82]">{fileTx.historyError}</p>
+                    <p className="mb-2 text-[12px] text-danger">{fileTx.historyError}</p>
                   )}
                   <div className="space-y-2">
                     {fileTx.history.map((item) => (
                       <div
                         key={item.transcriptionUuid}
                         className={cx(
-                          "rounded-xl border border-[#1b2540] bg-[#080e20] px-4 py-3",
+                          "rounded-xl border border-brand-border bg-brand-soft px-4 py-3",
                           fileTx.deletingUuid === item.transcriptionUuid &&
                             "opacity-70",
                         )}
@@ -1323,10 +1323,10 @@ export function SpeechToTextDemo() {
                             void fileTx.openTranscription(item.transcriptionUuid)
                           }
                         >
-                          <p className="truncate text-[13px] text-white">
+                          <p className="truncate text-[13px] text-text">
                             {item.filename}
                           </p>
-                          <p className="mt-1 line-clamp-1 text-[12px] text-[#aab6c9]">
+                          <p className="mt-1 line-clamp-1 text-[12px] text-muted">
                             {item.transcript || "(no transcript yet)"}
                           </p>
                         </button>
@@ -1352,7 +1352,7 @@ export function SpeechToTextDemo() {
                                       item.filename.replace(/\.[^.]+$/, ""),
                                     )
                                   }
-                                  className="text-[12px] text-[#9aa5b8] hover:text-white"
+                                  className="text-[12px] text-muted hover:text-text"
                                 >
                                   {format.toUpperCase()}
                                 </button>
@@ -1363,7 +1363,7 @@ export function SpeechToTextDemo() {
                               onClick={() =>
                                 void fileTx.remove(item.transcriptionUuid)
                               }
-                              className="inline-flex items-center gap-1 text-[12px] text-[#ef6a82] disabled:opacity-50"
+                              className="inline-flex items-center gap-1 text-[12px] text-danger disabled:opacity-50"
                             >
                               {fileTx.deletingUuid === item.transcriptionUuid ? (
                                 <>
@@ -1381,7 +1381,7 @@ export function SpeechToTextDemo() {
                       </div>
                     ))}
                   </div>
-                  <div className="mt-3 flex items-center justify-between text-[12px] text-[#aab6c9]">
+                  <div className="mt-3 flex items-center justify-between text-[12px] text-muted">
                     <span>Page {fileTx.historyPage}</span>
                     <div className="flex gap-2">
                       <button
@@ -1390,7 +1390,7 @@ export function SpeechToTextDemo() {
                         onClick={() =>
                           fileTx.setHistoryPage((p) => Math.max(1, p - 1))
                         }
-                        className="rounded-lg border border-[#2a3552] px-2.5 py-1 disabled:opacity-40"
+                        className="rounded-lg border border-brand-border px-2.5 py-1 disabled:opacity-40"
                       >
                         Prev
                       </button>
@@ -1398,7 +1398,7 @@ export function SpeechToTextDemo() {
                         type="button"
                         disabled={!fileTx.historyHasNext}
                         onClick={() => fileTx.setHistoryPage((p) => p + 1)}
-                        className="rounded-lg border border-[#2a3552] px-2.5 py-1 disabled:opacity-40"
+                        className="rounded-lg border border-brand-border px-2.5 py-1 disabled:opacity-40"
                       >
                         Next
                       </button>

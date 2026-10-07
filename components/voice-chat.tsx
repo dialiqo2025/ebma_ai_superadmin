@@ -28,9 +28,9 @@ import type { SttMode } from "@/lib/stt";
 import type { TtsOutputFormat, TtsVoiceMode } from "@/lib/tts";
 
 const ACTION_GRADIENT =
-  "bg-[linear-gradient(90deg,#2563eb_0%,#7c3aed_55%,#06b6d4_100%)]";
-const TAB_GRADIENT = "bg-[linear-gradient(90deg,#3b82f6_0%,#7c3aed_100%)]";
-const LABEL_GRADIENT = "bg-[linear-gradient(90deg,#60a5fa_0%,#a78bfa_100%)]";
+  "bg-brand-gradient";
+const TAB_GRADIENT = "bg-brand-gradient-short";
+const LABEL_GRADIENT = "bg-brand-gradient";
 
 const FALLBACK_LANGUAGES = [
   { code: "auto", name: "Automatic detection" },
@@ -84,7 +84,7 @@ function Select({
 }) {
   return (
     <label className="flex min-w-0 flex-col gap-1.5">
-      <span className="text-[12px] font-medium tracking-[0.14em] text-[#a0acc0] uppercase">
+      <span className="text-[12px] font-medium tracking-[0.14em] text-muted uppercase">
         {label}
       </span>
       <span className="relative">
@@ -92,16 +92,16 @@ function Select({
           disabled={disabled}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full min-w-[150px] cursor-pointer appearance-none rounded-lg border border-[#1e2a44] bg-[#0a1224] py-2 pr-9 pl-3 text-[13px] font-semibold text-white outline-none transition-colors hover:border-[#2f4066] focus:border-[#4b6ef5] disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full min-w-[150px] cursor-pointer appearance-none rounded-lg border border-brand-border bg-brand-soft py-2 pr-9 pl-3 text-[13px] font-semibold text-text outline-none transition-colors hover:border-brand-border focus:border-brand-border disabled:cursor-not-allowed disabled:opacity-50"
         >
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value} className="bg-[#0b1326]">
+            <option key={opt.value} value={opt.value} className="bg-brand-soft">
               {opt.label}
             </option>
           ))}
         </select>
         <svg
-          className="pointer-events-none absolute top-1/2 right-3 h-3.5 w-3.5 -translate-y-1/2 text-[#aab6c9]"
+          className="pointer-events-none absolute top-1/2 right-3 h-3.5 w-3.5 -translate-y-1/2 text-muted"
           viewBox="0 0 20 20"
           fill="none"
         >
@@ -141,7 +141,7 @@ function Toggle({
       <span
         className={cx(
           "relative mt-0.5 h-[20px] w-9 shrink-0 rounded-full transition-colors",
-          on ? "bg-[#4f46e5]" : "bg-[#243049]",
+          on ? "bg-brand-gradient" : "bg-surface-high",
         )}
       >
         <span
@@ -152,8 +152,8 @@ function Toggle({
         />
       </span>
       <span className="flex flex-col">
-        <span className="text-[13px] text-[#c5d0e0]">{label}</span>
-        {hint ? <span className="text-[12px] text-[#a0acc0]">{hint}</span> : null}
+        <span className="text-[13px] text-muted">{label}</span>
+        {hint ? <span className="text-[12px] text-muted">{hint}</span> : null}
       </span>
     </button>
   );
@@ -176,9 +176,9 @@ function Range({
 }) {
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="flex justify-between text-[12px] font-medium tracking-[0.14em] text-[#a0acc0] uppercase">
+      <span className="flex justify-between text-[12px] font-medium tracking-[0.14em] text-muted uppercase">
         {label}
-        <span className="tracking-normal text-[#c5d0e0]">{value.toFixed(1)}×</span>
+        <span className="tracking-normal text-muted">{value.toFixed(1)}×</span>
       </span>
       <input
         type="range"
@@ -187,7 +187,7 @@ function Range({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="accent-[#6d5ef0]"
+        className="accent-accent"
       />
     </label>
   );
@@ -200,7 +200,7 @@ function SpeakingBars({ active }: { active: boolean }) {
         <i
           key={i}
           className={cx(
-            "block w-[3px] rounded-full bg-[#a78bfa]",
+            "block w-[3px] rounded-full bg-brand",
             active ? "animate-[voicebar_0.9s_ease-in-out_infinite]" : "h-1",
           )}
           style={active ? { animationDelay: `${i * 0.15}s`, height: "100%" } : undefined}
@@ -216,7 +216,7 @@ function ThinkingDots() {
       {[0, 1, 2].map((i) => (
         <i
           key={i}
-          className="block h-1.5 w-1.5 animate-bounce rounded-full bg-[#8b98ae]"
+          className="block h-1.5 w-1.5 animate-bounce rounded-full bg-surface-raised"
           style={{ animationDelay: `${i * 0.15}s` }}
         />
       ))}
@@ -253,7 +253,7 @@ function MessageBubble({
         <span
           className={cx(
             "mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-full",
-            isError ? "bg-[#3a1620] text-[#ef6a82]" : cx(TAB_GRADIENT, "text-white"),
+            isError ? "bg-danger-soft text-danger" : cx(TAB_GRADIENT, "text-on-brand"),
           )}
         >
           {isError ? <AlertCircle size={16} /> : <Bot size={16} />}
@@ -264,17 +264,17 @@ function MessageBubble({
           className={cx(
             "rounded-2xl px-4 py-3 text-[15px] leading-relaxed whitespace-pre-wrap break-words",
             isUser
-              ? "rounded-br-md bg-[linear-gradient(135deg,#2563eb,#6d28d9)] text-white"
+              ? "rounded-br-md bg-brand-gradient text-on-brand"
               : isError
-                ? "rounded-bl-md border border-[#5a2430] bg-[#1c0f16] text-[#f3a3b2]"
-                : "rounded-bl-md border border-[#1b2540] bg-[#0d1528] text-[#e6ebf5]",
+                ? "rounded-bl-md border border-danger-border bg-brand-soft text-danger"
+                : "rounded-bl-md border border-brand-border bg-brand-soft text-text",
           )}
         >
           {message.text}
         </div>
         <div
           className={cx(
-            "flex flex-wrap items-center gap-2 px-1 text-[12px] text-[#a0acc0]",
+            "flex flex-wrap items-center gap-2 px-1 text-[12px] text-muted",
             isUser && "justify-end",
           )}
         >
@@ -284,7 +284,7 @@ function MessageBubble({
             </span>
           )}
           {message.language && message.language !== "auto" && (
-            <span className="rounded bg-[#131c30] px-1.5 py-0.5 text-[#9aa8bf]">
+            <span className="rounded bg-brand-soft px-1.5 py-0.5 text-muted">
               {languageName(message.language)}
             </span>
           )}
@@ -295,12 +295,12 @@ function MessageBubble({
                 <span title="LLM response time">{(message.llmMs / 1000).toFixed(1)} s</span>
               )}
               {audio?.state === "loading" && (
-                <span className="inline-flex items-center gap-1 text-[#93c5fd]">
+                <span className="inline-flex items-center gap-1 text-cyan">
                   <Loader2 size={11} className="animate-spin" /> generating voice
                 </span>
               )}
               {speaking && (
-                <span className="inline-flex items-center gap-1.5 text-[#c4b5fd]">
+                <span className="inline-flex items-center gap-1.5 text-accent">
                   <SpeakingBars active /> speaking
                 </span>
               )}
@@ -311,7 +311,7 @@ function MessageBubble({
                 type="button"
                 onClick={onReplay}
                 disabled={audio?.state === "loading"}
-                className="inline-flex items-center gap-1 rounded px-1 py-0.5 text-[#9aa8bf] transition-colors hover:bg-[#131c30] hover:text-white disabled:opacity-40"
+                className="inline-flex items-center gap-1 rounded px-1 py-0.5 text-muted transition-colors hover:bg-brand-soft hover:text-text disabled:opacity-40"
                 aria-label={speaking ? "Stop speaking" : "Play reply"}
               >
                 {speaking ? <Pause size={12} /> : <Play size={12} />}
@@ -320,7 +320,7 @@ function MessageBubble({
               <button
                 type="button"
                 onClick={copy}
-                className="inline-flex items-center gap-1 rounded px-1 py-0.5 text-[#9aa8bf] transition-colors hover:bg-[#131c30] hover:text-white"
+                className="inline-flex items-center gap-1 rounded px-1 py-0.5 text-muted transition-colors hover:bg-brand-soft hover:text-text"
                 aria-label="Copy reply"
               >
                 {copied ? <Check size={12} /> : <Copy size={12} />}
@@ -329,7 +329,7 @@ function MessageBubble({
           )}
         </div>
         {audio?.error && (audio.state === "error" || audio.state === "ready" || audio.state === "browser") && (
-          <span className="px-1 text-[12px] text-[#d98b9a]">
+          <span className="px-1 text-[12px] text-danger">
             {audio.state === "browser" ? `Server voice unavailable (${audio.error}); used browser voice.` : audio.error}
           </span>
         )}
@@ -356,7 +356,7 @@ function SettingsPanel({
   audioFormats: TtsOutputFormat[];
 }) {
   return (
-    <div className="grid gap-5 rounded-xl border border-[#172033] bg-[#080e1c] p-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-5 rounded-xl border border-brand-border bg-brand-soft p-4 sm:grid-cols-2 lg:grid-cols-3">
       <Select
         label="Transcript script"
         value={settings.sttMode}
@@ -388,14 +388,14 @@ function SettingsPanel({
       />
       {settings.voiceMode === "clone" ? (
         <label className="flex flex-col gap-1.5">
-          <span className="text-[12px] font-medium tracking-[0.14em] text-[#a0acc0] uppercase">
+          <span className="text-[12px] font-medium tracking-[0.14em] text-muted uppercase">
             Voice ID
           </span>
           <input
             value={settings.voiceId}
             onChange={(e) => update({ voiceId: e.target.value })}
             placeholder="voice id"
-            className="rounded-lg border border-[#1e2a44] bg-[#0a1224] px-3 py-2 text-[13px] text-white outline-none focus:border-[#4b6ef5]"
+            className="rounded-lg border border-brand-border bg-brand-soft px-3 py-2 text-[13px] text-text outline-none focus:border-brand-border"
           />
         </label>
       ) : (
@@ -483,7 +483,7 @@ export function VoiceChat() {
   const ringScale = stt.listening && !chat.speakingId ? 1 + stt.voiceLevel * 0.9 : 1;
 
   return (
-    <div className="flex h-[calc(100vh-68px-104px)] min-h-[560px] flex-col text-[#cad5e2]">
+    <div className="flex h-[calc(100vh-68px-104px)] min-h-[560px] flex-col text-muted">
       <style>{`@keyframes voicebar{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}`}</style>
 
       {/* Header */}
@@ -497,7 +497,7 @@ export function VoiceChat() {
           >
             SPEECH → LLM → SPEECH
           </p>
-          <h1 className="mt-1.5 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+          <h1 className="mt-1.5 text-2xl font-extrabold tracking-tight text-text sm:text-3xl">
             Voice Assistant
           </h1>
           <div className="mt-2 flex flex-wrap gap-2 text-[12px]">
@@ -511,14 +511,14 @@ export function VoiceChat() {
                 className={cx(
                   "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5",
                   chip.ok
-                    ? "border-emerald-800/50 text-emerald-300"
-                    : "border-[#3a3350] text-[#a99af3]",
+                    ? "border-success-border text-success"
+                    : "border-brand-border text-accent",
                 )}
               >
                 <i
                   className={cx(
                     "h-1.5 w-1.5 rounded-full",
-                    chip.ok ? "bg-emerald-400" : "bg-[#8b7cf0]",
+                    chip.ok ? "bg-success" : "bg-brand",
                   )}
                 />
                 {chip.label}
@@ -534,8 +534,8 @@ export function VoiceChat() {
             className={cx(
               "grid h-9 w-9 place-items-center rounded-lg border transition-colors",
               settings.voiceReplies
-                ? "border-[#3b3a7a] bg-[#16163a] text-[#c4b5fd]"
-                : "border-[#1e2a44] text-[#a0acc0] hover:text-white",
+                ? "border-brand-border bg-brand-soft text-accent"
+                : "border-brand-border text-muted hover:text-text",
             )}
             title={settings.voiceReplies ? "Voice replies on" : "Voice replies off"}
             aria-pressed={settings.voiceReplies}
@@ -548,8 +548,8 @@ export function VoiceChat() {
             className={cx(
               "grid h-9 w-9 place-items-center rounded-lg border transition-colors",
               showSettings
-                ? "border-[#3b3a7a] bg-[#16163a] text-[#c4b5fd]"
-                : "border-[#1e2a44] text-[#aab6c9] hover:text-white",
+                ? "border-brand-border bg-brand-soft text-accent"
+                : "border-brand-border text-muted hover:text-text",
             )}
             title="Settings"
             aria-expanded={showSettings}
@@ -560,7 +560,7 @@ export function VoiceChat() {
             type="button"
             onClick={chat.clearConversation}
             disabled={!chat.messages.length || chat.thinking}
-            className="grid h-9 w-9 place-items-center rounded-lg border border-[#1e2a44] text-[#aab6c9] transition-colors hover:text-[#ef6a82] disabled:opacity-40"
+            className="grid h-9 w-9 place-items-center rounded-lg border border-brand-border text-muted transition-colors hover:text-danger disabled:opacity-40"
             title="Clear conversation"
           >
             <Trash2 size={17} />
@@ -590,10 +590,10 @@ export function VoiceChat() {
           onChange={(v) => updateSettings({ replyLanguage: v })}
         />
         <div className="flex flex-col gap-1.5">
-          <span className="text-[12px] font-medium tracking-[0.14em] text-[#a0acc0] uppercase">
+          <span className="text-[12px] font-medium tracking-[0.14em] text-muted uppercase">
             Conversation
           </span>
-          <div className="inline-flex rounded-lg border border-[#1e2a44] bg-[#0a1224] p-0.5">
+          <div className="inline-flex rounded-lg border border-brand-border bg-brand-soft p-0.5">
             {[
               { value: false, label: "Push to talk" },
               { value: true, label: "Hands-free" },
@@ -606,8 +606,8 @@ export function VoiceChat() {
                 className={cx(
                   "rounded-md px-3 py-[7px] text-[12px] font-semibold transition-colors disabled:cursor-not-allowed",
                   settings.handsFree === opt.value
-                    ? cx(TAB_GRADIENT, "text-white")
-                    : "text-[#aab6c9] hover:text-white",
+                    ? cx(TAB_GRADIENT, "text-on-brand")
+                    : "text-muted hover:text-text",
                 )}
               >
                 {opt.label}
@@ -632,7 +632,7 @@ export function VoiceChat() {
       )}
 
       {chat.optionsError && (
-        <div className="mb-3 flex items-center justify-between gap-3 rounded-lg border border-[#5a2430] bg-[#1c0f16] px-3 py-2 text-[13px] text-[#f3a3b2]">
+        <div className="mb-3 flex items-center justify-between gap-3 rounded-lg border border-danger-border bg-brand-soft px-3 py-2 text-[13px] text-danger">
           {chat.optionsError}
           <button type="button" className="underline" onClick={() => void chat.refreshOptions()}>
             Retry
@@ -643,16 +643,16 @@ export function VoiceChat() {
       {/* Conversation */}
       <div
         ref={scrollRef}
-        className="min-h-0 flex-1 overflow-y-auto rounded-2xl border border-[#172033] bg-[#080e1c] px-4 py-5 sm:px-6"
+        className="min-h-0 flex-1 overflow-y-auto rounded-2xl border border-brand-border bg-brand-soft px-4 py-5 sm:px-6"
       >
         {chat.messages.length === 0 && !chat.thinking && !stt.partialText ? (
           <div className="flex h-full flex-col items-center justify-center gap-5 text-center">
-            <span className={cx(TAB_GRADIENT, "grid h-14 w-14 place-items-center rounded-2xl text-white")}>
+            <span className={cx(TAB_GRADIENT, "grid h-14 w-14 place-items-center rounded-2xl text-on-brand")}>
               <Bot size={26} />
             </span>
             <div>
-              <p className="text-[17px] font-semibold text-white">Talk to EBMA in your language</p>
-              <p className="mx-auto mt-1.5 max-w-md text-[13px] leading-relaxed text-[#aab6c9]">
+              <p className="text-[17px] font-semibold text-text">Talk to EBMA in your language</p>
+              <p className="mx-auto mt-1.5 max-w-md text-[13px] leading-relaxed text-muted">
                 Press the mic and speak in any of 27 Indian languages. The reply shows up here and
                 is read aloud to you.
               </p>
@@ -664,7 +664,7 @@ export function VoiceChat() {
                   type="button"
                   disabled={!llmReady}
                   onClick={() => void chat.send(s)}
-                  className="rounded-full border border-[#1e2a44] bg-[#0b1324] px-3.5 py-1.5 text-[12px] text-[#c5d0e0] transition-colors hover:border-[#3a4972] hover:text-white disabled:opacity-40"
+                  className="rounded-full border border-brand-border bg-brand-soft px-3.5 py-1.5 text-[12px] text-muted transition-colors hover:border-brand-border hover:text-text disabled:opacity-40"
                 >
                   {s}
                 </button>
@@ -685,7 +685,7 @@ export function VoiceChat() {
 
             {stt.listening && stt.partialText && !chat.speakingId && (
               <div className="flex justify-end">
-                <div className="max-w-[78%] rounded-2xl rounded-br-md border border-dashed border-[#3b4f7a] px-4 py-3 text-[15px] leading-relaxed text-[#9aa8bf] italic">
+                <div className="max-w-[78%] rounded-2xl rounded-br-md border border-dashed border-brand-border px-4 py-3 text-[15px] leading-relaxed text-muted italic">
                   {stt.partialText}
                 </div>
               </div>
@@ -693,10 +693,10 @@ export function VoiceChat() {
 
             {chat.thinking && (
               <div className="flex gap-3">
-                <span className={cx(TAB_GRADIENT, "grid h-8 w-8 shrink-0 place-items-center rounded-full text-white")}>
+                <span className={cx(TAB_GRADIENT, "grid h-8 w-8 shrink-0 place-items-center rounded-full text-on-brand")}>
                   <Bot size={16} />
                 </span>
-                <div className="rounded-2xl rounded-bl-md border border-[#1b2540] bg-[#0d1528] px-4 py-3.5">
+                <div className="rounded-2xl rounded-bl-md border border-brand-border bg-brand-soft px-4 py-3.5">
                   <ThinkingDots />
                 </div>
               </div>
@@ -707,11 +707,11 @@ export function VoiceChat() {
 
       {/* Composer */}
       <div className="mt-4">
-        <div className="flex items-end gap-3 rounded-2xl border border-[#1b2540] bg-[#0b1324] p-2.5 focus-within:border-[#34467a]">
+        <div className="flex items-end gap-3 rounded-2xl border border-brand-border bg-brand-soft p-2.5 focus-within:border-brand-border">
           <div className="relative shrink-0">
             {stt.listening && (
               <span
-                className="absolute inset-0 rounded-xl bg-[#7c3aed]/35 transition-transform duration-75"
+                className="absolute inset-0 rounded-xl bg-brand-soft/35 transition-transform duration-75"
                 style={{ transform: `scale(${ringScale})` }}
                 aria-hidden
               />
@@ -721,8 +721,8 @@ export function VoiceChat() {
               onClick={() => void chat.toggleMic()}
               disabled={(stt.busy && !stt.listening) || (!asrReady && !stt.listening) || stt.tokenCooldown > 0}
               className={cx(
-                "relative grid h-11 w-11 place-items-center rounded-xl text-white transition-transform active:scale-95 disabled:cursor-not-allowed disabled:opacity-45",
-                stt.listening ? "bg-[#dc2647]" : ACTION_GRADIENT,
+                "relative grid h-11 w-11 place-items-center rounded-xl text-text transition-transform active:scale-95 disabled:cursor-not-allowed disabled:opacity-45",
+                stt.listening ? "bg-danger-soft" : ACTION_GRADIENT,
               )}
               title={
                 !asrReady
@@ -762,14 +762,14 @@ export function VoiceChat() {
                 ? "Your words appear here as you speak…"
                 : "Message EBMA Assistant…"
             }
-            className="max-h-40 min-h-[44px] flex-1 resize-none bg-transparent py-2.5 text-[15px] leading-relaxed text-white outline-none placeholder:text-[#566280]"
+            className="max-h-40 min-h-[44px] flex-1 resize-none bg-transparent py-2.5 text-[15px] leading-relaxed text-text outline-none placeholder:text-accent"
           />
 
           {chat.speakingId ? (
             <button
               type="button"
               onClick={chat.stopSpeaking}
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-[#3b3a7a] bg-[#16163a] text-[#c4b5fd]"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-brand-border bg-brand-soft text-accent"
               title="Stop speaking"
             >
               <Square size={15} fill="currentColor" />
@@ -779,7 +779,7 @@ export function VoiceChat() {
               type="button"
               onClick={() => void chat.sendDraft()}
               disabled={!chat.draft.trim() || chat.thinking || !llmReady}
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#1d2a4a] text-white transition-colors hover:bg-[#2a3a66] disabled:opacity-40"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-soft text-text transition-colors hover:bg-brand-soft disabled:opacity-40"
               title="Send"
             >
               {chat.thinking ? <Loader2 size={18} className="animate-spin" /> : <SendHorizontal size={18} />}
@@ -793,19 +793,19 @@ export function VoiceChat() {
               className={cx(
                 "h-1.5 w-1.5 shrink-0 rounded-full",
                 stt.error
-                  ? "bg-[#ef6a82]"
+                  ? "bg-danger-soft"
                   : stt.listening
-                    ? "animate-pulse bg-emerald-400"
+                    ? "animate-pulse bg-success"
                     : chat.thinking || chat.speakingId
-                      ? "bg-[#a78bfa]"
-                      : "bg-[#3e4c64]",
+                      ? "bg-brand"
+                      : "bg-brand-soft",
               )}
             />
-            <span className={cx("truncate text-[12px]", stt.error ? "text-[#ef8a9e]" : "text-[#aab6c9]")}>
+            <span className={cx("truncate text-[12px]", stt.error ? "text-danger" : "text-muted")}>
               {statusText}
             </span>
           </div>
-          <span className="hidden shrink-0 text-[12px] text-[#566280] sm:block">
+          <span className="hidden shrink-0 text-[12px] text-accent sm:block">
             Enter to send · Shift+Enter for a new line
           </span>
         </div>

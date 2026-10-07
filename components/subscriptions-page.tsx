@@ -27,14 +27,14 @@ const planMoney = (plan: BillingPlan) =>
 
 function statusTone(status: string) {
   const value = status.toLowerCase();
-  if (value === "active") return "border-emerald-400/30 bg-emerald-400/10 text-emerald-300";
+  if (value === "active") return "border-success-border bg-success-soft text-success";
   if (value === "canceled" || value === "cancelled") {
-    return "border-rose-400/30 bg-rose-400/10 text-rose-300";
+    return "border-danger-border bg-danger-soft text-danger";
   }
   if (value === "past_due" || value === "incomplete" || value === "pending") {
-    return "border-amber-400/30 bg-amber-400/10 text-amber-300";
+    return "border-warning-border bg-warning-soft text-warning";
   }
-  return "border-[#39446d] bg-[#151c36] text-[#aeb9d2]";
+  return "border-brand-border bg-brand-soft text-muted";
 }
 
 function formatStatus(status: string) {
@@ -147,34 +147,34 @@ export function SubscriptionsPage() {
   };
 
   return (
-    <main className="mx-auto max-w-6xl text-[#d7def0]">
-      <p className="font-mono text-[11px] tracking-[.24em] text-[#8f82ff]">BILLING</p>
-      <h1 className="mt-3 text-4xl font-extrabold text-white">My plan</h1>
-      <p className="mt-3 text-sm text-[#8995b3]">
+    <main className="mx-auto max-w-6xl text-text">
+      <p className="font-mono text-[11px] tracking-[.24em] text-accent">BILLING</p>
+      <h1 className="mt-3 text-4xl font-extrabold text-text">My plan</h1>
+      <p className="mt-3 text-sm text-muted">
         Review your current plan status and switch to another option anytime.
       </p>
 
       {loading ? (
-        <div className="mt-10 flex justify-center text-[#a99af3]">
+        <div className="mt-10 flex justify-center text-accent">
           <Loader2 className="animate-spin" />
         </div>
       ) : (
         <>
-          <section className="mt-8 rounded-2xl border border-[#293354] bg-[#101832] p-5 sm:p-6">
+          <section className="mt-8 rounded-2xl border border-brand-border bg-brand-soft p-5 sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-wider text-[#8f82ff]">
+                <p className="text-xs uppercase tracking-wider text-accent">
                   Current plan
                 </p>
                 <div className="mt-3 flex flex-wrap items-center gap-3">
-                  <h2 className="text-2xl font-bold text-white">{currentPlanName}</h2>
+                  <h2 className="text-2xl font-bold text-text">{currentPlanName}</h2>
                   <span
                     className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider ${statusTone(currentStatus)}`}
                   >
                     {current ? formatStatus(currentStatus) : "No active plan"}
                   </span>
                 </div>
-                <p className="mt-3 max-w-2xl text-sm text-[#8995b3]">
+                <p className="mt-3 max-w-2xl text-sm text-muted">
                   {current
                     ? current.plan?.description ||
                       "Your active service plan and included credits."
@@ -184,7 +184,7 @@ export function SubscriptionsPage() {
               <div className="flex flex-wrap gap-2">
                 <Link
                   href="/platform/plans?kind=wallet_topup"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-[#39446d] px-3 py-2 text-xs font-semibold text-[#c5cee3] hover:border-[#6558e9] hover:text-white"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border px-3 py-2 text-xs font-semibold text-muted hover:border-brand-border hover:text-text"
                 >
                   <Wallet size={14} /> Recharge wallet
                 </Link>
@@ -192,7 +192,7 @@ export function SubscriptionsPage() {
                   <button
                     type="button"
                     onClick={() => void cancel(current)}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-rose-400/40 px-3 py-2 text-xs text-rose-300 hover:bg-rose-400/10"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-danger-border px-3 py-2 text-xs text-danger hover:bg-danger-soft"
                   >
                     <XCircle size={14} /> Cancel subscription
                   </button>
@@ -201,32 +201,32 @@ export function SubscriptionsPage() {
             </div>
 
             <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="rounded-xl border border-[#243056] bg-[#0c1225] p-4">
-                <p className="text-[11px] text-[#74809e]">Status</p>
-                <p className="mt-2 text-sm font-semibold capitalize text-white">
+              <div className="rounded-xl border border-brand-border bg-brand-soft p-4">
+                <p className="text-[11px] text-accent">Status</p>
+                <p className="mt-2 text-sm font-semibold capitalize text-text">
                   {current ? formatStatus(currentStatus) : "Inactive"}
                 </p>
               </div>
-              <div className="rounded-xl border border-[#243056] bg-[#0c1225] p-4">
-                <p className="text-[11px] text-[#74809e]">Credits included</p>
-                <p className="mt-2 text-sm font-semibold text-white">
+              <div className="rounded-xl border border-brand-border bg-brand-soft p-4">
+                <p className="text-[11px] text-accent">Credits included</p>
+                <p className="mt-2 text-sm font-semibold text-text">
                   {current
                     ? Number(current.plan?.monthly_credits || 0).toLocaleString()
                     : "—"}
                 </p>
               </div>
-              <div className="rounded-xl border border-[#243056] bg-[#0c1225] p-4">
-                <p className="text-[11px] text-[#74809e]">Billing</p>
-                <p className="mt-2 text-sm font-semibold capitalize text-white">
+              <div className="rounded-xl border border-brand-border bg-brand-soft p-4">
+                <p className="text-[11px] text-accent">Billing</p>
+                <p className="mt-2 text-sm font-semibold capitalize text-text">
                   {current?.plan?.billing_interval.replace(/_/g, " ") || "—"}
                 </p>
               </div>
-              <div className="rounded-xl border border-[#243056] bg-[#0c1225] p-4">
-                <p className="text-[11px] text-[#74809e]">Access period</p>
-                <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-white">
+              <div className="rounded-xl border border-brand-border bg-brand-soft p-4">
+                <p className="text-[11px] text-accent">Access period</p>
+                <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-text">
                   {current?.subscription.current_period_end ? (
                     <>
-                      <CalendarClock size={14} className="text-[#8f82ff]" />
+                      <CalendarClock size={14} className="text-accent" />
                       Until{" "}
                       {new Date(
                         current.subscription.current_period_end,
@@ -243,15 +243,15 @@ export function SubscriptionsPage() {
               {featureList(current?.plan).map((item) => (
                 <span
                   key={item}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[#2f3a5c] bg-[#0c1225] px-3 py-1.5 text-[11px] text-[#b6c0d6]"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-brand-border bg-brand-soft px-3 py-1.5 text-[11px] text-muted"
                 >
-                  <Check size={12} className="text-emerald-300" />
+                  <Check size={12} className="text-success" />
                   {item}
                 </span>
               ))}
               {!current && (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#2f3a5c] bg-[#0c1225] px-3 py-1.5 text-[11px] text-[#b6c0d6]">
-                  <Sparkles size={12} className="text-[#a99af3]" />
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-border bg-brand-soft px-3 py-1.5 text-[11px] text-muted">
+                  <Sparkles size={12} className="text-accent" />
                   {capabilities?.subscribed
                     ? "Subscribed access"
                     : "Legacy / free access"}
@@ -263,21 +263,21 @@ export function SubscriptionsPage() {
           <section className="mt-8">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <h2 className="text-xl font-bold text-white">Other plan options</h2>
-                <p className="mt-1 text-sm text-[#8995b3]">
+                <h2 className="text-xl font-bold text-text">Other plan options</h2>
+                <p className="mt-1 text-sm text-muted">
                   Compare available service plans and upgrade when you are ready.
                 </p>
               </div>
               <Link
                 href="/platform/plans?kind=service"
-                className="text-xs font-semibold text-[#a99af3] hover:text-white"
+                className="text-xs font-semibold text-accent hover:text-text"
               >
                 Browse all plans
               </Link>
             </div>
 
             {otherPlans.length === 0 ? (
-              <div className="mt-5 rounded-2xl border border-[#202846] bg-[#0c1225] p-8 text-center text-sm text-[#74809e]">
+              <div className="mt-5 rounded-2xl border border-brand-border bg-brand-soft p-8 text-center text-sm text-accent">
                 {servicePlans.length === 0
                   ? "No service plans are available right now."
                   : "You are already on the only available service plan."}
@@ -287,33 +287,33 @@ export function SubscriptionsPage() {
                 {otherPlans.map((plan) => (
                   <article
                     key={plan.plan_uuid}
-                    className="flex flex-col rounded-2xl border border-[#293354] bg-[#0c1225] p-5 transition-colors hover:border-[#6558e9]"
+                    className="flex flex-col rounded-2xl border border-brand-border bg-brand-soft p-5 transition-colors hover:border-brand-border"
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-2 text-xs font-semibold text-white">
-                        <CreditCard size={17} className="text-[#a99af3]" />
+                      <div className="flex items-center gap-2 text-xs font-semibold text-text">
+                        <CreditCard size={17} className="text-accent" />
                         {plan.name}
                       </div>
-                      <span className="rounded-full border border-[#39446d] px-2 py-1 text-[10px] uppercase tracking-wider text-[#aeb9d2]">
+                      <span className="rounded-full border border-brand-border px-2 py-1 text-[10px] uppercase tracking-wider text-muted">
                         {plan.billing_interval.replace(/_/g, " ")}
                       </span>
                     </div>
-                    <p className="mt-3 min-h-10 text-sm text-[#8995b3]">
+                    <p className="mt-3 min-h-10 text-sm text-muted">
                       {plan.description ||
                         "Access EBMA services with included credits."}
                     </p>
-                    <p className="mt-5 text-2xl font-bold text-white">
+                    <p className="mt-5 text-2xl font-bold text-text">
                       {planMoney(plan)}
                     </p>
-                    <p className="mt-1 text-xs text-[#74809e]">
+                    <p className="mt-1 text-xs text-accent">
                       {Number(plan.monthly_credits).toLocaleString()} credits included
                     </p>
-                    <div className="mt-5 space-y-2 text-sm text-[#b6c0d6]">
+                    <div className="mt-5 space-y-2 text-sm text-muted">
                       {featureList(plan)
                         .slice(0, 4)
                         .map((item) => (
                           <p key={item} className="flex items-center gap-2">
-                            <Check size={14} className="text-emerald-300" />
+                            <Check size={14} className="text-success" />
                             {item}
                           </p>
                         ))}
@@ -322,7 +322,7 @@ export function SubscriptionsPage() {
                       type="button"
                       disabled={checkoutPlan === plan.plan_uuid}
                       onClick={() => void startCheckout(plan.plan_uuid)}
-                      className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-[#5d50e8] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#6a5cf4] disabled:opacity-60"
+                      className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-brand-soft px-4 py-2.5 text-xs font-semibold text-text hover:bg-brand-soft disabled:opacity-60"
                     >
                       <CreditCard size={14} />
                       {checkoutPlan === plan.plan_uuid
@@ -337,12 +337,12 @@ export function SubscriptionsPage() {
             )}
           </section>
 
-          <section className="mt-8 overflow-x-auto rounded-2xl border border-[#202846] bg-[#0c1225]">
-            <div className="border-b border-[#202846] px-5 py-4 text-sm font-bold text-white">
+          <section className="mt-8 overflow-x-auto rounded-2xl border border-brand-border bg-brand-soft">
+            <div className="border-b border-brand-border px-5 py-4 text-sm font-bold text-text">
               Recent transactions
             </div>
             <table className="w-full min-w-[760px] text-left text-sm">
-              <thead className="border-b border-[#202846] text-[10px] uppercase tracking-wider text-[#74809e]">
+              <thead className="border-b border-brand-border text-[10px] uppercase tracking-wider text-accent">
                 <tr>
                   <th className="px-5 py-4">Plan / purpose</th>
                   <th className="px-5 py-4">Status</th>
@@ -355,13 +355,13 @@ export function SubscriptionsPage() {
                 {transactions.slice(0, 8).map((row) => (
                   <tr
                     key={row.transaction.transaction_uuid}
-                    className="border-b border-[#202846] last:border-0"
+                    className="border-b border-brand-border last:border-0"
                   >
                     <td className="px-5 py-4">
-                      <p className="font-semibold text-white">
+                      <p className="font-semibold text-text">
                         {row.plan?.name || "Plan removed"}
                       </p>
-                      <p className="text-xs text-[#74809e]">
+                      <p className="text-xs text-accent">
                         {row.plan?.plan_kind === "wallet_topup"
                           ? "Wallet top-up"
                           : "Service plan"}
@@ -371,25 +371,25 @@ export function SubscriptionsPage() {
                       <span
                         className={
                           row.transaction.status === "succeeded"
-                            ? "text-emerald-300"
+                            ? "text-success"
                             : row.transaction.status === "pending"
-                              ? "text-amber-300"
-                              : "text-rose-300"
+                              ? "text-warning"
+                              : "text-danger"
                         }
                       >
                         {row.transaction.status}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-white">
+                    <td className="px-5 py-4 text-text">
                       {money(
                         row.transaction.amount_minor,
                         row.transaction.currency,
                       )}
                     </td>
-                    <td className="px-5 py-4 text-[#b6c0d6]">
+                    <td className="px-5 py-4 text-muted">
                       {row.transaction.payment_method}
                     </td>
-                    <td className="px-5 py-4 text-xs text-[#8995b3]">
+                    <td className="px-5 py-4 text-xs text-muted">
                       {new Date(row.transaction.created_at).toLocaleString()}
                     </td>
                   </tr>
@@ -397,7 +397,7 @@ export function SubscriptionsPage() {
               </tbody>
             </table>
             {transactions.length === 0 && (
-              <p className="p-10 text-center text-sm text-[#74809e]">
+              <p className="p-10 text-center text-sm text-accent">
                 No transactions yet.
               </p>
             )}

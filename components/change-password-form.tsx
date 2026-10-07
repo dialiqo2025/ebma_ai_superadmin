@@ -10,10 +10,10 @@ function cx(...classes: (string | false | undefined)[]) {
 }
 
 const labelClass =
-  "[&>span:first-child]:mb-2 [&>span:first-child]:block [&>span:first-child]:text-[12px] [&>span:first-child]:font-[750] [&>span:first-child]:uppercase [&>span:first-child]:tracking-[0.08em] [&>span:first-child]:text-[#adb2c9]";
+  "[&>span:first-child]:mb-2 [&>span:first-child]:block [&>span:first-child]:text-[12px] [&>span:first-child]:font-[750] [&>span:first-child]:uppercase [&>span:first-child]:tracking-[0.08em] [&>span:first-child]:text-muted";
 
 const inputClass =
-  "h-[47px] w-full rounded-[10px] border border-[#2b3356] bg-[#151a30] px-[13px] text-xs text-white outline-none transition duration-200 placeholder:text-[#8b98ae] focus:border-[#6f62e7] focus:shadow-[0_0_0_3px_rgba(91,79,233,.11)]";
+  "h-[47px] w-full rounded-[10px] border border-brand-border bg-brand-soft px-[13px] text-xs text-text outline-none transition duration-200 placeholder:text-muted focus:border-brand-border focus:shadow-[0_0_0_3px_rgba(91,79,233,.11)]";
 
 export function ChangePasswordForm() {
   const { user, token } = useAuth();
@@ -72,12 +72,12 @@ export function ChangePasswordForm() {
   return (
     <div className="max-w-lg">
       <h1 className="mb-1 font-heading text-[27px] font-semibold tracking-[-0.03em]">Settings</h1>
-      <p className="mb-8 text-[12px] text-[#a0acc0]">Manage your account security.</p>
+      <p className="mb-8 text-[12px] text-muted">Manage your account security.</p>
 
-      <section className="rounded-[13px] border border-[#293152] bg-[#12162a] p-6">
+      <section className="rounded-[13px] border border-brand-border bg-brand-soft p-6">
         <h2 className="mb-1 font-heading text-[15px] font-semibold">Change password</h2>
-        <p className="mb-5 text-[12px] text-[#9aa5b8]">
-          Signed in as <strong className="text-[#cfd2e3]">{user?.email}</strong>
+        <p className="mb-5 text-[12px] text-muted">
+          Signed in as <strong className="text-muted">{user?.email}</strong>
         </p>
 
         {(error || success) && (
@@ -85,8 +85,8 @@ export function ChangePasswordForm() {
             className={cx(
               "mb-4 rounded-lg border px-3 py-2 text-[12px] leading-relaxed",
               error
-                ? "border-[#5a2a3a] bg-[#2a1520] text-[#ef6a82]"
-                : "border-[#2a4a3a] bg-[#152a20] text-[#4dd0a3]",
+                ? "border-danger-border bg-brand-soft text-danger"
+                : "border-success-border bg-success-soft text-success",
             )}
           >
             {error || success}
@@ -97,7 +97,7 @@ export function ChangePasswordForm() {
           <label className={labelClass}>
             <span>Current password</span>
             <div className="relative">
-              <LockKeyhole size={17} className="absolute left-[13px] top-[15px] text-[#9aa5b8]" />
+              <LockKeyhole size={17} className="absolute left-[13px] top-[15px] text-muted" />
               <input
                 type={showCurrent ? "text" : "password"}
                 value={currentPassword}
@@ -107,14 +107,14 @@ export function ChangePasswordForm() {
               />
               <button
                 type="button"
-                className="absolute right-[7px] top-[7px] grid h-[34px] w-[34px] place-items-center border-0 bg-transparent text-[#9aa5b8]"
+                className="absolute right-[7px] top-[7px] grid h-[34px] w-[34px] place-items-center border-0 bg-transparent text-muted"
                 onClick={() => setShowCurrent((v) => !v)}
               >
                 {showCurrent ? <EyeOff size={17} /> : <Eye size={17} />}
               </button>
             </div>
             {fieldErrors.currentPassword && (
-              <span className="mt-1.5 block text-[12px] text-[#ef6a82]">
+              <span className="mt-1.5 block text-[12px] text-danger">
                 {fieldErrors.currentPassword}
               </span>
             )}
@@ -123,7 +123,7 @@ export function ChangePasswordForm() {
           <label className={labelClass}>
             <span>New password</span>
             <div className="relative">
-              <LockKeyhole size={17} className="absolute left-[13px] top-[15px] text-[#9aa5b8]" />
+              <LockKeyhole size={17} className="absolute left-[13px] top-[15px] text-muted" />
               <input
                 type={showNew ? "text" : "password"}
                 value={newPassword}
@@ -135,14 +135,14 @@ export function ChangePasswordForm() {
               />
               <button
                 type="button"
-                className="absolute right-[7px] top-[7px] grid h-[34px] w-[34px] place-items-center border-0 bg-transparent text-[#9aa5b8]"
+                className="absolute right-[7px] top-[7px] grid h-[34px] w-[34px] place-items-center border-0 bg-transparent text-muted"
                 onClick={() => setShowNew((v) => !v)}
               >
                 {showNew ? <EyeOff size={17} /> : <Eye size={17} />}
               </button>
             </div>
             {fieldErrors.newPassword && (
-              <span className="mt-1.5 block text-[12px] text-[#ef6a82]">{fieldErrors.newPassword}</span>
+              <span className="mt-1.5 block text-[12px] text-danger">{fieldErrors.newPassword}</span>
             )}
           </label>
 
@@ -158,7 +158,7 @@ export function ChangePasswordForm() {
               className={inputClass}
             />
             {fieldErrors.confirmNewPassword && (
-              <span className="mt-1.5 block text-[12px] text-[#ef6a82]">
+              <span className="mt-1.5 block text-[12px] text-danger">
                 {fieldErrors.confirmNewPassword}
               </span>
             )}

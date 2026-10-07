@@ -44,10 +44,10 @@ function OAuthSuccessInner() {
 
   if (error) {
     return (
-      <div className="grid min-h-screen place-items-center bg-[#090b17] px-6 text-center">
+      <div className="grid min-h-screen place-items-center bg-page px-6 text-center">
         <div className="max-w-md">
-          <p className="text-sm text-[#ef6a82]">{error}</p>
-          <a href="/" className="mt-4 inline-block text-sm text-[#a99af3] hover:text-white">
+          <p className="text-sm text-danger">{error}</p>
+          <a href="/" className="mt-4 inline-block text-sm text-accent hover:text-text">
             Back to sign in
           </a>
         </div>
@@ -56,7 +56,7 @@ function OAuthSuccessInner() {
   }
 
   return (
-    <div className="grid min-h-screen place-items-center bg-[#090b17]">
+    <div className="grid min-h-screen place-items-center bg-page">
       <span className="inline-block h-[18px] w-[18px] animate-[spin_.7s_linear_infinite] rounded-full border-2 border-white/30 border-t-white" />
     </div>
   );
@@ -66,7 +66,7 @@ export default function OAuthSuccessPage() {
   return (
     <Suspense
       fallback={
-        <div className="grid min-h-screen place-items-center bg-[#090b17]">
+        <div className="grid min-h-screen place-items-center bg-page">
           <span className="inline-block h-[18px] w-[18px] animate-[spin_.7s_linear_infinite] rounded-full border-2 border-white/30 border-t-white" />
         </div>
       }

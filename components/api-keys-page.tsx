@@ -9,20 +9,20 @@ import { apiKeysApi, type ApiKeyRecord, type ApiKeyScope, type CreatedApiKey } f
 
 const scopeLabels: Record<ApiKeyScope, string> = { stt: "Speech to text", tts: "Text to speech", llm: "LLM / chat" };
 const expiryOptions = [{ label: "Never", value: "" }, { label: "30 days", value: "30" }, { label: "90 days", value: "90" }, { label: "1 year", value: "365" }];
-const inputClass = "h-11 rounded-lg border border-[#293354] bg-[#10172d] px-3 text-sm text-white outline-none";
+const inputClass = "h-11 rounded-lg border border-brand-border bg-brand-soft px-3 text-sm text-text outline-none";
 
 const formatDate = (value: string | null) => value ? new Date(value).toLocaleString() : "—";
 
 function keyStatus(key: ApiKeyRecord) {
-  if (key.revoked_at) return { label: "Revoked", className: "border-[#4a2a35] text-[#e08a9b]" };
-  if (key.expires_at && new Date(key.expires_at) < new Date()) return { label: "Expired", className: "border-[#4a3d2a] text-[#d19a55]" };
-  return { label: "Active", className: "border-[#1f4a3a] text-emerald-300" };
+  if (key.revoked_at) return { label: "Revoked", className: "border-brand-border text-danger" };
+  if (key.expires_at && new Date(key.expires_at) < new Date()) return { label: "Expired", className: "border-warning-border text-warning" };
+  return { label: "Active", className: "border-success-border text-success" };
 }
 
 function CopyButton({ value, label = "Copy" }: { value: string; label?: string }) {
   const [copied, setCopied] = useState(false);
   const copy = async () => { await navigator.clipboard.writeText(value); setCopied(true); window.setTimeout(() => setCopied(false), 1800); };
-  return <button onClick={() => void copy()} className="flex items-center gap-1.5 rounded-lg border border-[#293354] bg-[#101832] px-3 py-2 text-xs font-semibold text-[#d7def0] hover:border-[#6558e9]">{copied ? <Check size={14} className="text-emerald-300" /> : <Copy size={14} />}{copied ? "Copied" : label}</button>;
+  return <button onClick={() => void copy()} className="flex items-center gap-1.5 rounded-lg border border-brand-border bg-brand-soft px-3 py-2 text-xs font-semibold text-text hover:border-brand-border">{copied ? <Check size={14} className="text-success" /> : <Copy size={14} />}{copied ? "Copied" : label}</button>;
 }
 
 export function ApiKeysPage() {
@@ -52,48 +52,48 @@ export function ApiKeysPage() {
   const sampleKey = created?.secret ?? "ebma_sk_your_key";
   const curl = `curl -X POST ${API_BASE_URL}/tts/generations \\\n  -H "Authorization: Bearer ${sampleKey}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"text":"नमस्ते, आप कैसे हैं?","language":"hi","voiceMode":"default","outputFormat":"wav"}'`;
 
-  return <main className="mx-auto max-w-5xl text-[#d7def0]">
-    <p className="font-mono text-[11px] tracking-[.24em] text-[#8f82ff]">WORKSPACE / DEVELOPERS</p>
-    <h1 className="mt-3 text-4xl font-extrabold text-white">API keys</h1>
-    <p className="mt-3 text-sm text-[#8995b3]">Call EBMA speech, voice and LLM APIs from your own apps. Usage is charged to your wallet.</p>
+  return <main className="mx-auto max-w-5xl text-text">
+    <p className="font-mono text-[11px] tracking-[.24em] text-accent">WORKSPACE / DEVELOPERS</p>
+    <h1 className="mt-3 text-4xl font-extrabold text-text">API keys</h1>
+    <p className="mt-3 text-sm text-muted">Call EBMA speech, voice and LLM APIs from your own apps. Usage is charged to your wallet.</p>
 
-    {error && <p className="mt-6 rounded-lg border border-[#4a2a35] bg-[#1c1220] px-4 py-3 text-sm text-[#e08a9b]">{error}</p>}
+    {error && <p className="mt-6 rounded-lg border border-brand-border bg-brand-soft px-4 py-3 text-sm text-danger">{error}</p>}
 
-    {created && <section className="mt-6 rounded-2xl border border-[#6558e9] bg-[#120f2e] p-6">
-      <div className="flex items-start gap-3"><TriangleAlert className="mt-0.5 shrink-0 text-[#d19a55]" size={18} /><div><p className="text-sm font-semibold text-white">Copy your new key now</p><p className="mt-1 text-xs text-[#8995b3]">For security, &ldquo;{created.name}&rdquo; will not be shown again. Store it in a secret manager, never in browser code.</p></div></div>
-      <div className="mt-4 flex flex-wrap items-center gap-3"><code className="min-w-0 flex-1 break-all rounded-lg border border-[#293354] bg-[#0a0f1f] px-3 py-2.5 font-mono text-xs text-white">{created.secret}</code><CopyButton value={created.secret} /><button onClick={() => setCreated(null)} className="rounded-lg px-3 py-2 text-xs text-[#8995b3] hover:text-white">Done</button></div>
+    {created && <section className="mt-6 rounded-2xl border border-brand-border bg-brand-soft p-6">
+      <div className="flex items-start gap-3"><TriangleAlert className="mt-0.5 shrink-0 text-warning" size={18} /><div><p className="text-sm font-semibold text-text">Copy your new key now</p><p className="mt-1 text-xs text-muted">For security, &ldquo;{created.name}&rdquo; will not be shown again. Store it in a secret manager, never in browser code.</p></div></div>
+      <div className="mt-4 flex flex-wrap items-center gap-3"><code className="min-w-0 flex-1 break-all rounded-lg border border-brand-border bg-brand-soft px-3 py-2.5 font-mono text-xs text-text">{created.secret}</code><CopyButton value={created.secret} /><button onClick={() => setCreated(null)} className="rounded-lg px-3 py-2 text-xs text-muted hover:text-text">Done</button></div>
     </section>}
 
-    <section className="mt-6 rounded-2xl border border-[#202846] bg-[#0c1225] p-6">
-      <h2 className="font-bold text-white">Create a key</h2>
+    <section className="mt-6 rounded-2xl border border-brand-border bg-brand-soft p-6">
+      <h2 className="font-bold text-text">Create a key</h2>
       <div className="mt-4 grid gap-5 md:grid-cols-[2fr_1fr]">
-        <label className="grid gap-2 text-xs text-[#8995b3]">Name<input value={name} onChange={e => setName(e.target.value)} maxLength={100} placeholder="e.g. Production call-center bot" className={inputClass} /></label>
-        <label className="grid gap-2 text-xs text-[#8995b3]">Expires<select value={expiry} onChange={e => setExpiry(e.target.value)} className={inputClass}>{expiryOptions.map(o => <option key={o.label} value={o.value}>{o.label}</option>)}</select></label>
+        <label className="grid gap-2 text-xs text-muted">Name<input value={name} onChange={e => setName(e.target.value)} maxLength={100} placeholder="e.g. Production call-center bot" className={inputClass} /></label>
+        <label className="grid gap-2 text-xs text-muted">Expires<select value={expiry} onChange={e => setExpiry(e.target.value)} className={inputClass}>{expiryOptions.map(o => <option key={o.label} value={o.value}>{o.label}</option>)}</select></label>
       </div>
-      <div className="mt-5 flex flex-wrap items-center gap-4"><span className="text-xs text-[#8995b3]">Access</span>{(Object.keys(scopeLabels) as ApiKeyScope[]).map(scope => <label key={scope} className="flex items-center gap-2 text-sm text-[#d7def0]"><input type="checkbox" checked={scopes.includes(scope)} onChange={() => toggleScope(scope)} className="accent-[#5d50e8]" />{scopeLabels[scope]}</label>)}</div>
-      <div className="mt-6 flex justify-end"><button onClick={() => void create()} disabled={creating || !name.trim() || !scopes.length} className="flex items-center gap-2 rounded-lg bg-[#5d50e8] px-5 py-2.5 text-xs font-semibold text-white disabled:opacity-50"><Plus size={15} />{creating ? "Creating…" : "Create key"}</button></div>
+      <div className="mt-5 flex flex-wrap items-center gap-4"><span className="text-xs text-muted">Access</span>{(Object.keys(scopeLabels) as ApiKeyScope[]).map(scope => <label key={scope} className="flex items-center gap-2 text-sm text-text"><input type="checkbox" checked={scopes.includes(scope)} onChange={() => toggleScope(scope)} className="accent-accent" />{scopeLabels[scope]}</label>)}</div>
+      <div className="mt-6 flex justify-end"><button onClick={() => void create()} disabled={creating || !name.trim() || !scopes.length} className="flex items-center gap-2 rounded-lg bg-brand-soft px-5 py-2.5 text-xs font-semibold text-text disabled:opacity-50"><Plus size={15} />{creating ? "Creating…" : "Create key"}</button></div>
     </section>
 
-    <section className="mt-6 overflow-hidden rounded-2xl border border-[#202846] bg-[#0c1225]">
-      <div className="border-b border-[#202846] px-6 py-4"><h2 className="font-bold text-white">Your keys</h2></div>
-      {loading ? <p className="px-6 py-8 text-sm text-[#8995b3]">Loading…</p> : !keys.length ? <div className="flex flex-col items-center px-6 py-10 text-center"><KeyRound className="text-[#596783]" size={26} /><p className="mt-3 text-sm text-[#8995b3]">No API keys yet. Create one to start building.</p></div> :
+    <section className="mt-6 overflow-hidden rounded-2xl border border-brand-border bg-brand-soft">
+      <div className="border-b border-brand-border px-6 py-4"><h2 className="font-bold text-text">Your keys</h2></div>
+      {loading ? <p className="px-6 py-8 text-sm text-muted">Loading…</p> : !keys.length ? <div className="flex flex-col items-center px-6 py-10 text-center"><KeyRound className="text-accent" size={26} /><p className="mt-3 text-sm text-muted">No API keys yet. Create one to start building.</p></div> :
         <div className="overflow-x-auto"><table className="w-full min-w-[720px] text-left text-sm">
-          <thead className="text-[11px] uppercase tracking-wider text-[#74809e]"><tr><th className="px-6 py-3 font-semibold">Name</th><th className="px-3 py-3 font-semibold">Key</th><th className="px-3 py-3 font-semibold">Access</th><th className="px-3 py-3 font-semibold">Last used</th><th className="px-3 py-3 font-semibold">Expires</th><th className="px-3 py-3 font-semibold">Status</th><th className="px-6 py-3" /></tr></thead>
-          <tbody>{keys.map(key => { const status = keyStatus(key); const usable = !key.revoked_at; return <tr key={key.key_uuid} className="border-t border-[#1a2140]">
-            <td className="px-6 py-3">{editing === key.key_uuid ? <div className="flex gap-2"><input value={editName} onChange={e => setEditName(e.target.value)} maxLength={100} className="h-8 w-44 rounded-md border border-[#293354] bg-[#10172d] px-2 text-sm text-white outline-none" autoFocus /><button onClick={() => void rename(key.key_uuid)} disabled={!editName.trim()} className="text-xs font-semibold text-[#a99af3] disabled:opacity-50">Save</button><button onClick={() => setEditing(null)} className="text-xs text-[#8995b3]">Cancel</button></div> : <span className="font-semibold text-white">{key.name}</span>}</td>
-            <td className="px-3 py-3 font-mono text-xs text-[#a3adc8]">{key.prefix}</td>
-            <td className="px-3 py-3 text-xs text-[#a3adc8]">{key.scopes.map(s => s.toUpperCase()).join(", ")}</td>
-            <td className="px-3 py-3 text-xs text-[#a3adc8]">{formatDate(key.last_used_at)}</td>
-            <td className="px-3 py-3 text-xs text-[#a3adc8]">{key.expires_at ? formatDate(key.expires_at) : "Never"}</td>
+          <thead className="text-[11px] uppercase tracking-wider text-accent"><tr><th className="px-6 py-3 font-semibold">Name</th><th className="px-3 py-3 font-semibold">Key</th><th className="px-3 py-3 font-semibold">Access</th><th className="px-3 py-3 font-semibold">Last used</th><th className="px-3 py-3 font-semibold">Expires</th><th className="px-3 py-3 font-semibold">Status</th><th className="px-6 py-3" /></tr></thead>
+          <tbody>{keys.map(key => { const status = keyStatus(key); const usable = !key.revoked_at; return <tr key={key.key_uuid} className="border-t border-brand-border">
+            <td className="px-6 py-3">{editing === key.key_uuid ? <div className="flex gap-2"><input value={editName} onChange={e => setEditName(e.target.value)} maxLength={100} className="h-8 w-44 rounded-md border border-brand-border bg-brand-soft px-2 text-sm text-text outline-none" autoFocus /><button onClick={() => void rename(key.key_uuid)} disabled={!editName.trim()} className="text-xs font-semibold text-accent disabled:opacity-50">Save</button><button onClick={() => setEditing(null)} className="text-xs text-muted">Cancel</button></div> : <span className="font-semibold text-text">{key.name}</span>}</td>
+            <td className="px-3 py-3 font-mono text-xs text-muted">{key.prefix}</td>
+            <td className="px-3 py-3 text-xs text-muted">{key.scopes.map(s => s.toUpperCase()).join(", ")}</td>
+            <td className="px-3 py-3 text-xs text-muted">{formatDate(key.last_used_at)}</td>
+            <td className="px-3 py-3 text-xs text-muted">{key.expires_at ? formatDate(key.expires_at) : "Never"}</td>
             <td className="px-3 py-3"><span className={`rounded border px-2 py-0.5 text-[11px] ${status.className}`}>{status.label}</span></td>
-            <td className="px-6 py-3">{usable && <div className="flex justify-end gap-3"><button title="Rename" onClick={() => { setEditing(key.key_uuid); setEditName(key.name); }} className="text-[#8995b3] hover:text-white"><Pencil size={15} /></button><button title="Revoke" onClick={() => void revoke(key)} className="text-[#8995b3] hover:text-[#e08a9b]"><Trash2 size={15} /></button></div>}</td>
+            <td className="px-6 py-3">{usable && <div className="flex justify-end gap-3"><button title="Rename" onClick={() => { setEditing(key.key_uuid); setEditName(key.name); }} className="text-muted hover:text-text"><Pencil size={15} /></button><button title="Revoke" onClick={() => void revoke(key)} className="text-muted hover:text-danger"><Trash2 size={15} /></button></div>}</td>
           </tr>; })}</tbody>
         </table></div>}
     </section>
 
-    <section className="mt-6 rounded-2xl border border-[#202846] bg-[#0c1225] p-6">
-      <div className="flex items-center justify-between gap-3"><div><h2 className="font-bold text-white">Quick start</h2><p className="mt-1 text-xs text-[#8995b3]">Send the key as a Bearer token. Keys work on speech-to-text, text-to-speech and chat endpoints.</p></div><CopyButton value={curl} label="Copy cURL" /></div>
-      <pre className="mt-4 overflow-x-auto rounded-lg border border-[#293354] bg-[#0a0f1f] p-4 font-mono text-xs leading-6 text-[#c9d1e8]">{curl}</pre>
+    <section className="mt-6 rounded-2xl border border-brand-border bg-brand-soft p-6">
+      <div className="flex items-center justify-between gap-3"><div><h2 className="font-bold text-text">Quick start</h2><p className="mt-1 text-xs text-muted">Send the key as a Bearer token. Keys work on speech-to-text, text-to-speech and chat endpoints.</p></div><CopyButton value={curl} label="Copy cURL" /></div>
+      <pre className="mt-4 overflow-x-auto rounded-lg border border-brand-border bg-brand-soft p-4 font-mono text-xs leading-6 text-muted">{curl}</pre>
     </section>
   </main>;
 }
