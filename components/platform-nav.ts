@@ -45,7 +45,7 @@ export const platformNav: PlatformNavItem[] = [
 
 export const adminNav: PlatformNavItem[] = [
   { label: "Users", href: "/platform/admin/users", icon: Users },
-  { label: "Usage settings", href: "/platform/admin/plans", icon: Settings2 },
+  { label: "Usage settings", href: "/platform/admin/usage-settings", icon: Settings2 },
   { label: "LLM settings", href: "/platform/admin/llm-settings", icon: Bot },
   { label: "Plans & pricing", href: "/platform/admin/plans", icon: CreditCard },
   { label: "Subscriptions", href: "/platform/admin/subscriptions", icon: Activity },
