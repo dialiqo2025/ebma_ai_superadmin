@@ -260,6 +260,9 @@ export type FinishSttSessionRequest =
 export type SttHealth = {
   ok?: boolean;
   status?: string;
+  active_sessions?: number;
+  max_sessions?: number;
+  queue_depth?: number;
   long_form?: {
     speaker_identification?: boolean;
     [key: string]: unknown;

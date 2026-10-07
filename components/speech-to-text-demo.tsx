@@ -1,15 +1,18 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {Loader2, Download, Mic, Trash2, Upload } from "lucide-react";
 import { useUsageGate } from "@/components/capability-notice";
 import { CURL_BASE_URL, CurlSnippet, curlAuthHeader, shellQuote, type CurlStep } from "@/components/curl-snippet";
 import { useSttFileTranscription } from "@/hooks/use-stt-file-transcription";
 import { useSttLiveSession } from "@/hooks/use-stt-live-session";
+import { sttApi } from "@/lib/stt";
 import type {
   SttDownloadFormat,
   SttMode,
+  SttPagination,
   SttSegment,
+  SttSession,
   SttTranscription,
   SttTranscriptionStatus,
 } from "@/lib/stt";
@@ -595,6 +598,54 @@ function TranscriptionResult({
   );
 }
 
+function LiveSessionTable({
+  sessions,
+  languages,
+  busy,
+  onOpen,
+  onDelete,
+}: {
+  sessions: SttSession[];
+  languages: { code: string; name: string }[];
+  busy: boolean;
+  onOpen: (sessionUuid: string) => void;
+  onDelete: (session: SttSession) => void;
+}) {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-brand-border">
+      <table className="w-full min-w-[620px] text-left text-[12px]">
+        <thead className="bg-surface-raised text-muted">
+          <tr>
+            <th className="px-3 py-2 font-semibold">SESSION</th>
+            <th className="px-3 py-2 font-semibold">TRANSCRIPT</th>
+            <th className="px-3 py-2 font-semibold">STARTED</th>
+            <th className="px-3 py-2 text-right font-semibold">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sessions.map((item) => {
+            const active = item.status === "connecting" || item.status === "streaming";
+            return (
+              <tr key={item.sessionUuid} className="border-t border-brand-border hover:bg-surface-raised/50">
+                <td className="whitespace-nowrap px-3 py-2.5 text-text">
+                  {languageLabel(item.language, languages)}
+                  <span className="ml-2 rounded-full bg-surface-raised px-2 py-0.5 text-muted">{item.status}</span>
+                </td>
+                <td className="max-w-[280px] truncate px-3 py-2.5 text-muted">{item.transcript || "No transcript text"}</td>
+                <td className="whitespace-nowrap px-3 py-2.5 text-muted">{new Date(item.createdAt).toLocaleString()}</td>
+                <td className="whitespace-nowrap px-3 py-2.5 text-right">
+                  <button type="button" disabled={busy} onClick={() => onOpen(item.sessionUuid)} className="mr-3 font-medium text-text hover:underline disabled:opacity-50">Open</button>
+                  <button type="button" disabled={busy} title={active ? "Delete saved record; the GPU stream may continue" : "Delete session"} onClick={() => onDelete(item)} className="font-medium text-danger hover:underline disabled:cursor-not-allowed disabled:opacity-40">{active ? "Delete anyway" : "Delete"}</button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export function SpeechToTextDemo() {
   const { blocked: usageBlocked } = useUsageGate();
   const live = useSttLiveSession();
@@ -611,6 +662,93 @@ export function SpeechToTextDemo() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCounter = useRef(0);
   const [dragging, setDragging] = useState(false);
+  const [liveHistory, setLiveHistory] = useState<SttSession[]>([]);
+  const [selectedLiveHistory, setSelectedLiveHistory] = useState<SttSession | null>(null);
+  const [liveHistoryError, setLiveHistoryError] = useState("");
+  const [liveHistoryBusy, setLiveHistoryBusy] = useState(false);
+  const [showAllLiveHistory, setShowAllLiveHistory] = useState(false);
+  const [recentSessionsOpen, setRecentSessionsOpen] = useState(false);
+  const [allLiveHistory, setAllLiveHistory] = useState<SttSession[]>([]);
+  const [allLivePagination, setAllLivePagination] = useState<SttPagination | null>(null);
+  const [allLivePage, setAllLivePage] = useState(1);
+
+  const refreshLiveHistory = useCallback(async () => {
+    try {
+      const result = await sttApi.listSessions({ page: 1, page_size: 5 });
+      setLiveHistory(result.items);
+      setLiveHistoryError("");
+    } catch (error) {
+      setLiveHistoryError(error instanceof Error ? error.message : "Unable to load live session history");
+    }
+  }, []);
+
+  const loadAllLiveHistory = useCallback(async (page: number) => {
+    setLiveHistoryBusy(true);
+    try {
+      const result = await sttApi.listSessions({ page, page_size: 20 });
+      setAllLiveHistory(result.items);
+      setAllLivePagination(result.pagination);
+      setAllLivePage(page);
+      setLiveHistoryError("");
+    } catch (error) {
+      setLiveHistoryError(error instanceof Error ? error.message : "Unable to load session history");
+    } finally {
+      setLiveHistoryBusy(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void refreshLiveHistory();
+  }, [refreshLiveHistory]);
+
+  useEffect(() => {
+    if (live.session?.status === "completed" || live.session?.status === "failed") {
+      void refreshLiveHistory();
+    }
+  }, [live.session?.status, live.session?.sessionUuid, refreshLiveHistory]);
+
+  useEffect(() => {
+    if (!live.listening || live.busy) return;
+    live.configure({ language, mode, endSilenceMs: pauseMs, partials });
+  }, [language, mode, pauseMs, partials, live.listening, live.busy, live.configure]);
+
+  const openLiveHistory = async (sessionUuid: string) => {
+    setLiveHistoryBusy(true);
+    try {
+      setSelectedLiveHistory(await sttApi.getSession(sessionUuid));
+      setLiveHistoryError("");
+    } catch (error) {
+      setLiveHistoryError(error instanceof Error ? error.message : "Unable to open this session");
+    } finally {
+      setLiveHistoryBusy(false);
+    }
+  };
+
+  const removeLiveHistory = async (session: SttSession) => {
+    const active = session.status === "connecting" || session.status === "streaming";
+    const isCurrentSession = live.session?.sessionUuid === session.sessionUuid && (live.listening || live.busy);
+    if (active) {
+      const explanation = isCurrentSession
+        ? "This is the session running in this tab. It will be stopped and its saved transcript will be permanently deleted. Continue?"
+        : "This session is still marked active. Deleting removes its saved record, but cannot stop audio running in another tab. That GPU stream may continue until the 20-minute session limit. Continue?";
+      if (!window.confirm(explanation)) return;
+    } else if (!window.confirm("Permanently delete this saved live session and transcript?")) {
+      return;
+    }
+
+    setLiveHistoryBusy(true);
+    try {
+      if (isCurrentSession) await live.stop();
+      await sttApi.deleteSession(session.sessionUuid, { force: active });
+      setSelectedLiveHistory((current) => current?.sessionUuid === session.sessionUuid ? null : current);
+      await refreshLiveHistory();
+      if (showAllLiveHistory) await loadAllLiveHistory(allLivePage);
+    } catch (error) {
+      setLiveHistoryError(error instanceof Error ? error.message : "Unable to delete this session");
+    } finally {
+      setLiveHistoryBusy(false);
+    }
+  };
 
   const languages = useMemo(() => {
     const fromLive = live.options?.languages;
@@ -657,7 +795,7 @@ export function SpeechToTextDemo() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputMode]);
 
-  const controlsDisabled = live.listening || live.busy || usageBlocked;
+  const controlsDisabled = live.busy || usageBlocked;
   const uploadBusy = fileTx.uploading || fileTx.polling;
   const actionsDisabled = usageBlocked;
   const barWidthPct = `${Math.round(
@@ -678,12 +816,12 @@ export function SpeechToTextDemo() {
       : live.busy
         ? "Connecting…"
         : live.listening
-          ? "Listening. Speak now."
+          ? live.serverSpeaking === true ? "Voice detected. Transcribing…" : live.serverSpeaking === false ? "Listening. No speech detected." : "Listening. Speak now."
           : live.loadingOptions
             ? "Loading STT options…"
             : !live.modelConfigured
               ? "ASR model is not configured."
-              : "Idle. Press Start and allow the microphone.";
+              : "Ready to transcribe. Select Start listening and allow microphone access.";
 
   const uploadStatusText = filePickError
     ? filePickError
@@ -921,7 +1059,7 @@ export function SpeechToTextDemo() {
         <div className="rounded-2xl border border-brand-border bg-brand-soft p-5 sm:p-7">
           {inputMode === "live" ? (
             <>
-              <div className="flex flex-wrap items-end gap-5">
+            <div className="flex flex-wrap items-end gap-5">
                 <Dropdown
                   label="LANGUAGE"
                   value={language}
@@ -992,14 +1130,24 @@ export function SpeechToTextDemo() {
                 </div>
               </div>
 
-              <div className="mt-5 flex items-center gap-2.5">
-                <span
-                  className={cx(
-                    "h-1.5 w-1.5 shrink-0 rounded-full",
-                    live.listening || live.busy ? "bg-success" : "bg-brand-soft",
-                  )}
-                />
-                <span className="text-[13px] text-muted">{statusText}</span>
+              <div className="mt-5 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <span
+                    className={cx(
+                      "h-2 w-2 shrink-0 rounded-full",
+                      live.listening || live.busy ? "bg-success" : "bg-muted/50",
+                    )}
+                  />
+                  <span className="text-[13px] leading-5 text-muted">{statusText}</span>
+                </div>
+                {live.health && (live.health.active_sessions !== undefined || live.health.queue_depth !== undefined) && (
+                  <div className="inline-flex max-w-full flex-wrap items-center gap-1.5 rounded-full border border-brand-border bg-surface px-3 py-1.5 text-[12px] leading-4 text-muted">
+                    <span className="font-semibold text-text">GPU service</span>
+                    <span aria-hidden="true">·</span>
+                    <span>{live.health.active_sessions ?? 0}{live.health.max_sessions ? ` / ${live.health.max_sessions}` : ""} sessions</span>
+                    {live.health.queue_depth !== undefined && <><span aria-hidden="true">·</span><span>{live.health.queue_depth} waiting</span></>}
+                  </div>
+                )}
               </div>
 
               <div className="mt-5 min-h-[280px] rounded-xl border border-brand-border bg-brand-soft px-5 py-2 sm:px-6">
@@ -1072,6 +1220,66 @@ export function SpeechToTextDemo() {
                 steps={curlSteps}
                 description="Start a live session from your own server. The body follows the language and output settings above."
               />
+
+              <section className="mt-6 border-t border-brand-border pt-5" aria-label="Live transcription history">
+                <div className="rounded-xl border border-brand-border bg-surface p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <button type="button" aria-expanded={recentSessionsOpen} onClick={() => setRecentSessionsOpen((open) => !open)} className="flex min-w-0 items-center gap-2 text-left text-[14px] font-semibold text-text">
+                      <span className={cx("text-muted transition-transform", recentSessionsOpen && "rotate-90")} aria-hidden="true">›</span>
+                      <span>Recent live sessions <span className="ml-1 text-[12px] font-normal text-muted">({liveHistory.length})</span></span>
+                    </button>
+                    <button type="button" onClick={() => void refreshLiveHistory()} disabled={liveHistoryBusy} className="shrink-0 rounded-lg px-3 py-2 text-[12px] font-medium text-muted hover:bg-surface-raised hover:text-text disabled:opacity-50">Refresh</button>
+                  </div>
+                  {recentSessionsOpen && (
+                    <div className="mt-3 border-t border-brand-border pt-3">
+                      {liveHistoryError && <p className="mb-3 rounded-lg border border-danger-border bg-danger-soft px-3 py-2 text-[12px] text-danger">{liveHistoryError}</p>}
+                      {liveHistory.length === 0 ? (
+                        <p className="text-[12px] text-muted">Your recent live transcripts will appear here.</p>
+                      ) : (
+                        <LiveSessionTable sessions={liveHistory} languages={languages} busy={liveHistoryBusy} onOpen={(id) => void openLiveHistory(id)} onDelete={(item) => void removeLiveHistory(item)} />
+                      )}
+                      <p className="mt-2 text-[11px] leading-4 text-muted">Delete asks for confirmation. If a session is running in another tab, deleting its saved record will not stop that audio stream; it may continue until the 20-minute limit.</p>
+                      <div className="mt-3 flex justify-end border-t border-brand-border pt-3">
+                        <button type="button" onClick={() => {
+                          const next = !showAllLiveHistory;
+                          setShowAllLiveHistory(next);
+                          if (next) void loadAllLiveHistory(1);
+                        }} className="rounded-lg border border-brand-border bg-surface px-3.5 py-2 text-[12px] font-semibold text-text transition-colors hover:bg-surface-raised">
+                          {showAllLiveHistory ? "Hide all sessions" : "View all sessions"}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {selectedLiveHistory && (
+                  <div className="mt-3 rounded-xl border border-brand-border bg-surface p-4">
+                    <div className="mb-2 flex items-center justify-between gap-3">
+                      <h3 className="text-[13px] font-semibold text-text">Saved transcript · {selectedLiveHistory.status}</h3>
+                      <button type="button" onClick={() => setSelectedLiveHistory(null)} className="text-[12px] text-muted hover:text-text">Close</button>
+                    </div>
+                    <p className="whitespace-pre-wrap text-[14px] leading-relaxed text-text">{selectedLiveHistory.transcript || "No transcript text was saved."}</p>
+                  </div>
+                )}
+                {showAllLiveHistory && (
+                  <div className="mt-4 rounded-xl border border-brand-border bg-surface p-4">
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                      <h3 className="text-[14px] font-semibold text-text">All live sessions</h3>
+                      <span className="text-[12px] text-muted">{allLivePagination?.totalCount ?? 0} total</span>
+                    </div>
+                    {liveHistoryError && <p className="mb-3 text-[12px] text-danger">{liveHistoryError}</p>}
+                    {allLiveHistory.length === 0 ? <p className="text-[12px] text-muted">No live sessions found.</p> : (
+                      <LiveSessionTable sessions={allLiveHistory} languages={languages} busy={liveHistoryBusy} onOpen={(id) => void openLiveHistory(id)} onDelete={(item) => void removeLiveHistory(item)} />
+                    )}
+                    <div className="mt-3 flex items-center justify-between text-[12px] text-muted">
+                      <span>Page {allLivePagination?.page ?? 1} of {Math.max(1, allLivePagination?.totalPages ?? 1)}</span>
+                      <div className="flex gap-2">
+                        <button type="button" disabled={liveHistoryBusy || !allLivePagination || allLivePage <= 1} onClick={() => void loadAllLiveHistory(allLivePage - 1)} className="rounded-lg border border-brand-border px-3 py-1.5 disabled:opacity-40">Previous</button>
+                        <button type="button" disabled={liveHistoryBusy || !allLivePagination?.hasNextPage} onClick={() => void loadAllLiveHistory(allLivePage + 1)} className="rounded-lg border border-brand-border px-3 py-1.5 disabled:opacity-40">Next</button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </section>
             </>
           ) : (
             <>

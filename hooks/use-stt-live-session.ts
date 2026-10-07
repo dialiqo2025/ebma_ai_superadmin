@@ -5,6 +5,7 @@ import { ApiError } from "@/lib/api";
 import { sttApi } from "@/lib/stt";
 import type {
   SttFinalSegmentPayload,
+  SttHealth,
   SttMode,
   SttOptions,
   SttSegment,
@@ -26,6 +27,7 @@ export type SttLiveConfig = {
 export type UseSttLiveSessionResult = {
   options: SttOptions | null;
   healthOk: boolean | null;
+  health: SttHealth | null;
   loadingOptions: boolean;
   listening: boolean;
   busy: boolean;
@@ -34,10 +36,12 @@ export type UseSttLiveSessionResult = {
   transcript: string;
   session: SttSession | null;
   voiceLevel: number;
+  serverSpeaking: boolean | null;
   error: string;
   tokenCooldown: number;
   modelConfigured: boolean;
   start: (config: SttLiveConfig) => Promise<void>;
+  configure: (config: Pick<SttLiveConfig, "language" | "mode" | "endSilenceMs" | "partials">) => void;
   /** `flush: true` sends ASR `stop` and waits for the in-progress phrase's final. */
   stop: (options?: { flush?: boolean }) => Promise<void>;
   clear: () => void;
@@ -112,6 +116,7 @@ export function useSttLiveSession(
   const flushResolverRef = useRef<(() => void) | null>(null);
   const [options, setOptions] = useState<SttOptions | null>(null);
   const [healthOk, setHealthOk] = useState<boolean | null>(null);
+  const [health, setHealth] = useState<SttHealth | null>(null);
   const [loadingOptions, setLoadingOptions] = useState(true);
   const [listening, setListening] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -120,6 +125,7 @@ export function useSttLiveSession(
   const [transcript, setTranscript] = useState("");
   const [session, setSession] = useState<SttSession | null>(null);
   const [voiceLevel, setVoiceLevel] = useState(IDLE_LEVEL);
+  const [serverSpeaking, setServerSpeaking] = useState<boolean | null>(null);
   const [error, setError] = useState("");
   const [tokenCooldown, setTokenCooldown] = useState(0);
 
@@ -149,16 +155,19 @@ export function useSttLiveSession(
       ]);
       setOptions(opts);
       if (health && typeof health === "object") {
+        setHealth(health);
         const status = String(health.status || "").toLowerCase();
         setHealthOk(
           health.ok === true || status === "ok" || status === "healthy" || status === "up",
         );
       } else {
+        setHealth(null);
         setHealthOk(null);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load STT options");
       setOptions(null);
+      setHealth(null);
       setHealthOk(false);
     } finally {
       setLoadingOptions(false);
@@ -290,6 +299,7 @@ export function useSttLiveSession(
     listeningRef.current = false;
     setListening(false);
     setBusy(false);
+    setServerSpeaking(null);
     setPartialText("");
     if (maxTimerRef.current !== null) {
       window.clearTimeout(maxTimerRef.current);
@@ -384,6 +394,7 @@ export function useSttLiveSession(
       }
 
       setError("");
+      setServerSpeaking(null);
       setBusy(true);
       setPartialText("");
       setFinals([]);
@@ -543,6 +554,11 @@ export function useSttLiveSession(
               return;
             }
 
+            if (msg.type === "vad") {
+              setServerSpeaking(typeof msg.speaking === "boolean" ? msg.speaking : null);
+              return;
+            }
+
             if (msg.type === "partial") {
               setPartialText(String(msg.text || ""));
               return;
@@ -590,6 +606,18 @@ export function useSttLiveSession(
     mutedRef.current = muted;
   }, []);
 
+  const configure = useCallback((config: Pick<SttLiveConfig, "language" | "mode" | "endSilenceMs" | "partials">) => {
+    const ws = wsRef.current;
+    if (!listeningRef.current || ws?.readyState !== WebSocket.OPEN) return;
+    ws.send(JSON.stringify({
+      type: "config",
+      lang: config.language,
+      mode: config.mode,
+      end_silence_ms: config.endSilenceMs,
+      partials: config.partials,
+    }));
+  }, []);
+
   useEffect(() => {
     return () => {
       listeningRef.current = false;
@@ -613,11 +641,13 @@ export function useSttLiveSession(
     setTranscript("");
     setError("");
     setSession(null);
+    setServerSpeaking(null);
   }, []);
 
   return {
     options,
     healthOk,
+    health,
     loadingOptions,
     listening,
     busy,
@@ -626,10 +656,12 @@ export function useSttLiveSession(
     transcript,
     session,
     voiceLevel,
+    serverSpeaking,
     error,
     tokenCooldown,
     modelConfigured: options?.modelConfigured ?? false,
     start,
+    configure,
     stop,
     clear,
     refreshMeta,

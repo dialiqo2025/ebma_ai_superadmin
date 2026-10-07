@@ -82,8 +82,8 @@ export const sttApi = {
     return normalizeCreateSessionResponse(raw);
   },
 
-  deleteSession(sessionUuid: string) {
-    return apiRequest<unknown>(`/stt/sessions/${sessionUuid}`, {
+  deleteSession(sessionUuid: string, options: { force?: boolean } = {}) {
+    return apiRequest<unknown>(`/stt/sessions/${sessionUuid}${toQuery({ force: options.force ? "true" : undefined })}`, {
       method: "DELETE",
       auth: true,
     });
