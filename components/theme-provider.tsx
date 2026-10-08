@@ -5,14 +5,17 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 export type Theme = "light" | "dark";
 type ThemeContextValue = { theme: Theme; setTheme: (theme: Theme) => void };
 const ThemeContext = createContext<ThemeContextValue | null>(null);
-const STORAGE_KEY = "ebma-color-theme-v2";
+
+/** Bump when default/palette changes so stale dark prefs don’t stick. */
+const STORAGE_KEY = "ebma-color-theme-v3";
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("light");
 
   useEffect(() => {
     const saved = window.localStorage.getItem(STORAGE_KEY);
-    const initial: Theme = saved === "light" || saved === "dark" ? saved : "light";
+    // Default remains light unless the user explicitly chose dark on this key.
+    const initial: Theme = saved === "dark" ? "dark" : "light";
     document.documentElement.dataset.theme = initial;
     setThemeState(initial);
   }, []);

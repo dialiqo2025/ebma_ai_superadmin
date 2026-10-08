@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 /*
- * EBMA brand controls. Change these tokens to retheme both dashboard modes.
- * The palette follows the identity guide: blue → purple → cyan on warm ivory
- * in light mode, and the same gradient on charcoal in dark mode.
+ * EBMA brand controls — aligned with the classic logo (indigo → violet).
+ * Logo stops: #5B4FE9 → #9B5CF6 (text #7C70F6 → #B978FF).
+ * Warm ivory surfaces in light mode; charcoal in dark. Default UI theme is light.
  */
 :root {
   color-scheme: dark;
@@ -19,17 +19,17 @@
   --theme-text: #f5f3ef;
   --theme-muted: #aaa7a2;
   --theme-faint: #85817c;
-  --theme-blue: #123bd4;
-  --theme-purple: #922be5;
-  --theme-cyan: #087fa8;
-  --theme-accent: #bd8df4;
-  --theme-accent-strong: #982be3;
+  --theme-blue: #5b4fe9;
+  --theme-purple: #9b5cf6;
+  --theme-cyan: #b978ff;
+  --theme-accent: #b978ff;
+  --theme-accent-strong: #9b5cf6;
   --theme-accent-soft: #303030;
   --theme-accent-border: var(--theme-border);
-  --theme-brand-gradient: linear-gradient(105deg, var(--theme-blue) 0%, var(--theme-purple) 54%, var(--theme-cyan) 100%);
+  --theme-brand-gradient: linear-gradient(105deg, var(--theme-blue) 0%, var(--theme-purple) 55%, var(--theme-cyan) 100%);
   --theme-brand-gradient-short: linear-gradient(110deg, var(--theme-blue) 0%, var(--theme-purple) 100%);
-  --theme-auth-visual: radial-gradient(circle at 30% 45%, rgb(146 43 229 / 14%), transparent 33%), linear-gradient(145deg, #252525, #191919);
-  --theme-landing-hero: radial-gradient(circle at 72% 32%, rgb(146 43 229 / 12%), transparent 29%), linear-gradient(180deg, #202020, #191919);
+  --theme-auth-visual: radial-gradient(circle at 30% 45%, rgb(91 79 233 / 16%), transparent 33%), linear-gradient(145deg, #1a1f35, #141a30);
+  --theme-landing-hero: radial-gradient(circle at 72% 32%, rgb(91 79 233 / 14%), transparent 29%), linear-gradient(180deg, #202020, #141a30);
   --theme-header: rgb(32 32 32 / 92%);
   --theme-overlay: rgb(0 0 0 / 70%);
   --theme-danger: #ff7186;
@@ -58,11 +58,11 @@
   --theme-muted: #625f5a;
   --theme-faint: #827c74;
   --theme-accent: var(--theme-muted);
-  --theme-accent-strong: #7128cf;
+  --theme-accent-strong: #5b4fe9;
   --theme-accent-soft: #f1ede7;
   --theme-accent-border: var(--theme-border);
-  --theme-auth-visual: radial-gradient(circle at 30% 45%, rgb(146 43 229 / 10%), transparent 33%), linear-gradient(145deg, #fffefa, #f1ede7);
-  --theme-landing-hero: radial-gradient(circle at 72% 32%, rgb(146 43 229 / 9%), transparent 29%), linear-gradient(180deg, #fffefa, #f7f4ef);
+  --theme-auth-visual: radial-gradient(circle at 30% 45%, rgb(91 79 233 / 10%), transparent 33%), linear-gradient(145deg, #fffefa, #f1ede7);
+  --theme-landing-hero: radial-gradient(circle at 72% 32%, rgb(91 79 233 / 9%), transparent 29%), linear-gradient(180deg, #fffefa, #f7f4ef);
   --theme-header: rgb(255 254 250 / 94%);
   --theme-overlay: rgb(36 35 33 / 46%);
   --theme-danger: #b72143;
