@@ -70,15 +70,9 @@ export function ChangePasswordForm() {
   };
 
   return (
-    <div className="max-w-lg">
-      <h1 className="mb-1 font-heading text-[27px] font-semibold tracking-[-0.03em]">Settings</h1>
-      <p className="mb-8 text-[12px] text-muted">Manage your account security.</p>
-
-      <section className="rounded-[13px] border border-brand-border bg-brand-soft p-6">
+    <section className="h-full rounded-[14px] border border-brand-border bg-brand-soft p-5 sm:p-6">
         <h2 className="mb-1 font-heading text-[15px] font-semibold">Change password</h2>
-        <p className="mb-5 text-[12px] text-muted">
-          Signed in as <strong className="text-muted">{user?.email}</strong>
-        </p>
+        <p className="mb-5 text-[12px] text-muted">Update your password to keep your account secure.</p>
 
         {(error || success) && (
           <div
@@ -164,11 +158,10 @@ export function ChangePasswordForm() {
             )}
           </label>
 
-          <Button type="submit" variant="primary" className="mt-2 h-[46px] w-full sm:w-auto" disabled={loading}>
+          <Button type="submit" variant="primary" className="mt-2 h-[46px] w-full" disabled={loading}>
             {loading ? <Spinner /> : "Update password"}
           </Button>
         </form>
-      </section>
-    </div>
+    </section>
   );
 }
