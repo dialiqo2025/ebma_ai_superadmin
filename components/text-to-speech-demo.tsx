@@ -63,9 +63,10 @@ function Toggle({
         type="button"
         disabled={disabled}
         onClick={onToggle}
+        data-checked={on}
         className={cx(
-          "relative h-[22px] w-10 rounded-full border-0 p-0 transition-colors disabled:opacity-50",
-          on ? "bg-brand-gradient" : "bg-surface-high",
+          "project-toggle-track relative h-[22px] w-10 rounded-full border border-transparent p-0 transition-colors disabled:opacity-50",
+          on ? "is-checked" : "is-unchecked",
         )}
       >
         <span

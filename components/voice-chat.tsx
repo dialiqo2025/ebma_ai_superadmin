@@ -140,9 +140,10 @@ function Toggle({
       className="flex items-start gap-2.5 text-left disabled:opacity-50"
     >
       <span
+        data-checked={on}
         className={cx(
-          "relative mt-0.5 h-[20px] w-9 shrink-0 rounded-full transition-colors",
-          on ? "bg-brand-gradient" : "bg-surface-high",
+          "project-toggle-track relative mt-0.5 h-[20px] w-9 shrink-0 rounded-full border border-transparent transition-colors",
+          on ? "is-checked" : "is-unchecked",
         )}
       >
         <span

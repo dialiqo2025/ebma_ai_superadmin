@@ -150,6 +150,19 @@
 
 .bg-brand-gradient { background-image: var(--theme-brand-gradient); }
 .bg-brand-gradient-short { background-image: var(--theme-brand-gradient-short); }
+
+.project-toggle-track.is-unchecked {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-high);
+}
+.project-toggle-track.is-checked {
+  border-color: transparent;
+  background: var(--theme-brand-gradient);
+}
+.project-toggle-track:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent-strong) 22%, transparent);
+}
 .bg-theme-header { background-color: var(--theme-header); }
 .bg-theme-overlay { background-color: var(--theme-overlay); }
 button.bg-brand-soft:not(.border-0) {
