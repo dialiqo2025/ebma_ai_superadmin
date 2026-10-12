@@ -18,6 +18,7 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
+import { CURL_BASE_URL, CurlSnippet, curlAuthHeader, shellQuote, type CurlStep } from "@/components/curl-snippet";
 import {
   browserSpeechSupported,
   useVoiceChat,
@@ -481,6 +482,13 @@ export function VoiceChat() {
                 : "Type a message or press the mic to talk.";
 
   const ringScale = stt.listening && !chat.speakingId ? 1 + stt.voiceLevel * 0.9 : 1;
+  const developerSteps: CurlStep[] = [
+    {
+      title: "Send a chat message",
+      command: `curl -X POST ${CURL_BASE_URL}/chat/messages \\\n  ${curlAuthHeader} \\\n  -H "Content-Type: application/json" \\\n  -d ${shellQuote(JSON.stringify({ message: "Hello, can you help me?", language: "auto", replyLanguage: "auto", source: "text", history: [] }, null, 2))}`,
+      note: "Use an API key with Voice Assistant access. Keep the key in an environment variable.",
+    },
+  ];
 
   return (
     <div className="flex h-[calc(100vh-68px-104px)] min-h-[560px] flex-col text-muted">
@@ -810,6 +818,10 @@ export function VoiceChat() {
           </span>
         </div>
       </div>
+      <CurlSnippet
+        steps={developerSteps}
+        description="Send a text message to the assistant from your app. The response includes the assistant reply and language."
+      />
     </div>
   );
 }

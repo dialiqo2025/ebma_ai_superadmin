@@ -301,13 +301,13 @@ export function AdminUsers() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-none text-text">
+    <main className="mx-auto w-full max-w-[1210px] text-text">
       <div className="mb-8 flex items-start justify-between gap-4">
         <div>
           <p className="font-mono text-[11px] tracking-[.24em] text-accent">
             CONTROL PANEL / USERS
           </p>
-          <h1 className="mt-3 text-4xl font-extrabold text-text">User management</h1>
+          <h1 className="mt-3 text-4xl font-extrabold text-text">Users</h1>
           <p className="mt-3 text-sm text-muted">
             Review accounts, adjust access, and grant wallet credits.
           </p>
@@ -324,7 +324,7 @@ export function AdminUsers() {
         </button>
       </div>
 
-      <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="platform-table-container mb-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {[
           { label: "Registered users", value: summary?.total_users, icon: Users, color: "text-accent" },
           { label: "Active users", value: summary?.total_active_users, icon: UserCheck, color: "text-success" },
@@ -353,92 +353,105 @@ export function AdminUsers() {
         </p>
       )}
 
-      <div className="mb-5 flex w-full max-w-lg gap-2">
-        <div className="flex flex-1 items-center gap-2 rounded-lg border border-brand-border bg-surface px-3">
-          <Search size={16} className="text-accent" />
-          <input
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search name or email"
-            className="h-10 w-full bg-transparent text-sm text-text outline-none placeholder:text-accent"
-          />
+      <section className="platform-table-container overflow-hidden rounded-2xl border border-brand-border bg-surface shadow-sm">
+        <div className="flex w-full flex-wrap items-center justify-between gap-3 border-b border-brand-border px-4 py-4 sm:px-5">
+          <label className="relative min-w-0 flex-1 sm:max-w-80">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search name or email"
+              className="h-9 w-full rounded-lg border border-brand-border bg-surface pl-9 pr-3 text-xs text-text outline-none focus:border-accent"
+            />
+          </label>
+          <span className="ml-auto text-xs text-muted">
+            {users.length.toLocaleString()} {users.length === 1 ? "user" : "users"}
+          </span>
         </div>
-      </div>
-
-      <div className="overflow-x-auto rounded-2xl border border-brand-border bg-surface">
-        <div className="min-w-[980px]">
-          <div className="grid grid-cols-[minmax(180px,1.1fr)_minmax(260px,1.6fr)_110px_110px_minmax(390px,1.4fr)] border-b border-brand-border px-5 py-3 text-[10px] uppercase tracking-wider text-accent">
-            <span>User</span>
-            <span>Email</span>
-            <span>Role</span>
-            <span>Status</span>
-            <span>Actions</span>
-          </div>
-          {loading ? (
-            <p className="px-5 py-10 text-center text-sm text-accent">Loading users…</p>
-          ) : users.length === 0 ? (
-            <p className="px-5 py-10 text-center text-sm text-accent">No users found.</p>
-          ) : (
-            users.map((record) => (
-              <div
-                key={record.user_uuid}
-                className="grid grid-cols-[minmax(180px,1.1fr)_minmax(260px,1.6fr)_110px_110px_minmax(390px,1.4fr)] items-center gap-3 border-b border-brand-border px-5 py-4 text-sm last:border-0"
-              >
-                <div className="min-w-0 truncate font-medium text-text" title={record.fullName}>
-                  {record.fullName}
-                </div>
-                <div className="min-w-0 truncate text-muted" title={record.email}>
-                  {formatDisplayEmail(record.email)}
-                </div>
-                <div>
-                  <span className="rounded-full border border-brand-border px-2 py-1 text-[10px] text-accent">
-                    {record.role}
-                  </span>
-                </div>
-                <div>
-                  <span
-                    className={
-                      record.user_enabled ? "text-success" : "text-danger"
-                    }
-                  >
-                    {record.user_enabled ? "Active" : "Disabled"}
-                  </span>
-                </div>
-                <div className="flex flex-nowrap items-center gap-3 whitespace-nowrap">
-                  <button
-                    type="button"
-                    onClick={() => void openPlanModal(record)}
-                    className="inline-flex items-center gap-1 text-xs text-muted hover:text-text"
-                  >
-                    <CreditCard size={13} /> Assign plan
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => void openCreditModal(record)}
-                    className="inline-flex items-center gap-1 text-xs text-cyan hover:text-text"
-                  >
-                    <Coins size={13} /> Add credits
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => void toggleUser(record)}
-                    className="text-xs text-accent hover:text-text"
-                  >
-                    {record.user_enabled ? "Disable" : "Enable"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => void deleteUser(record)}
-                    className="text-xs text-danger hover:text-danger"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))
-          )}
+        <div className="overflow-x-auto">
+        <table className="platform-data-table w-full min-w-[1100px] table-fixed text-left text-sm">
+          <colgroup>
+            <col className="w-[18%]" />
+            <col className="w-[28%]" />
+            <col className="w-[9%]" />
+            <col className="w-[10%]" />
+            <col className="w-[35%]" />
+          </colgroup>
+          <thead className="border-b border-brand-border bg-surface-raised text-[10px] uppercase tracking-wide text-muted">
+            <tr>
+              <th scope="col">User</th>
+              <th scope="col">Email</th>
+              <th scope="col">Role</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr><td colSpan={5} className="py-10 text-center text-sm text-muted">Loading users…</td></tr>
+            ) : users.length === 0 ? (
+              <tr><td colSpan={5} className="py-10 text-center text-sm text-muted">No users found.</td></tr>
+            ) : (
+              users.map((record) => (
+                <tr
+                  key={record.user_uuid}
+                  className="border-b border-brand-border text-sm transition-colors odd:bg-surface even:bg-surface-raised/35 last:border-0 hover:bg-brand-soft/70"
+                >
+                  <td className="truncate font-medium text-text" title={record.fullName}>
+                    {record.fullName}
+                  </td>
+                  <td className="truncate text-muted" title={record.email}>
+                    {formatDisplayEmail(record.email)}
+                  </td>
+                  <td>
+                    <span className="rounded-full border border-brand-border px-2 py-1 text-[10px] text-accent">
+                      {record.role}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={record.user_enabled ? "text-success" : "text-danger"}>
+                      {record.user_enabled ? "Active" : "Disabled"}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="flex flex-nowrap items-center gap-3 whitespace-nowrap">
+                      <button
+                        type="button"
+                        onClick={() => void openPlanModal(record)}
+                        className="inline-flex items-center gap-1 text-xs text-muted hover:text-text"
+                      >
+                        <CreditCard size={13} /> Assign plan
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void openCreditModal(record)}
+                        className="inline-flex items-center gap-1 text-xs text-cyan hover:text-text"
+                      >
+                        <Coins size={13} /> Add credits
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void toggleUser(record)}
+                        className="text-xs text-accent hover:text-text"
+                      >
+                        {record.user_enabled ? "Disable" : "Enable"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void deleteUser(record)}
+                        className="text-xs text-danger hover:text-danger"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
         </div>
-      </div>
+      </section>
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-theme-overlay p-4">

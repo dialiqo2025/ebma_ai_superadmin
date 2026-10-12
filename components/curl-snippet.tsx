@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, ChevronRight, Copy, Terminal } from "lucide-react";
+import { Check, ChevronDown, Copy, Terminal } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api";
 
 export type CurlStep = { title: string; command: string; note?: string };
@@ -41,34 +41,40 @@ export function CurlSnippet({ steps, description, defaultOpen = false }: { steps
   const all = [setup, ...steps.map((s) => `# ${s.title}\n${s.command}`)].join("\n\n");
 
   return (
-    <div className="mt-5 rounded-xl border border-brand-border bg-brand-soft">
+    <div className="mt-4">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center gap-2 px-4 py-3 text-left text-[11px] font-semibold tracking-wider text-muted hover:text-text"
+        aria-expanded={open}
+        className="group flex w-full items-center gap-3 rounded-xl px-1.5 py-2 text-left transition-colors hover:bg-brand-soft"
       >
-        <ChevronRight size={14} className={`shrink-0 transition-transform ${open ? "rotate-90" : ""}`} />
-        <Terminal size={14} className="shrink-0" />
-        CURL REQUEST
+        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-brand-border bg-brand-soft text-accent transition-colors group-hover:border-accent/40">
+          <Terminal size={15} />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-xs font-semibold text-text">Developer</span>
+          <span className="block truncate text-[11px] text-muted">API endpoint and cURL examples</span>
+        </span>
+        <ChevronDown size={15} className={`shrink-0 text-muted transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
-        <div className="border-t border-brand-border px-4 py-4">
+        <div className="mt-2 rounded-xl border border-brand-border bg-brand-soft p-4 sm:p-5">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <p className="max-w-2xl text-[12px] leading-relaxed text-muted">
               {description} Create a key on the{" "}
               <Link href="/platform/api-keys" className="text-accent hover:text-text">
-                API keys
+                API Keys
               </Link>{" "}
               page and run <code className="font-mono text-muted">{setup}</code> first.
             </p>
             <CopyButton value={all} label="Copy all" />
           </div>
           <div className="mt-4 space-y-4">
-            {steps.map((step, index) => (
+            {steps.map((step) => (
               <div key={step.title}>
                 <div className="mb-1.5 flex items-center justify-between gap-3">
-                  <span className="font-mono text-[11px] tracking-wider text-accent">
-                    {index + 1}. {step.title.toUpperCase()}
+                  <span className="font-mono text-[11px] font-semibold tracking-wider text-accent">
+                    cURL · {step.title}
                   </span>
                   <CopyButton value={step.command} label="Copy" />
                 </div>

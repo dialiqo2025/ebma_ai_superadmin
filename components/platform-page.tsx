@@ -98,7 +98,7 @@ export function PlatformPage() {
             accent="var(--theme-cyan)"
             icon={<Mic2 />}
             label="STT"
-            title="Speech to text"
+            title="Speech To Text"
             description="Transcribe audio with speed and accuracy across languages."
             href="/platform/speech-to-text"
             action="Open playground"
@@ -116,7 +116,7 @@ export function PlatformPage() {
             accent="var(--theme-purple)"
             icon={<Volume2 />}
             label="TTS"
-            title="Text to speech"
+            title="Text To Speech"
             description="Create expressive, natural speech from any text."
             href="/platform/text-to-speech"
             action="Open playground"
@@ -145,7 +145,7 @@ export function PlatformPage() {
             accent="var(--theme-accent)"
             icon={<Bot />}
             label="GEMINI"
-            title="Voice assistant"
+            title="Voice Assistant"
             description="Talk to a Gemini-powered assistant and hear it reply in your language."
             href="/platform/voice-assistant"
             action="Open assistant"

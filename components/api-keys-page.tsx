@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth";
 import { API_BASE_URL, errorMessage } from "@/lib/api";
 import { apiKeysApi, type ApiKeyRecord, type ApiKeyScope, type CreatedApiKey } from "@/lib/api-keys/api";
 
-const scopeLabels: Record<ApiKeyScope, string> = { stt: "Speech to text", tts: "Text to speech", llm: "LLM / chat" };
+const scopeLabels: Record<ApiKeyScope, string> = { stt: "Speech To Text", tts: "Text To Speech", llm: "LLM / chat" };
 const expiryOptions = [{ label: "Never", value: "" }, { label: "30 days", value: "30" }, { label: "90 days", value: "90" }, { label: "1 year", value: "365" }];
 const inputClass = "h-11 rounded-lg border border-brand-border bg-brand-soft px-3 text-sm text-text outline-none";
 
@@ -52,9 +52,9 @@ export function ApiKeysPage() {
   const sampleKey = created?.secret ?? "ebma_sk_your_key";
   const curl = `curl -X POST ${API_BASE_URL}/tts/generations \\\n  -H "Authorization: Bearer ${sampleKey}" \\\n  -H "Content-Type: application/json" \\\n  -d '{"text":"नमस्ते, आप कैसे हैं?","language":"hi","voiceMode":"default","outputFormat":"wav"}'`;
 
-  return <main className="mx-auto w-full max-w-none text-text">
+  return <main className="mx-auto w-full max-w-[1210px] text-text">
     <p className="font-mono text-[11px] tracking-[.24em] text-accent">WORKSPACE / DEVELOPERS</p>
-    <h1 className="mt-3 text-4xl font-extrabold text-text">API keys</h1>
+    <h1 className="mt-3 text-4xl font-extrabold text-text">API Keys</h1>
     <p className="mt-3 text-sm text-muted">Call EBMA speech, voice and LLM APIs from your own apps. Usage is charged to your wallet.</p>
 
     {error && <p className="mt-6 rounded-lg border border-brand-border bg-brand-soft px-4 py-3 text-sm text-danger">{error}</p>}
@@ -74,10 +74,10 @@ export function ApiKeysPage() {
       <div className="mt-6 flex justify-end"><button onClick={() => void create()} disabled={creating || !name.trim() || !scopes.length} className="flex items-center gap-2 rounded-lg bg-brand-soft px-5 py-2.5 text-xs font-semibold text-text disabled:opacity-50"><Plus size={15} />{creating ? "Creating…" : "Create key"}</button></div>
     </section>
 
-    <section className="mt-6 overflow-hidden rounded-2xl border border-brand-border bg-brand-soft">
+    <section className="platform-table-container mt-6 overflow-hidden rounded-2xl border border-brand-border bg-surface">
       <div className="border-b border-brand-border px-6 py-4"><h2 className="font-bold text-text">Your keys</h2></div>
-      {loading ? <p className="px-6 py-8 text-sm text-muted">Loading…</p> : !keys.length ? <div className="flex flex-col items-center px-6 py-10 text-center"><KeyRound className="text-accent" size={26} /><p className="mt-3 text-sm text-muted">No API keys yet. Create one to start building.</p></div> :
-        <div className="overflow-x-auto"><table className="w-full min-w-[720px] text-left text-sm">
+      {loading ? <p className="px-6 py-8 text-sm text-muted">Loading…</p> : !keys.length ? <div className="flex flex-col items-center px-6 py-10 text-center"><KeyRound className="text-accent" size={26} /><p className="mt-3 text-sm text-muted">No API Keys yet. Create one to start building.</p></div> :
+        <div className="overflow-x-auto"><table className="platform-data-table w-full min-w-[720px] text-left text-sm">
           <thead className="text-[11px] uppercase tracking-wider text-accent"><tr><th className="px-6 py-3 font-semibold">Name</th><th className="px-3 py-3 font-semibold">Key</th><th className="px-3 py-3 font-semibold">Access</th><th className="px-3 py-3 font-semibold">Last used</th><th className="px-3 py-3 font-semibold">Expires</th><th className="px-3 py-3 font-semibold">Status</th><th className="px-6 py-3" /></tr></thead>
           <tbody>{keys.map(key => { const status = keyStatus(key); const usable = !key.revoked_at; return <tr key={key.key_uuid} className="border-t border-brand-border">
             <td className="px-6 py-3">{editing === key.key_uuid ? <div className="flex gap-2"><input value={editName} onChange={e => setEditName(e.target.value)} maxLength={100} className="h-8 w-44 rounded-md border border-brand-border bg-brand-soft px-2 text-sm text-text outline-none" autoFocus /><button onClick={() => void rename(key.key_uuid)} disabled={!editName.trim()} className="text-xs font-semibold text-accent disabled:opacity-50">Save</button><button onClick={() => setEditing(null)} className="text-xs text-muted">Cancel</button></div> : <span className="font-semibold text-text">{key.name}</span>}</td>

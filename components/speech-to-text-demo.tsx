@@ -612,8 +612,8 @@ function LiveSessionTable({
   onDelete: (session: SttSession) => void;
 }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-brand-border">
-      <table className="w-full min-w-[620px] text-left text-[12px]">
+    <div className="platform-table-container overflow-x-auto rounded-2xl border border-brand-border bg-surface">
+      <table className="platform-data-table w-full min-w-[620px] text-left text-[12px]">
         <thead className="bg-surface-raised text-muted">
           <tr>
             <th className="px-3 py-2 font-semibold">SESSION</th>
@@ -838,6 +838,11 @@ export function SpeechToTextDemo() {
               : selectedFile
                 ? "File ready. Click Transcript to generate."
                 : "Waiting for a file.";
+  const progressStatus = fileTx.uploading
+    ? fileTx.uploadProgress >= 100 ? "Starting transcription…" : "Uploading file…"
+    : fileTx.current?.status === "completed"
+      ? "Complete"
+      : `${fileTx.current?.stage || "Transcribing"}…`;
 
   const onToggleListen = async () => {
     if (live.listening) {
@@ -1020,7 +1025,7 @@ export function SpeechToTextDemo() {
           REAL-TIME SPEECH RECOGNITION
         </p>
         <h1 className="mt-4 text-4xl font-extrabold leading-none tracking-tight text-text sm:text-[52px]">
-          Speech to Text
+          Speech To Text
         </h1>
         <p className="mx-auto mt-5 max-w-lg text-[15px] leading-relaxed text-muted">
           Speak in any of 27 Indian languages and watch your words appear, phrase by phrase, the
@@ -1400,24 +1405,41 @@ export function SpeechToTextDemo() {
                         ? "Transcribing…"
                         : "Transcript"}
                   </button>
-                  {!uploadBusy && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedFile(null);
-                        setFilePickError("");
-                        fileTx.clearCurrent();
-                      }}
-                      className="rounded-lg border border-brand-border px-4 py-2 text-[13px] text-muted hover:bg-brand-soft"
-                    >
-                      Clear file
-                    </button>
+                  <button
+                    type="button"
+                    disabled={uploadBusy}
+                    onClick={() => {
+                      setSelectedFile(null);
+                      setFilePickError("");
+                      fileTx.clearCurrent();
+                    }}
+                    className="rounded-lg border border-brand-border px-4 py-2 text-[13px] text-muted hover:bg-brand-soft disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Clear file
+                  </button>
+                  {(uploadBusy || fileTx.current?.status === "completed") && (
+                    <div className="ml-auto flex w-full min-w-0 items-center gap-2.5 sm:w-[min(100%,360px)]">
+                      <span className="w-24 shrink-0 truncate text-[11px] text-muted">{progressStatus}</span>
+                      <div
+                        className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-brand-soft ring-1 ring-inset ring-brand-border/70"
+                        role="progressbar"
+                        aria-label={fileTx.uploading ? "Audio file upload progress" : "Transcription progress"}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuenow={progressPct}
+                        aria-valuetext={`${progressPct}% ${progressStatus}`}
+                      >
+                        <div className="h-full rounded-full bg-brand-gradient-short shadow-[0_0_10px_rgba(116,76,235,.35)] transition-[width] duration-300" style={{ width: `${progressPct}%` }} />
+                      </div>
+                      <span className="w-9 shrink-0 text-right text-xs font-bold tabular-nums text-accent">{progressPct}%</span>
+                    </div>
                   )}
                 </div>
               )}
 
               {(selectedFile || uploadBusy || filePickError || fileTx.error) && (
-                <div className="mt-5 flex items-center justify-between gap-4">
+                <div className="mt-5">
+                  {!uploadBusy && fileTx.current?.status !== "completed" && (
                   <div className="flex min-w-0 items-center gap-2.5">
                     <span
                       className={cx(
@@ -1435,19 +1457,6 @@ export function SpeechToTextDemo() {
                       {uploadStatusText}
                     </span>
                   </div>
-                  {(uploadBusy || fileTx.current?.status === "completed") && (
-                    <div className="h-[4px] w-40 shrink-0 overflow-hidden rounded-full bg-brand-soft sm:w-52">
-                      <div
-                        className={cx(TAB_GRADIENT, "h-full rounded-full transition-all")}
-                        style={{
-                          width: `${
-                            fileTx.current?.status === "completed"
-                              ? 100
-                              : Math.max(progressPct, 8)
-                          }%`,
-                        }}
-                      />
-                    </div>
                   )}
                 </div>
               )}

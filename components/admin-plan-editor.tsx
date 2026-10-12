@@ -292,8 +292,8 @@ export function AdminPlanEditorPage({ editId }: { editId?: string }) {
               <div className="mt-3 space-y-3">
                 {(
                   [
-                    ["stt", "Speech to text"],
-                    ["tts", "Text to speech"],
+                    ["stt", "Speech To Text"],
+                    ["tts", "Text To Speech"],
                   ] as const
                 ).map(([key, label]) => (
                   <label key={key} className="flex items-center gap-3 text-sm text-[#b6c0d6]">

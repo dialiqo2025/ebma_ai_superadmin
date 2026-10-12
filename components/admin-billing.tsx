@@ -96,7 +96,7 @@ function AdminFrame({
   if (!ready || user?.role !== "superAdmin") return null;
 
   return (
-    <main className="mx-auto w-full max-w-none text-text">
+    <main className="mx-auto w-full max-w-[1210px] text-text">
       <p className="font-mono text-[11px] tracking-[.24em] text-accent">
         CONTROL PANEL
       </p>
@@ -131,10 +131,10 @@ export function AdminPlans() {
 
   return (
     <AdminFrame
-      title="Plans & pricing"
+      title="Plans & Pricing"
       description="Create customer-ready packages with transparent benefits and service entitlements."
     >
-      <div className="mt-8 grid gap-3 sm:grid-cols-3">
+      <div className="platform-table-container mt-8 grid gap-3 sm:grid-cols-3">
         {(
           [
             ["Total plans", plans.length, "text-text"],
@@ -162,8 +162,8 @@ export function AdminPlans() {
         </button>
       </div>
 
-      <div className="mt-3 overflow-x-auto rounded-2xl border border-brand-border bg-surface">
-        <table className="w-full min-w-[850px] text-left text-sm">
+      <div className="platform-table-container mt-3 overflow-x-auto rounded-2xl border border-brand-border bg-surface">
+        <table className="platform-data-table w-full min-w-[850px] text-left text-sm">
           <thead className="border-b border-brand-border text-[10px] uppercase tracking-wider text-accent">
             <tr>
               <th className="px-5 py-4">Plan</th>
@@ -442,7 +442,7 @@ export function AdminPlanEditor({ editId }: { editId?: string }) {
             <div className="mt-6">
               <h2 className="text-sm font-bold text-white">Usage rates (wallet)</h2>
               <p className="mt-1 mb-4 text-xs text-[#74809e]">
-                Same configuration previously under Usage settings. 1 credit = ₹1.
+                Same configuration previously under Usage Settings. 1 credit = ₹1.
               </p>
               <PlanRatesEditor value={rateBundle} onChange={setRateBundle} />
             </div>
@@ -492,8 +492,8 @@ export function AdminPlanEditor({ editId }: { editId?: string }) {
               <div className="mt-3 space-y-3">
                 {(
                   [
-                    ["stt", "Speech to text"],
-                    ["tts", "Text to speech"],
+                    ["stt", "Speech To Text"],
+                    ["tts", "Text To Speech"],
                     ["llm", "LLM assistant"],
                   ] as const
                 ).map(([key, label]) => (
@@ -537,7 +537,7 @@ export function AdminPlanEditor({ editId }: { editId?: string }) {
 export function AdminUsageSettings() {
   return (
     <AdminFrame
-      title="Usage settings moved"
+      title="Usage Settings moved"
       description="Configure TTS, STT, and LLM wallet rates on each plan under Plans and pricing."
     >
       <div className="mt-8 rounded-2xl border border-[#293354] bg-[#101832] p-6">
@@ -617,7 +617,7 @@ export function AdminRecords({ kind }: { kind: "subscriptions" | "transactions" 
           : "Review payments, credit grants, and refunds."
       }
     >
-      <div className="mt-7 grid gap-3 sm:grid-cols-3">
+      <div className="platform-table-container mt-7 grid gap-3 sm:grid-cols-3">
         {[
           [kind === "subscriptions" ? "Total subscriptions" : "Total transactions", rows.length, "text-text"],
           [kind === "subscriptions" ? "Active" : "Successful", statusCount(primaryStatus), "text-success"],
@@ -630,7 +630,7 @@ export function AdminRecords({ kind }: { kind: "subscriptions" | "transactions" 
         ))}
       </div>
 
-      <section className="mt-6 overflow-hidden rounded-2xl border border-brand-border bg-brand-soft">
+      <section className="platform-table-container mt-6 overflow-hidden rounded-2xl border border-brand-border bg-brand-soft">
         <div className="flex flex-col gap-3 border-b border-brand-border p-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex h-10 min-w-0 items-center gap-2 rounded-lg border border-brand-border bg-surface px-3 sm:w-80">
             <Search size={15} className="shrink-0 text-accent" />
@@ -659,7 +659,7 @@ export function AdminRecords({ kind }: { kind: "subscriptions" | "transactions" 
         </div>
         {error && <p className="m-4 rounded-lg border border-danger-border bg-danger-soft px-3 py-2 text-xs text-danger">{error}</p>}
         <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm">
+        <table className="platform-data-table w-full text-left text-sm">
           <thead className="border-b border-brand-border text-[10px] uppercase tracking-wider text-accent">
             <tr>
               <th className="px-5 py-4">Record</th>

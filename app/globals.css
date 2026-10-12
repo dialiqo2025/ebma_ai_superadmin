@@ -125,6 +125,17 @@
   ::selection { color: var(--theme-text); background: var(--theme-accent-soft); }
 }
 
+/* Standard cell dimensions match the Usage records table across the platform. */
+.platform-table-container { width: 100%; max-width: 1210px; margin-inline: auto; }
+.platform-data-table { width: 100%; border-collapse: collapse; text-align: left; }
+.platform-data-table thead { background-color: var(--theme-surface-raised); color: var(--theme-muted); }
+.platform-data-table thead th { padding: 0.75rem 1.25rem !important; font-size: 10px; font-weight: 600; letter-spacing: 0.025em; text-transform: uppercase; }
+.platform-data-table tbody td { padding: 1rem 1.25rem !important; }
+.platform-data-table tbody tr { border-bottom: 1px solid var(--theme-border); }
+.platform-data-table tbody tr:last-child { border-bottom: 0; }
+.platform-data-table tbody tr:nth-child(even) { background-color: color-mix(in srgb, var(--theme-surface-raised) 35%, var(--theme-surface)); }
+.platform-data-table tbody tr:hover { background-color: var(--theme-accent-soft); }
+
 /* Keep white foregrounds legible on the brand gradient in light mode. */
 :root[data-theme="light"] [class~="text-text"][class*="bg-[linear-gradient"],
 :root[data-theme="light"] [class~="text-text"][class~="bg-brand"],

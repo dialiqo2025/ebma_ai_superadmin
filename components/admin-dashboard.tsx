@@ -19,8 +19,8 @@ import { apiRequest } from "@/lib/api";
 
 const modules = [
   { title: "Users", description: "Manage registered accounts, access, and status.", href: "/platform/admin/users", icon: Users },
-  { title: "Usage settings", description: "Set new user credits and service rates.", href: "/platform/admin/usage-settings", icon: Settings2 },
-  { title: "Plans & pricing", description: "Manage credit packages and checkout plans.", href: "/platform/admin/plans", icon: CreditCard },
+  { title: "Usage Settings", description: "Set new user credits and service rates.", href: "/platform/admin/usage-settings", icon: Settings2 },
+  { title: "Plans & Pricing", description: "Manage credit packages and checkout plans.", href: "/platform/admin/plans", icon: CreditCard },
   { title: "Subscriptions", description: "Review active plans and plan history.", href: "/platform/admin/subscriptions", icon: Activity },
   { title: "Transactions", description: "Review payments, credits, and refunds.", href: "/platform/admin/transactions", icon: ShieldCheck },
 ];
@@ -34,9 +34,9 @@ type UsageOverview = {
 };
 
 const serviceInfo: Record<string, { title: string; unit: string; icon: typeof Mic2 }> = {
-  stt_seconds: { title: "Speech to text", unit: "minutes transcribed", icon: Mic2 },
-  tts_characters: { title: "Text to speech", unit: "characters generated", icon: Volume2 },
-  llm_tokens: { title: "Voice assistant & LLM", unit: "tokens processed", icon: AudioLines },
+  stt_seconds: { title: "Speech To Text", unit: "minutes transcribed", icon: Mic2 },
+  tts_characters: { title: "Text To Speech", unit: "characters generated", icon: Volume2 },
+  llm_tokens: { title: "Voice Assistant & LLM", unit: "tokens processed", icon: AudioLines },
 };
 
 function dateInputValue(date: Date) {
@@ -184,11 +184,11 @@ export function AdminDashboard() {
   const maxServiceCredits = Math.max(...serviceRows.map((row) => row.credits), 1);
 
   return (
-    <main className="mx-auto w-full max-w-none text-text">
+    <main className="mx-auto w-full max-w-[1210px] text-text">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="font-mono text-[11px] tracking-[.24em] text-accent">CONTROL PANEL</p>
-          <h1 className="mt-3 text-3xl font-extrabold text-text">Superadmin <span className="bg-brand-gradient bg-clip-text text-transparent">overview</span></h1>
+          <h1 className="mt-3 text-3xl font-extrabold text-text">Admin Console</h1>
           <p className="mt-2 text-sm text-muted">Platform adoption, billable usage, and account activity.</p>
           <p className="mt-1 text-xs text-accent">Signed in as {user.email}</p>
         </div>
@@ -211,7 +211,7 @@ export function AdminDashboard() {
           </div>
         </div>
 
-        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="platform-table-container mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[
             { label: "Registered accounts", value: number(stats?.total_users ?? 0), note: `${number(stats?.total_active_users ?? 0)} currently enabled`, icon: Users },
             { label: "Active users", value: number(overview?.totals.activeUsers ?? 0), note: "Used a billable service in range", icon: Activity },
@@ -252,17 +252,17 @@ export function AdminDashboard() {
           </div>
         </div>
 
-        <div className="mt-5 overflow-hidden rounded-xl border border-brand-border">
+        <div className="platform-table-container mt-5 overflow-hidden rounded-xl border border-brand-border">
           <div className="flex items-center justify-between border-b border-brand-border px-4 py-3">
             <div><h3 className="text-sm font-semibold">Top users by credit usage</h3><p className="mt-1 text-[11px] text-muted">Accounts with the highest metered consumption in this period</p></div>
-            <span className="rounded-full bg-brand-soft px-2.5 py-1 text-[10px] font-medium text-accent">Top 10</span>
+            <Link href="/platform/admin/user-usage" className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border px-3 py-2 text-[11px] font-semibold text-accent transition-colors hover:bg-surface-raised">View all usage <span aria-hidden="true">→</span></Link>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[700px] text-left text-xs">
-              <thead className="bg-surface-raised text-[10px] uppercase tracking-wide text-muted"><tr><th className="px-4 py-3">User</th><th className="px-4 py-3">Requests</th><th className="px-4 py-3">STT</th><th className="px-4 py-3">TTS</th><th className="px-4 py-3">Assistant / LLM</th><th className="px-4 py-3 text-right">Credits used</th></tr></thead>
+            <table className="platform-data-table w-full min-w-[700px] text-left text-sm">
+              <thead className="bg-surface-raised text-[10px] uppercase tracking-wide text-muted"><tr><th>User</th><th>Requests</th><th>STT</th><th>TTS</th><th>Assistant / LLM</th><th className="text-right">Credits used</th></tr></thead>
               <tbody className="divide-y divide-brand-border">
-                {(overview?.topUsers ?? []).map((row) => <tr key={row.user_uuid} className="hover:bg-surface-raised"><td className="px-4 py-3"><p className="font-semibold text-text">{row.fullName}</p><p className="mt-0.5 text-[11px] text-muted">{row.email}</p></td><td className="px-4 py-3">{number(row.events)}</td><td className="px-4 py-3">{number(row.sttEvents)}</td><td className="px-4 py-3">{number(row.ttsEvents)}</td><td className="px-4 py-3">{number(row.llmEvents)}</td><td className="px-4 py-3 text-right font-semibold">{credits(row.credits)}</td></tr>)}
-                {!loading && !overview?.topUsers.length && <tr><td colSpan={6} className="px-4 py-8 text-center text-muted">No billable usage for this period.</td></tr>}
+                {(overview?.topUsers ?? []).map((row) => <tr key={row.user_uuid} className="hover:bg-surface-raised"><td><p className="font-semibold text-text">{row.fullName}</p><p className="mt-0.5 text-[11px] text-muted">{row.email}</p></td><td>{number(row.events)}</td><td>{number(row.sttEvents)}</td><td>{number(row.ttsEvents)}</td><td>{number(row.llmEvents)}</td><td className="text-right font-semibold">{credits(row.credits)}</td></tr>)}
+                {!loading && !overview?.topUsers.length && <tr><td colSpan={6} className="py-8 text-center text-muted">No billable usage for this period.</td></tr>}
               </tbody>
             </table>
           </div>

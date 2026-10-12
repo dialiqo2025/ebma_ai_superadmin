@@ -62,7 +62,7 @@ export function AdminUsageSettings() {
   return (
     <main className="mx-auto w-full max-w-3xl text-text">
       <p className="font-mono text-[11px] tracking-[.24em] text-accent">CONTROL PANEL</p>
-      <h1 className="mt-3 text-4xl font-extrabold text-text">Usage settings</h1>
+      <h1 className="mt-3 text-4xl font-extrabold text-text">Usage Settings</h1>
       <p className="mt-3 text-sm text-muted">
         Set the one-time free wallet credit grant for newly registered users.
       </p>

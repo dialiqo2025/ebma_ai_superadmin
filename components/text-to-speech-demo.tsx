@@ -322,7 +322,7 @@ export function TextToSpeechDemo() {
           EXPRESSIVE SPEECH SYNTHESIS
         </p>
         <h1 className="mt-5 text-4xl font-extrabold leading-none tracking-tight text-text sm:text-[56px]">
-          Text to Speech
+          Text To Speech
         </h1>
         <p className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-muted">
           Type text, pick language and voice settings, then generate speech. Audio is fetched with

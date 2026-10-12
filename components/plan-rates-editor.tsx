@@ -123,7 +123,7 @@ export function PlanRatesEditor({
   return (
     <div className="grid gap-4 xl:grid-cols-3">
       <RateCard
-        title="Text to speech"
+        title="Text To Speech"
         subtitle="Wallet charge for generated characters"
         accentBar="bg-[#38bdf8]"
         icon={<Volume2 size={18} className="text-[#38bdf8]" />}
@@ -137,7 +137,7 @@ export function PlanRatesEditor({
         formula={`${value.ttsCredits || "0"} credits per ${value.ttsPerChars || "0"} characters`}
       />
       <RateCard
-        title="Speech to text"
+        title="Speech To Text"
         subtitle="Wallet charge for audio duration"
         accentBar="bg-[#a78bfa]"
         icon={<Mic2 size={18} className="text-[#a78bfa]" />}

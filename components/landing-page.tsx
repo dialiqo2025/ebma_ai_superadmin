@@ -57,7 +57,7 @@ const serviceAccents = {
 const services = [
   {
     icon: Mic2,
-    eyebrow: "Speech to text",
+    eyebrow: "Speech To Text",
     title: "Every word, captured.",
     description:
       "Turn live or recorded speech into accurate, structured text—built for real conversations, accents, and noisy environments.",
@@ -67,7 +67,7 @@ const services = [
   },
   {
     icon: Volume2,
-    eyebrow: "Text to speech",
+    eyebrow: "Text To Speech",
     title: "Voices that feel human.",
     description:
       "Create expressive, natural speech for agents, products, and content with voices your users will want to listen to.",
@@ -240,13 +240,13 @@ export function LandingPage() {
                   type="button"
                   className="relative cursor-pointer border-0 bg-transparent p-0 text-[12px] text-text after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:bg-brand-gradient after:content-['']"
                 >
-                  Speech to text
+                  Speech To Text
                 </button>
                 <button
                   type="button"
                   className="cursor-pointer border-0 bg-transparent p-0 text-[12px] text-accent"
                 >
-                  Text to speech
+                  Text To Speech
                 </button>
                 <button
                   type="button"
@@ -729,10 +729,10 @@ export function LandingPage() {
                 Products
               </strong>
               <a href="#products" className="text-[12px] text-accent hover:text-text">
-                Speech to text
+                Speech To Text
               </a>
               <a href="#products" className="text-[12px] text-accent hover:text-text">
-                Text to speech
+                Text To Speech
               </a>
               <a href="#products" className="text-[12px] text-accent hover:text-text">
                 Language model

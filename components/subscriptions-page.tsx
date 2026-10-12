@@ -147,7 +147,7 @@ export function SubscriptionsPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-none text-text">
+    <main className="mx-auto w-full max-w-[1210px] text-text">
       <p className="font-mono text-[11px] tracking-[.24em] text-accent">BILLING</p>
       <h1 className="mt-3 text-4xl font-extrabold text-text">My plan</h1>
       <p className="mt-3 text-sm text-muted">
@@ -337,12 +337,12 @@ export function SubscriptionsPage() {
             )}
           </section>
 
-          <section className="mt-8 overflow-x-auto rounded-2xl border border-brand-border bg-brand-soft">
+          <section className="platform-table-container mt-8 overflow-x-auto rounded-2xl border border-brand-border bg-surface">
             <div className="border-b border-brand-border px-5 py-4 text-sm font-bold text-text">
               Recent transactions
             </div>
-            <table className="w-full min-w-[760px] text-left text-sm">
-              <thead className="border-b border-brand-border text-[10px] uppercase tracking-wider text-accent">
+            <table className="platform-data-table w-full min-w-[760px] text-left text-sm">
+              <thead className="border-b border-brand-border bg-surface-raised text-[10px] uppercase tracking-wide text-muted">
                 <tr>
                   <th className="px-5 py-4">Plan / purpose</th>
                   <th className="px-5 py-4">Status</th>
@@ -355,7 +355,7 @@ export function SubscriptionsPage() {
                 {transactions.slice(0, 8).map((row) => (
                   <tr
                     key={row.transaction.transaction_uuid}
-                    className="border-b border-brand-border last:border-0"
+                    className="border-b border-brand-border text-sm transition-colors odd:bg-surface even:bg-surface-raised/35 last:border-0 hover:bg-brand-soft/70"
                   >
                     <td className="px-5 py-4">
                       <p className="font-semibold text-text">
