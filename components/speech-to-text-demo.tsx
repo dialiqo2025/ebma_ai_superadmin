@@ -840,7 +840,7 @@ export function SpeechToTextDemo() {
                 ? "File ready. Click Transcript to generate."
                 : "Waiting for a file.";
   const progressStatus = fileTx.uploading
-    ? fileTx.uploadProgress >= 100 ? "Starting transcription…" : "Uploading file…"
+    ? "Uploading file…"
     : fileTx.current?.status === "completed"
       ? "Complete"
       : `${fileTx.current?.stage || "Transcribing"}…`;
@@ -1445,13 +1445,11 @@ export function SpeechToTextDemo() {
                     <span
                       className={cx(
                         "h-1.5 w-1.5 shrink-0 rounded-full",
-                        fileTx.current?.status === "completed"
-                          ? "bg-success"
-                          : fileTx.current?.status === "failed"
-                            ? "bg-danger-soft"
-                            : uploadBusy
-                              ? "bg-cyan"
-                              : "bg-brand-soft",
+                        fileTx.current?.status === "failed"
+                          ? "bg-danger-soft"
+                          : uploadBusy
+                            ? "bg-cyan"
+                            : "bg-brand-soft",
                       )}
                     />
                     <span className="truncate text-[13px] text-muted">
