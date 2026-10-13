@@ -190,3 +190,45 @@ select option:checked {
 
 @keyframes fade-up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* Dual-thumb credit range: allow clicks through the track to the active thumb. */
+.credit-range {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  pointer-events: none;
+}
+.credit-range::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  height: 4px;
+  border: 0;
+  background: transparent;
+}
+.credit-range::-moz-range-track {
+  height: 4px;
+  border: 0;
+  background: transparent;
+}
+.credit-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border: 2px solid var(--theme-surface);
+  border-radius: 999px;
+  background: var(--theme-accent-strong);
+  box-shadow: 0 0 0 1px var(--theme-accent-strong);
+  pointer-events: auto;
+  cursor: grab;
+}
+.credit-range::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--theme-surface);
+  border-radius: 999px;
+  background: var(--theme-accent-strong);
+  box-shadow: 0 0 0 1px var(--theme-accent-strong);
+  pointer-events: auto;
+  cursor: grab;
+}
