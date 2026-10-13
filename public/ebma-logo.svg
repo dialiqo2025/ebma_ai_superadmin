@@ -1,11 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 100" width="280" height="100">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" width="280" height="80" role="img" aria-label="ebma.ai">
   <defs>
-    <linearGradient id="raygrad" x1="10" y1="10" x2="110" y2="110" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#5B4FE9"/><stop offset="100%" stop-color="#9B5CF6"/></linearGradient>
-    <linearGradient id="hubgrad" x1="45" y1="45" x2="75" y2="75" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#9B5CF6"/><stop offset="100%" stop-color="#5B4FE9"/></linearGradient>
-    <linearGradient id="textgrad" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#7C70F6"/><stop offset="100%" stop-color="#B978FF"/></linearGradient>
+    <linearGradient id="mark" x1="0" y1="0" x2="64" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6542E8"/>
+      <stop offset="100%" stop-color="#B7A5FF"/>
+    </linearGradient>
+    <linearGradient id="ai" x1="190" y1="10" x2="270" y2="70" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4D32C8"/>
+      <stop offset="100%" stop-color="#B7A5FF"/>
+    </linearGradient>
   </defs>
-  <g transform="translate(2,15) scale(0.6)">
-    <g transform="rotate(0 60 60)"><rect x="55.5" y="14" width="9" height="31" rx="4.5" fill="url(#raygrad)"/></g><g transform="rotate(45 60 60)"><rect x="56.5" y="22" width="7" height="23" rx="3.5" fill="url(#raygrad)"/></g><g transform="rotate(90 60 60)"><rect x="55.5" y="14" width="9" height="31" rx="4.5" fill="url(#raygrad)"/></g><g transform="rotate(135 60 60)"><rect x="56.5" y="22" width="7" height="23" rx="3.5" fill="url(#raygrad)"/></g><g transform="rotate(180 60 60)"><rect x="55.5" y="14" width="9" height="31" rx="4.5" fill="url(#raygrad)"/></g><g transform="rotate(225 60 60)"><rect x="56.5" y="22" width="7" height="23" rx="3.5" fill="url(#raygrad)"/></g><g transform="rotate(270 60 60)"><rect x="55.5" y="14" width="9" height="31" rx="4.5" fill="url(#raygrad)"/></g><g transform="rotate(315 60 60)"><rect x="56.5" y="22" width="7" height="23" rx="3.5" fill="url(#raygrad)"/></g><circle cx="60" cy="60" r="12.5" fill="url(#hubgrad)"/>
+  <!-- mark: brackets + wave -->
+  <g fill="url(#mark)" transform="translate(4,12)">
+    <path d="M18 4c-2 0-4 1.2-4 4v40c0 2.8 2 4 4 4 3 0 6-2.2 8-5.5L14 28 26 9.5C24 6.2 21 4 18 4z"/>
+    <rect x="28" y="30" width="6" height="8" rx="3"/>
+    <rect x="36" y="22" width="6" height="24" rx="3"/>
+    <rect x="44" y="14" width="6" height="40" rx="3"/>
+    <rect x="52" y="22" width="6" height="24" rx="3"/>
+    <path d="M66 4c2 0 4 1.2 4 4v40c0 2.8-2 4-4 4-3 0-6-2.2-8-5.5L78 28 66 9.5C68 6.2 71 4 66 4z" transform="translate(-12,0)"/>
   </g>
-  <g transform="translate(64,0)"><text x="0" y="78" font-family="Space Grotesk, Arial, sans-serif" font-weight="700" font-size="76" letter-spacing="-3" fill="url(#textgrad)">ebma</text></g>
+  <text x="88" y="52" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="42" letter-spacing="-1.5" fill="#1D1B2E">ebma</text>
+  <circle cx="198" cy="48" r="4" fill="#6542E8"/>
+  <text x="206" y="52" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="42" fill="url(#ai)">ai</text>
 </svg>

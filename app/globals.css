@@ -1,36 +1,35 @@
 @import "tailwindcss";
 
 /*
- * EBMA brand controls — aligned with the classic logo (indigo → violet).
- * Logo stops: #5B4FE9 → #9B5CF6 (text #7C70F6 → #B978FF).
- * Warm ivory surfaces in light mode; charcoal in dark. Default UI theme is light.
+ * ebma.ai brand — palette from brand kit:
+ * Primary #6542E8 · Deep #4D32C8 · Lavender #B7A5FF · Soft BG #F3F0FF · Slate #667085
  */
 :root {
   color-scheme: dark;
-  --theme-page: #202020;
-  --theme-page-deep: #191919;
-  --theme-sidebar: #292929;
-  --theme-nav-active: #393939;
-  --theme-surface: #272727;
-  --theme-surface-raised: #303030;
-  --theme-surface-high: #393939;
-  --theme-border: #464646;
-  --theme-border-strong: #5b5b5b;
-  --theme-text: #f5f3ef;
-  --theme-muted: #aaa7a2;
-  --theme-faint: #85817c;
-  --theme-blue: #5b4fe9;
-  --theme-purple: #9b5cf6;
-  --theme-cyan: #b978ff;
-  --theme-accent: #b978ff;
-  --theme-accent-strong: #9b5cf6;
-  --theme-accent-soft: #303030;
+  --theme-page: #0f0f14;
+  --theme-page-deep: #0a0a0e;
+  --theme-sidebar: #16161d;
+  --theme-nav-active: #22222c;
+  --theme-surface: #1a1a22;
+  --theme-surface-raised: #22222c;
+  --theme-surface-high: #2b2b36;
+  --theme-border: #32323f;
+  --theme-border-strong: #454555;
+  --theme-text: #f4f2ff;
+  --theme-muted: #a8a3b8;
+  --theme-faint: #7d7890;
+  --theme-blue: #6542e8;
+  --theme-purple: #4d32c8;
+  --theme-cyan: #b7a5ff;
+  --theme-accent: #b7a5ff;
+  --theme-accent-strong: #6542e8;
+  --theme-accent-soft: #22222c;
   --theme-accent-border: var(--theme-border);
-  --theme-brand-gradient: linear-gradient(105deg, var(--theme-blue) 0%, var(--theme-purple) 55%, var(--theme-cyan) 100%);
-  --theme-brand-gradient-short: linear-gradient(110deg, var(--theme-blue) 0%, var(--theme-purple) 100%);
-  --theme-auth-visual: radial-gradient(circle at 30% 45%, rgb(91 79 233 / 16%), transparent 33%), linear-gradient(145deg, #1a1f35, #141a30);
-  --theme-landing-hero: radial-gradient(circle at 72% 32%, rgb(91 79 233 / 14%), transparent 29%), linear-gradient(180deg, #202020, #141a30);
-  --theme-header: rgb(32 32 32 / 92%);
+  --theme-brand-gradient: linear-gradient(105deg, var(--theme-blue) 0%, var(--theme-blue) 55%, var(--theme-blue) 100%);
+  --theme-brand-gradient-short: linear-gradient(110deg, var(--theme-blue) 0%, var(--theme-cyan) 100%);
+  --theme-auth-visual: radial-gradient(circle at 30% 45%, rgb(101 66 232 / 22%), transparent 33%), linear-gradient(145deg, #12101f, #0c0b14);
+  --theme-landing-hero: radial-gradient(circle at 72% 32%, rgb(101 66 232 / 18%), transparent 29%), linear-gradient(180deg, #0f0f14, #12101f);
+  --theme-header: rgb(15 15 20 / 92%);
   --theme-overlay: rgb(0 0 0 / 70%);
   --theme-danger: #ff7186;
   --theme-danger-soft: rgb(205 46 78 / 17%);
@@ -45,26 +44,26 @@
 
 :root[data-theme="light"] {
   color-scheme: light;
-  --theme-page: #f7f4ef;
-  --theme-page-deep: #f1ede7;
-  --theme-sidebar: #fffefa;
-  --theme-nav-active: #f7f4ef;
-  --theme-surface: #fffefa;
-  --theme-surface-raised: #f1ede7;
-  --theme-surface-high: #e9e4dd;
-  --theme-border: #e0dbd3;
-  --theme-border-strong: #c9c2b9;
-  --theme-text: #242321;
-  --theme-muted: #625f5a;
-  --theme-faint: #827c74;
-  --theme-accent: var(--theme-muted);
-  --theme-accent-strong: #5b4fe9;
-  --theme-accent-soft: #f1ede7;
+  --theme-page: #f3f0ff;
+  --theme-page-deep: #ebe6ff;
+  --theme-sidebar: #ffffff;
+  --theme-nav-active: #ebe6ff;
+  --theme-surface: #ffffff;
+  --theme-surface-raised: #f3f0ff;
+  --theme-surface-high: #e8e2ff;
+  --theme-border: #ddd6f5;
+  --theme-border-strong: #c4bbe8;
+  --theme-text: #1d1b2e;
+  --theme-muted: #667085;
+  --theme-faint: #8b849c;
+  --theme-accent: #4d32c8;
+  --theme-accent-strong: #6542e8;
+  --theme-accent-soft: #ebe6ff;
   --theme-accent-border: var(--theme-border);
-  --theme-auth-visual: radial-gradient(circle at 30% 45%, rgb(91 79 233 / 10%), transparent 33%), linear-gradient(145deg, #fffefa, #f1ede7);
-  --theme-landing-hero: radial-gradient(circle at 72% 32%, rgb(91 79 233 / 9%), transparent 29%), linear-gradient(180deg, #fffefa, #f7f4ef);
-  --theme-header: rgb(255 254 250 / 94%);
-  --theme-overlay: rgb(36 35 33 / 46%);
+  --theme-auth-visual: radial-gradient(circle at 30% 45%, rgb(101 66 232 / 12%), transparent 33%), linear-gradient(145deg, #ffffff, #f3f0ff);
+  --theme-landing-hero: radial-gradient(circle at 72% 32%, rgb(101 66 232 / 10%), transparent 29%), linear-gradient(180deg, #ffffff, #f3f0ff);
+  --theme-header: rgb(255 255 255 / 94%);
+  --theme-overlay: rgb(29 27 46 / 46%);
   --theme-danger: #b72143;
   --theme-danger-soft: #fbe9ed;
   --theme-danger-border: #e9b9c3;
@@ -125,7 +124,7 @@
   ::selection { color: var(--theme-text); background: var(--theme-accent-soft); }
 }
 
-/* Standard cell dimensions match the Usage records table across the platform. */
+/* Shared list-table geometry for the customer and admin workspaces. */
 .platform-table-container { width: 100%; max-width: 1210px; margin-inline: auto; }
 .platform-data-table { width: 100%; border-collapse: collapse; text-align: left; }
 .platform-data-table thead { background-color: var(--theme-surface-raised); color: var(--theme-muted); }
@@ -163,6 +162,45 @@
   outline: none;
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent-strong) 22%, transparent);
 }
+
+.tts-range-slider {
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  outline: none;
+}
+.tts-range-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: transparent;
+}
+.tts-range-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: transparent;
+}
+.tts-range-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -5px;
+  border: 2px solid var(--theme-surface);
+  border-radius: 9999px;
+  background: var(--theme-brand-gradient-short);
+  box-shadow: 0 0 0 1px var(--theme-accent-strong);
+}
+.tts-range-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--theme-surface);
+  border-radius: 9999px;
+  background: var(--theme-brand-gradient-short);
+  box-shadow: 0 0 0 1px var(--theme-accent-strong);
+}
+.tts-range-slider:focus-visible::-webkit-slider-thumb,
+.tts-range-slider:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent-strong) 25%, transparent);
+}
 .bg-theme-header { background-color: var(--theme-header); }
 .bg-theme-overlay { background-color: var(--theme-overlay); }
 button.bg-brand-soft:not(.border-0) {
@@ -184,51 +222,33 @@ select option:checked {
   background-color: var(--theme-nav-active);
   color: var(--theme-text);
 }
-[class*="bg-[linear-gradient(90deg,rgba(91,79,233"] { background-image: var(--theme-brand-gradient-short); }
+[class*="bg-[linear-gradient(90deg,rgba(101,66,232)"] { background-image: var(--theme-brand-gradient-short); }
+[class*="bg-[linear-gradient(90deg,rgba(101,66,232"] { background-image: var(--theme-brand-gradient-short); }
 [class*="linear-gradient(145deg,#0d1020"] { background-image: var(--theme-auth-visual); }
 [class*="linear-gradient(180deg,#090b17"] { background-image: var(--theme-landing-hero); }
 
 @keyframes fade-up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 @keyframes spin { to { transform: rotate(360deg); } }
+@keyframes logo-breathe {
+  0%, 100% { opacity: 0.28; transform: scale(0.96); }
+  50% { opacity: 1; transform: scale(1); }
+}
+.animate-logo-breathe {
+  animation: logo-breathe 1.4s ease-in-out infinite;
+}
 
-/* Dual-thumb credit range: allow clicks through the track to the active thumb. */
-.credit-range {
-  -webkit-appearance: none;
-  appearance: none;
-  background: transparent;
-  pointer-events: none;
+/* Dashboard TTS card — purple gradient waveform bars */
+.tts-wave-bar {
+  background-image: linear-gradient(
+    180deg,
+    #b7a5ff 0%,
+    var(--theme-blue) 48%,
+    var(--theme-purple) 100%
+  );
+  transform-origin: bottom center;
+  animation: tts-wave-pulse 1.15s ease-in-out infinite;
 }
-.credit-range::-webkit-slider-runnable-track {
-  -webkit-appearance: none;
-  height: 4px;
-  border: 0;
-  background: transparent;
-}
-.credit-range::-moz-range-track {
-  height: 4px;
-  border: 0;
-  background: transparent;
-}
-.credit-range::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  margin-top: -6px;
-  border: 2px solid var(--theme-surface);
-  border-radius: 999px;
-  background: var(--theme-accent-strong);
-  box-shadow: 0 0 0 1px var(--theme-accent-strong);
-  pointer-events: auto;
-  cursor: grab;
-}
-.credit-range::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
-  border: 2px solid var(--theme-surface);
-  border-radius: 999px;
-  background: var(--theme-accent-strong);
-  box-shadow: 0 0 0 1px var(--theme-accent-strong);
-  pointer-events: auto;
-  cursor: grab;
+@keyframes tts-wave-pulse {
+  0%, 100% { transform: scaleY(0.55); opacity: 0.85; }
+  50% { transform: scaleY(1); opacity: 1; }
 }

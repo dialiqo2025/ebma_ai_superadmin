@@ -10,7 +10,7 @@ const base =
 
 const variants = {
   primary:
-    "border-0 text-on-brand bg-brand-gradient shadow-[0_9px_28px_rgba(91,79,233,.25),inset_0_1px_rgba(255,255,255,.15)] hover:shadow-[0_12px_34px_rgba(91,79,233,.4),inset_0_1px_rgba(255,255,255,.2)]",
+    "border-0 text-on-brand bg-brand-gradient shadow-[0_9px_28px_rgba(101,66,232,.25),inset_0_1px_rgba(255,255,255,.15)] hover:shadow-[0_12px_34px_rgba(101,66,232,.4),inset_0_1px_rgba(255,255,255,.2)]",
   outline: "border border-border bg-surface",
   ghost: "border border-border bg-transparent",
   quiet:

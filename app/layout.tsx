@@ -10,11 +10,12 @@ export const metadata: Metadata = {
   description: "Build intelligent voice and language experiences with ebma AI.",
   icons: {
     icon: [
-      { url: "/ebma-mark.svg", type: "image/svg+xml" },
-      { url: "/favicon.png", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.png", type: "image/png", sizes: "256x256" },
+      { url: "/ebma-icon.png", type: "image/png", sizes: "512x512" },
     ],
-    apple: "/favicon.png",
-    shortcut: "/favicon.png",
+    apple: "/ebma-icon.png",
+    shortcut: "/favicon.ico",
   },
 };
 

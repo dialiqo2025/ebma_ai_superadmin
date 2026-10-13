@@ -675,7 +675,7 @@ export function AdminUsers() {
                   <button
                     type="submit"
                     disabled={planSaving || !selectedPlanUuid}
-                    className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#5d50e8] py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#6542e8] py-2.5 text-sm font-semibold text-white disabled:opacity-50"
                   >
                     <CreditCard size={15} />
                     {planSaving ? "Assigning…" : "Assign plan"}

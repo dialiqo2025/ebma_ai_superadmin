@@ -13,7 +13,7 @@ const labelClass =
   "[&>span:first-child]:mb-2 [&>span:first-child]:block [&>span:first-child]:text-[12px] [&>span:first-child]:font-[750] [&>span:first-child]:uppercase [&>span:first-child]:tracking-[0.08em] [&>span:first-child]:text-muted";
 
 const inputClass =
-  "h-[47px] w-full rounded-[10px] border border-brand-border bg-brand-soft px-[13px] text-xs text-text outline-none transition duration-200 placeholder:text-muted focus:border-brand-border focus:shadow-[0_0_0_3px_rgba(91,79,233,.11)]";
+  "h-[47px] w-full rounded-[10px] border border-brand-border bg-brand-soft px-[13px] text-xs text-text outline-none transition duration-200 placeholder:text-muted focus:border-brand-border focus:shadow-[0_0_0_3px_rgba(101,66,232,.11)]";
 
 export function ChangePasswordForm() {
   const { user, token } = useAuth();

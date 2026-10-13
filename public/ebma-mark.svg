@@ -1,5 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
-  <defs><linearGradient id="g" x1="10" y1="10" x2="110" y2="110" gradientUnits="userSpaceOnUse"><stop stop-color="#5B4FE9"/><stop offset="1" stop-color="#9B5CF6"/></linearGradient></defs>
-  <rect width="120" height="120" rx="28" fill="#141A30"/>
-  <g fill="url(#g)"><rect x="55.5" y="13" width="9" height="33" rx="4.5"/><rect x="55.5" y="74" width="9" height="33" rx="4.5"/><rect x="74" y="55.5" width="33" height="9" rx="4.5"/><rect x="13" y="55.5" width="33" height="9" rx="4.5"/><rect x="78" y="24" width="7" height="26" rx="3.5" transform="rotate(45 81.5 37)"/><rect x="35" y="70" width="7" height="26" rx="3.5" transform="rotate(45 38.5 83)"/><rect x="70" y="78" width="26" height="7" rx="3.5" transform="rotate(45 83 81.5)"/><rect x="24" y="35" width="26" height="7" rx="3.5" transform="rotate(45 37 38.5)"/><circle cx="60" cy="60" r="13"/></g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="ebma">
+  <defs>
+    <linearGradient id="g" x1="10" y1="20" x2="110" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6542E8"/>
+      <stop offset="100%" stop-color="#B7A5FF"/>
+    </linearGradient>
+  </defs>
+  <g fill="url(#g)">
+    <path d="M28 18c-4 0-8 2.5-8 8v68c0 5.5 4 8 8 8 6 0 12-4.5 16-11L18 60 44 29c-4-6.5-10-11-16-11z"/>
+    <rect x="42" y="54" width="10" height="12" rx="5"/>
+    <rect x="56" y="40" width="10" height="40" rx="5"/>
+    <rect x="70" y="26" width="10" height="68" rx="5"/>
+    <rect x="84" y="40" width="10" height="40" rx="5"/>
+    <path d="M108 18c4 0 8 2.5 8 8v68c0 5.5-4 8-8 8-6 0-12-4.5-16-11L118 60 92 29c4-6.5 10-11 16-11z"/>
+  </g>
 </svg>

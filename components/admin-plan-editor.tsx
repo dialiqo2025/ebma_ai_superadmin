@@ -64,7 +64,7 @@ const blank: FormState = {
 };
 
 const input =
-  "h-10 rounded-lg border border-[#293354] bg-[#10172d] px-3 text-sm text-white outline-none focus:border-[#6558e9]";
+  "h-10 rounded-lg border border-[#293354] bg-[#10172d] px-3 text-sm text-white outline-none focus:border-[#6542e8]";
 
 export function AdminPlanEditorPage({ editId }: { editId?: string }) {
   const router = useRouter();
@@ -282,7 +282,7 @@ export function AdminPlanEditorPage({ editId }: { editId?: string }) {
               Customer benefits (one per line)
               <textarea
                 rows={6}
-                className="rounded-lg border border-[#293354] bg-[#10172d] p-3 text-sm text-white outline-none focus:border-[#6558e9]"
+                className="rounded-lg border border-[#293354] bg-[#10172d] p-3 text-sm text-white outline-none focus:border-[#6542e8]"
                 value={form.benefits}
                 onChange={(e) => update("benefits", e.target.value)}
               />
@@ -317,7 +317,7 @@ export function AdminPlanEditorPage({ editId }: { editId?: string }) {
 
           <button
             disabled={saving}
-            className="mt-7 flex items-center gap-2 rounded-lg bg-[#5d50e8] px-5 py-2.5 text-xs font-semibold text-white disabled:opacity-50"
+            className="mt-7 flex items-center gap-2 rounded-lg bg-[#6542e8] px-5 py-2.5 text-xs font-semibold text-white disabled:opacity-50"
           >
             <Save size={15} />
             {saving ? "Saving…" : editId ? "Save changes" : "Create plan"}

@@ -35,7 +35,7 @@ const labelClass =
   "[&>span:first-child]:mb-2 [&>span:first-child]:block [&>span:first-child]:text-[12px] [&>span:first-child]:font-[750] [&>span:first-child]:uppercase [&>span:first-child]:tracking-[0.08em] [&>span:first-child]:text-muted";
 
 const inputClass =
-  "h-[47px] w-full rounded-[10px] border border-brand-border bg-brand-soft px-[13px] text-xs text-text outline-none transition duration-200 placeholder:text-muted focus:border-brand-border focus:shadow-[0_0_0_3px_rgba(91,79,233,.11)]";
+  "h-[47px] w-full rounded-[10px] border border-brand-border bg-brand-soft px-[13px] text-xs text-text outline-none transition duration-200 placeholder:text-muted focus:border-brand-border focus:shadow-[0_0_0_3px_rgba(101,66,232,.11)]";
 
 function FieldHint({ message }: { message?: string }) {
   if (!message) return null;
@@ -44,7 +44,7 @@ function FieldHint({ message }: { message?: string }) {
 
 function AuthVisual() {
   return (
-    <div className="relative overflow-hidden border-r border-brand-border bg-[radial-gradient(circle_at_30%_45%,rgba(91,79,233,.2),transparent_33%),linear-gradient(145deg,#0d1020,#080a14)] max-[820px]:hidden">
+    <div className="relative overflow-hidden border-r border-brand-border bg-[radial-gradient(circle_at_30%_45%,rgba(101,66,232,.2),transparent_33%),linear-gradient(145deg,#0d1020,#080a14)] max-[820px]:hidden">
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.12] [background-image:linear-gradient(rgba(130,140,190,.16)_1px,transparent_1px),linear-gradient(90deg,rgba(130,140,190,.16)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:linear-gradient(to_bottom,black,transparent_78%)]"
         aria-hidden
@@ -426,7 +426,7 @@ export function AuthPage() {
                 Back
               </button>
 
-              <div className="mx-auto mb-[22px] grid h-[55px] w-[55px] place-items-center rounded-2xl border border-brand-border bg-brand-soft text-accent shadow-[0_0_45px_rgba(91,79,233,.13)]">
+              <div className="mx-auto mb-[22px] grid h-[55px] w-[55px] place-items-center rounded-2xl border border-brand-border bg-brand-soft text-accent shadow-[0_0_45px_rgba(101,66,232,.13)]">
                 <Mail />
               </div>
 
@@ -466,7 +466,7 @@ export function AuthPage() {
                       inputMode="numeric"
                       maxLength={1}
                       aria-label={`OTP digit ${index + 1}`}
-                      className="h-[57px] w-[51px] rounded-[10px] border border-brand-border bg-brand-soft text-center font-heading text-xl font-semibold text-text outline-none focus:border-brand-border focus:shadow-[0_0_0_3px_rgba(91,79,233,.12)] max-[560px]:h-[52px] max-[560px]:w-[43px]"
+                      className="h-[57px] w-[51px] rounded-[10px] border border-brand-border bg-brand-soft text-center font-heading text-xl font-semibold text-text outline-none focus:border-brand-border focus:shadow-[0_0_0_3px_rgba(101,66,232,.12)] max-[560px]:h-[52px] max-[560px]:w-[43px]"
                     />
                   ))}
                 </div>

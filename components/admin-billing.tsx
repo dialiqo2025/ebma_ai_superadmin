@@ -550,7 +550,7 @@ export function AdminUsageSettings() {
           onClick={() => {
             window.location.href = "/platform/admin/plans";
           }}
-          className="mt-5 rounded-lg bg-[#5d50e8] px-4 py-2.5 text-sm font-semibold text-white"
+          className="mt-5 rounded-lg bg-[#6542e8] px-4 py-2.5 text-sm font-semibold text-white"
         >
           Go to Plans and pricing
         </button>

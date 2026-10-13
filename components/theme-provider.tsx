@@ -7,7 +7,7 @@ type ThemeContextValue = { theme: Theme; setTheme: (theme: Theme) => void };
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 /** Bump when default/palette changes so stale dark prefs don’t stick. */
-const STORAGE_KEY = "ebma-color-theme-v3";
+const STORAGE_KEY = "ebma-color-theme-v4";
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("light");

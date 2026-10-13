@@ -170,7 +170,7 @@ export function LandingPage() {
         </div>
       </nav>
 
-      <section className="relative min-h-[850px] bg-[radial-gradient(circle_at_72%_32%,rgba(91,79,233,.14),transparent_29%),linear-gradient(180deg,#090b17,#0a0d1a)] pt-20 max-[820px]:min-h-0 max-[820px]:pt-[68px] max-[560px]:min-h-0">
+      <section className="relative min-h-[850px] bg-[radial-gradient(circle_at_72%_32%,rgba(101,66,232,.14),transparent_29%),linear-gradient(180deg,#090b17,#0a0d1a)] pt-20 max-[820px]:min-h-0 max-[820px]:pt-[68px] max-[560px]:min-h-0">
         <div className="pointer-events-none absolute -left-[380px] -top-[250px] h-[760px] w-[760px] rounded-full bg-brand-soft opacity-[.12] blur-[160px]" />
         <div
           className="pointer-events-none absolute inset-0 opacity-[.12] [background-image:linear-gradient(rgba(130,140,190,.16)_1px,transparent_1px),linear-gradient(90deg,rgba(130,140,190,.16)_1px,transparent_1px)] [background-size:72px_72px] [mask-image:linear-gradient(to_bottom,black,transparent_78%)]"
@@ -461,7 +461,7 @@ export function LandingPage() {
       </section>
 
       <section
-        className="relative bg-bg-deep py-[120px] before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_80%_50%,rgba(91,79,233,.13),transparent_30%)] before:content-[''] max-[820px]:py-[90px]"
+        className="relative bg-bg-deep py-[120px] before:pointer-events-none before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_80%_50%,rgba(101,66,232,.13),transparent_30%)] before:content-[''] max-[820px]:py-[90px]"
         id="developers"
       >
         <div className={cx(container, "relative grid grid-cols-[0.9fr_1.1fr] items-center gap-[95px] max-[820px]:grid-cols-1 max-[820px]:gap-[55px]")}>
@@ -594,7 +594,7 @@ export function LandingPage() {
           <div className="mt-[50px] grid grid-cols-[1.25fr_1fr_1fr] gap-[18px] max-[820px]:grid-cols-2 max-[560px]:grid-cols-1">
             <div className="relative min-h-[384px] overflow-hidden rounded-[18px] border border-brand-border bg-brand-soft p-[27px] max-[820px]:col-span-full max-[560px]:col-span-auto">
               <div className="relative -mx-[27px] -mt-[27px] mb-[26px] h-[152px] border-b border-brand-border bg-surface">
-                <div className="absolute left-[65px] top-[37px] grid h-[76px] w-[76px] place-items-center rounded-full border border-brand-border bg-brand-soft text-accent shadow-[0_0_0_10px_rgba(91,79,233,.05),0_0_0_20px_rgba(91,79,233,.025)]">
+                <div className="absolute left-[65px] top-[37px] grid h-[76px] w-[76px] place-items-center rounded-full border border-brand-border bg-brand-soft text-accent shadow-[0_0_0_10px_rgba(101,66,232,.05),0_0_0_20px_rgba(101,66,232,.025)]">
                   <Headphones />
                   <span className="absolute bottom-[5px] right-[3px] h-[13px] w-[13px] rounded-full border-[3px] border-brand-border bg-success" />
                 </div>

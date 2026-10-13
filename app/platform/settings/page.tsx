@@ -47,7 +47,7 @@ export default function SettingsPage() {
       <div className="grid items-stretch gap-5 lg:grid-cols-2">
         <section className="rounded-[14px] border border-brand-border bg-brand-soft p-5 sm:p-6">
           <div className="flex items-center gap-4 border-b border-brand-border pb-5">
-            <div className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[linear-gradient(135deg,#654df3,#bc62f6)] text-lg font-semibold text-white shadow-[0_6px_18px_rgba(116,76,235,.2)]">
+            <div className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[linear-gradient(135deg,#6542e8,#bc62f6)] text-lg font-semibold text-white shadow-[0_6px_18px_rgba(116,76,235,.2)]">
               {initials || "U"}
             </div>
             <div className="min-w-0">
