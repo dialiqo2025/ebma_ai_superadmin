@@ -254,7 +254,11 @@ export function AdminUserUsage() {
             <div className="min-w-0">
               <p className="text-xs text-muted">{label}</p>
               <p className="mt-1 truncate text-xl font-bold leading-none text-text">
-                {value === undefined ? "—" : label.includes("Credits") ? credits(value) : number(value)}
+                {value === undefined
+                  ? "—"
+                  : label.includes("Credits")
+                    ? `${number(Math.round(value))} cr`
+                    : number(value)}
               </p>
             </div>
           </div>

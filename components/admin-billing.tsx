@@ -440,15 +440,15 @@ export function AdminPlanEditor({ editId }: { editId?: string }) {
 
           {form.planKind === "service" && !form.contactOnly && (
             <div className="mt-6">
-              <h2 className="text-sm font-bold text-white">Usage rates (wallet)</h2>
-              <p className="mt-1 mb-4 text-xs text-[#74809e]">
+              <h2 className="text-sm font-bold text-text">Usage rates (wallet)</h2>
+              <p className="mt-1 mb-4 text-xs text-muted">
                 Same configuration previously under Usage Settings. 1 credit = ₹1.
               </p>
               <PlanRatesEditor value={rateBundle} onChange={setRateBundle} />
             </div>
           )}
 
-          <div className="mt-4 flex flex-wrap gap-5 text-sm text-[#b6c0d6]">
+          <div className="mt-4 flex flex-wrap gap-5 text-sm text-text">
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -540,8 +540,8 @@ export function AdminUsageSettings() {
       title="Usage Settings moved"
       description="Configure TTS, STT, and LLM wallet rates on each plan under Plans and pricing."
     >
-      <div className="mt-8 rounded-2xl border border-[#293354] bg-[#101832] p-6">
-        <p className="text-sm text-[#aeb9d2]">
+      <div className="mt-8 rounded-2xl border border-brand-border bg-surface-raised p-6">
+        <p className="text-sm text-text">
           Global usage settings are no longer used. Open a plan to edit charge rules (credits per
           characters / minutes / tokens). Assign that plan to users from User management.
         </p>
@@ -550,7 +550,7 @@ export function AdminUsageSettings() {
           onClick={() => {
             window.location.href = "/platform/admin/plans";
           }}
-          className="mt-5 rounded-lg bg-[#6542e8] px-4 py-2.5 text-sm font-semibold text-white"
+          className="mt-5 rounded-lg bg-brand-gradient px-4 py-2.5 text-sm font-semibold text-on-brand"
         >
           Go to Plans and pricing
         </button>

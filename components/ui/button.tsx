@@ -15,7 +15,7 @@ const variants = {
   ghost: "border border-border bg-transparent",
   quiet:
     "border border-border bg-surface-raised text-text",
-  light: "border-0 bg-white text-accent",
+  light: "border-0 bg-surface text-accent",
   glass:
     "border border-border bg-surface-raised text-text",
 } as const;

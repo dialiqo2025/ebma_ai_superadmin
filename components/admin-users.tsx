@@ -598,13 +598,13 @@ export function AdminUsers() {
       )}
 
       {(planUser || planLoading) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-theme-overlay p-4">
           <form
             onSubmit={assignPlan}
-            className="w-full max-w-md rounded-2xl border border-[#293354] bg-[#0c1225] p-6 shadow-2xl"
+            className="w-full max-w-md rounded-2xl border border-brand-border bg-surface p-6 shadow-2xl"
           >
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white">Assign plan</h2>
+              <h2 className="text-lg font-bold text-text">Assign plan</h2>
               <button
                 type="button"
                 onClick={closePlanModal}
@@ -616,37 +616,37 @@ export function AdminUsers() {
             </div>
 
             {planLoading ? (
-              <p className="mt-6 text-sm text-[#74809e]">Loading plans…</p>
+              <p className="mt-6 text-sm text-muted">Loading plans…</p>
             ) : planUser ? (
               <>
-                <p className="mt-2 truncate text-sm text-[#8995b3]" title={planUser.email}>
+                <p className="mt-2 truncate text-sm text-muted" title={planUser.email}>
                   {planUser.fullName} · {formatDisplayEmail(planUser.email)}
                 </p>
-                <div className="mt-4 rounded-xl border border-[#243056] bg-[#101832] p-4">
-                  <p className="text-[11px] uppercase tracking-wider text-[#74809e]">
+                <div className="mt-4 rounded-xl border border-brand-border bg-surface-raised p-4">
+                  <p className="text-[11px] uppercase tracking-wider text-muted">
                     Current plan
                   </p>
-                  <p className="mt-1 text-lg font-semibold text-white">
+                  <p className="mt-1 text-lg font-semibold text-text">
                     {planWallet?.planName || "No plan"}
                   </p>
                   {planWallet?.planCode && (
-                    <p className="mt-1 text-xs text-[#74809e]">{planWallet.planCode}</p>
+                    <p className="mt-1 text-xs text-muted">{planWallet.planCode}</p>
                   )}
                 </div>
 
                 {planSuccess && (
-                  <p className="mt-4 rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm text-emerald-200">
+                  <p className="mt-4 rounded-lg border border-success-border bg-success-soft px-3 py-2 text-sm text-success">
                     {planSuccess}
                   </p>
                 )}
 
-                <label className="mt-4 block text-xs text-[#8995b3]">
+                <label className="mt-4 block text-xs text-muted">
                   Service plan
                   <select
                     required
                     value={selectedPlanUuid}
                     onChange={(event) => setSelectedPlanUuid(event.target.value)}
-                    className="mt-1 h-10 w-full rounded-lg border border-[#293354] bg-[#10172d] px-3 text-sm text-white outline-none"
+                    className="mt-1 h-10 w-full rounded-lg border border-brand-border bg-surface px-3 text-sm text-text outline-none"
                   >
                     {plans.map((plan) => (
                       <option key={plan.plan_uuid} value={plan.plan_uuid}>
@@ -659,7 +659,7 @@ export function AdminUsers() {
                     ))}
                   </select>
                 </label>
-                <p className="mt-2 text-xs text-[#74809e]">
+                <p className="mt-2 text-xs text-muted">
                   Usage rates from the selected plan apply on the user’s next STT/TTS/LLM
                   charges.
                 </p>
@@ -668,14 +668,14 @@ export function AdminUsers() {
                   <button
                     type="button"
                     onClick={closePlanModal}
-                    className="flex-1 rounded-lg border border-[#293354] py-2.5 text-sm text-[#b6c0d6] hover:text-white"
+                    className="flex-1 rounded-lg border border-brand-border py-2.5 text-sm text-muted hover:text-text"
                   >
                     Close
                   </button>
                   <button
                     type="submit"
                     disabled={planSaving || !selectedPlanUuid}
-                    className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#6542e8] py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-brand-gradient py-2.5 text-sm font-semibold text-on-brand disabled:opacity-50"
                   >
                     <CreditCard size={15} />
                     {planSaving ? "Assigning…" : "Assign plan"}

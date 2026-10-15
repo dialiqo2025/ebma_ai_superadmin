@@ -64,7 +64,7 @@ const blank: FormState = {
 };
 
 const input =
-  "h-10 rounded-lg border border-[#293354] bg-[#10172d] px-3 text-sm text-white outline-none focus:border-[#6542e8]";
+  "h-10 rounded-lg border border-brand-border bg-surface px-3 text-sm text-text outline-none focus:border-brand";
 
 export function AdminPlanEditorPage({ editId }: { editId?: string }) {
   const router = useRouter();
@@ -150,31 +150,31 @@ export function AdminPlanEditorPage({ editId }: { editId?: string }) {
   };
 
   return (
-    <main className="mx-auto max-w-6xl text-[#d7def0]">
-      <p className="font-mono text-[11px] tracking-[.24em] text-[#8f82ff]">CONTROL PANEL</p>
-      <h1 className="mt-3 text-4xl font-extrabold text-white">
+    <main className="mx-auto max-w-6xl text-text">
+      <p className="font-mono text-[11px] tracking-[.24em] text-accent">CONTROL PANEL</p>
+      <h1 className="mt-3 text-4xl font-extrabold text-text">
         {editId ? "Edit plan" : "Create plan"}
       </h1>
-      <p className="mt-3 text-sm text-[#8995b3]">
+      <p className="mt-3 text-sm text-muted">
         Set wallet usage rates per plan (TTS, STT, LLM). 1 credit = ₹1.
       </p>
       <button
         type="button"
         onClick={() => router.push("/platform/admin/plans")}
-        className="mt-6 flex items-center gap-2 text-sm text-[#a99af3] hover:text-white"
+        className="mt-6 flex items-center gap-2 text-sm text-accent hover:text-text"
       >
         <ArrowLeft size={16} />
         Back to plan catalogue
       </button>
       {loading ? (
-        <p className="mt-8 text-sm text-[#74809e]">Loading plan…</p>
+        <p className="mt-8 text-sm text-muted">Loading plan…</p>
       ) : (
         <form
           onSubmit={submit}
-          className="mt-6 rounded-2xl border border-[#293354] bg-[#101832] p-6"
+          className="mt-6 rounded-2xl border border-brand-border bg-surface p-6"
         >
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <label className="grid gap-1 text-xs text-[#8995b3]">
+            <label className="grid gap-1 text-xs text-muted">
               Code
               <input
                 required
@@ -183,7 +183,7 @@ export function AdminPlanEditorPage({ editId }: { editId?: string }) {
                 onChange={(e) => update("code", e.target.value)}
               />
             </label>
-            <label className="grid gap-1 text-xs text-[#8995b3]">
+            <label className="grid gap-1 text-xs text-muted">
               Plan name
               <input
                 required
@@ -192,7 +192,7 @@ export function AdminPlanEditorPage({ editId }: { editId?: string }) {
                 onChange={(e) => update("name", e.target.value)}
               />
             </label>
-            <label className="grid gap-1 text-xs text-[#8995b3]">
+            <label className="grid gap-1 text-xs text-muted">
               Display price
               <input
                 type="number"
@@ -203,7 +203,7 @@ export function AdminPlanEditorPage({ editId }: { editId?: string }) {
                 onChange={(e) => update("price", e.target.value)}
               />
             </label>
-            <label className="grid gap-1 text-xs text-[#8995b3]">
+            <label className="grid gap-1 text-xs text-muted">
               Currency
               <select
                 className={input}
@@ -215,7 +215,7 @@ export function AdminPlanEditorPage({ editId }: { editId?: string }) {
                 <option>EUR</option>
               </select>
             </label>
-            <label className="grid gap-1 text-xs text-[#8995b3] md:col-span-2">
+            <label className="grid gap-1 text-xs text-muted md:col-span-2">
               Short description
               <input
                 className={input}
@@ -223,7 +223,7 @@ export function AdminPlanEditorPage({ editId }: { editId?: string }) {
                 onChange={(e) => update("description", e.target.value)}
               />
             </label>
-            <label className="grid gap-1 text-xs text-[#8995b3]">
+            <label className="grid gap-1 text-xs text-muted">
               Plan type
               <select
                 className={input}
@@ -236,7 +236,7 @@ export function AdminPlanEditorPage({ editId }: { editId?: string }) {
             </label>
           </div>
 
-          <div className="mt-5 flex flex-wrap gap-5 text-sm text-[#b6c0d6]">
+          <div className="mt-5 flex flex-wrap gap-5 text-sm text-text">
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -263,8 +263,8 @@ export function AdminPlanEditorPage({ editId }: { editId?: string }) {
           </div>
 
           <section className="mt-8">
-            <h2 className="text-sm font-bold text-white">Usage rates (wallet)</h2>
-            <p className="mt-1 text-xs text-[#74809e]">
+            <h2 className="text-sm font-bold text-text">Usage rates (wallet)</h2>
+            <p className="mt-1 text-xs text-muted">
               These rates apply to users assigned this plan. Previously configured under Usage
               settings.
             </p>
@@ -278,17 +278,17 @@ export function AdminPlanEditorPage({ editId }: { editId?: string }) {
           </section>
 
           <div className="mt-6 grid gap-5 md:grid-cols-2">
-            <label className="grid gap-1 text-xs text-[#8995b3]">
+            <label className="grid gap-1 text-xs text-muted">
               Customer benefits (one per line)
               <textarea
                 rows={6}
-                className="rounded-lg border border-[#293354] bg-[#10172d] p-3 text-sm text-white outline-none focus:border-[#6542e8]"
+                className="rounded-lg border border-brand-border bg-surface p-3 text-sm text-text outline-none focus:border-brand"
                 value={form.benefits}
                 onChange={(e) => update("benefits", e.target.value)}
               />
             </label>
             <div>
-              <p className="text-xs font-semibold text-white">Included services</p>
+              <p className="text-xs font-semibold text-text">Included services</p>
               <div className="mt-3 space-y-3">
                 {(
                   [
@@ -296,7 +296,7 @@ export function AdminPlanEditorPage({ editId }: { editId?: string }) {
                     ["tts", "Text To Speech"],
                   ] as const
                 ).map(([key, label]) => (
-                  <label key={key} className="flex items-center gap-3 text-sm text-[#b6c0d6]">
+                  <label key={key} className="flex items-center gap-3 text-sm text-muted">
                     <input
                       type="checkbox"
                       disabled={form.planKind === "wallet_topup"}
@@ -317,7 +317,7 @@ export function AdminPlanEditorPage({ editId }: { editId?: string }) {
 
           <button
             disabled={saving}
-            className="mt-7 flex items-center gap-2 rounded-lg bg-[#6542e8] px-5 py-2.5 text-xs font-semibold text-white disabled:opacity-50"
+            className="mt-7 flex items-center gap-2 rounded-lg bg-brand-gradient px-5 py-2.5 text-xs font-semibold text-on-brand disabled:opacity-50"
           >
             <Save size={15} />
             {saving ? "Saving…" : editId ? "Save changes" : "Create plan"}

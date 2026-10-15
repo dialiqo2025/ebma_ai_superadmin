@@ -222,7 +222,7 @@ export function PlatformPage() {
                 <strong className="my-2 block font-heading text-[22px] font-semibold max-[560px]:text-base">
                   {stat.value}
                 </strong>
-                <small className="text-[12px] text-gray-400">{stat.meta}</small>
+                <small className="text-[12px] text-muted">{stat.meta}</small>
               </div>
             ))}
           </div>

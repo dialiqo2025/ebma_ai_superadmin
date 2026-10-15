@@ -9,7 +9,7 @@ import {
 } from "@/lib/billing/plan-rates-ui";
 
 const input =
-  "h-11 w-full rounded-xl border border-[#2a3558] bg-[#0b1224] px-3.5 text-sm font-medium text-white outline-none transition focus:border-[#7c6ff0] focus:ring-2 focus:ring-[#7c6ff0]/20";
+  "h-11 w-full rounded-xl border border-brand-border bg-surface px-3.5 text-sm font-medium text-text outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20";
 
 function RateCard({
   title,
@@ -39,26 +39,26 @@ function RateCard({
   formula: string;
 }) {
   return (
-    <article className="relative overflow-hidden rounded-2xl border border-[#243056] bg-[#0e152c]">
+    <article className="relative overflow-hidden rounded-2xl border border-brand-border bg-surface-raised">
       <div className={`absolute inset-x-0 top-0 h-1 ${accentBar}`} />
       <div className="p-5">
         <div className="flex items-start gap-3">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/5">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-brand-border bg-surface-high">
             {icon}
           </span>
           <div className="min-w-0">
-            <h3 className="text-sm font-bold tracking-wide text-white">{title}</h3>
-            <p className="mt-1 text-[12px] leading-relaxed text-[#7f8ba8]">{subtitle}</p>
+            <h3 className="text-sm font-bold tracking-wide text-text">{title}</h3>
+            <p className="mt-1 text-[12px] leading-relaxed text-muted">{subtitle}</p>
           </div>
         </div>
 
-        <div className="mt-5 rounded-xl border border-[#2a3558] bg-[#0b1224] p-3.5">
-          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#6f7c9c]">
+        <div className="mt-5 rounded-xl border border-brand-border bg-surface p-3.5">
+          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
             Charge rule (1 credit = ₹1)
           </p>
           <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-2.5">
             <label className="grid gap-1.5">
-              <span className="text-[11px] font-medium text-[#8b97b4]">Credits (₹)</span>
+              <span className="text-[11px] font-medium text-muted">Credits (₹)</span>
               <input
                 type="number"
                 min="0"
@@ -68,9 +68,9 @@ function RateCard({
                 onChange={(e) => onCredits(e.target.value)}
               />
             </label>
-            <span className="pb-3 text-[12px] font-semibold text-[#6f7c9c]">per</span>
+            <span className="pb-3 text-[12px] font-semibold text-muted">per</span>
             <label className="grid gap-1.5">
-              <span className="text-[11px] font-medium text-[#8b97b4]">{quantityLabel}</span>
+              <span className="text-[11px] font-medium text-muted">{quantityLabel}</span>
               <input
                 type="number"
                 min="0.001"
@@ -84,12 +84,11 @@ function RateCard({
         </div>
 
         <div className="mt-4 space-y-2">
-          <p className="rounded-lg bg-[#121a33] px-3 py-2.5 text-[12px] leading-relaxed text-[#b7c1d8]">
+          <p className="rounded-lg bg-surface-high px-3 py-2.5 text-[12px] leading-relaxed text-text">
             {formula}
           </p>
-          <p className="px-1 text-[11px] text-[#6f7c9c]">
-            Stored as <span className="font-mono text-[#c5cee3]">{unitRate}</span>{" "}
-            {unitRateLabel}
+          <p className="px-1 text-[11px] text-muted">
+            Stored as <span className="font-mono text-text">{unitRate}</span> {unitRateLabel}
           </p>
         </div>
       </div>
@@ -114,7 +113,7 @@ export function PlanRatesEditor({
 
   if (disabled) {
     return (
-      <p className="text-sm text-[#74809e]">
+      <p className="text-sm text-muted">
         Usage rates are not configured for wallet top-up or contact-only plans.
       </p>
     );

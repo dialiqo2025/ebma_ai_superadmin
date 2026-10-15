@@ -197,7 +197,7 @@ export function PlatformShell({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen bg-platform">
       <aside
         className={cx(
-          "fixed inset-y-0 left-0 z-30 flex h-screen w-[238px] flex-col overflow-hidden border-r border-[#ebe6ff] bg-sidebar px-3.5 transition-transform duration-250 max-[1050px]:w-[210px] max-[820px]:-translate-x-full",
+          "fixed inset-y-0 left-0 z-30 flex h-screen w-[238px] flex-col overflow-hidden border-r border-brand-border bg-sidebar px-3.5 transition-transform duration-250 max-[1050px]:w-[210px] max-[820px]:-translate-x-full",
           sidebarOpen && "max-[820px]:translate-x-0",
         )}
       >
@@ -411,7 +411,7 @@ export function PlatformShell({ children }: { children: ReactNode }) {
       )}
 
       <section className="min-h-screen w-[calc(100%-238px)] ml-[238px] max-[1050px]:ml-[210px] max-[1050px]:w-[calc(100%-210px)] max-[820px]:ml-0 max-[820px]:w-full">
-        <header className="sticky top-0 z-[15] flex h-[68px] items-center justify-between border-b border-[#ebe6ff] bg-theme-header px-7 backdrop-blur-[12px] max-[820px]:px-[17px]">
+        <header className="sticky top-0 z-[15] flex h-[68px] items-center justify-between border-b border-brand-border bg-theme-header px-7 backdrop-blur-[12px] max-[820px]:px-[17px]">
           <div className="flex items-center">
             <button
               type="button"
