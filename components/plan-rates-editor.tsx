@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { Bot, Mic2, Volume2 } from "lucide-react";
 import {
-  bundleToApiRates,
+  bundleToStoredPlanRates,
   formatCredits,
   type BundleForm,
 } from "@/lib/billing/plan-rates-ui";
@@ -105,7 +105,8 @@ export function PlanRatesEditor({
   onChange: (next: BundleForm) => void;
   disabled?: boolean;
 }) {
-  const rates = bundleToApiRates(value);
+  // Show the same rates that will be sent in the PATCH/POST payload.
+  const stored = bundleToStoredPlanRates(value);
   const setField = (key: keyof BundleForm, fieldValue: string) => {
     if (disabled) return;
     onChange({ ...value, [key]: fieldValue });
@@ -131,8 +132,8 @@ export function PlanRatesEditor({
         quantityLabel="Characters"
         onCredits={(v) => setField("ttsCredits", v)}
         onQuantity={(v) => setField("ttsPerChars", v)}
-        unitRate={formatCredits(rates.tts_characters)}
-        unitRateLabel="credit / character"
+        unitRate={formatCredits(stored.ttsCreditsPer1000Chars)}
+        unitRateLabel="credits / 1000 characters"
         formula={`${value.ttsCredits || "0"} credits per ${value.ttsPerChars || "0"} characters`}
       />
       <RateCard
@@ -145,8 +146,8 @@ export function PlanRatesEditor({
         quantityLabel="Minutes"
         onCredits={(v) => setField("sttCredits", v)}
         onQuantity={(v) => setField("sttPerMinutes", v)}
-        unitRate={formatCredits(rates.stt_seconds)}
-        unitRateLabel="credit / second"
+        unitRate={formatCredits(stored.sttCreditsPerMinute)}
+        unitRateLabel="credits / minute"
         formula={`${value.sttCredits || "0"} credits per ${value.sttPerMinutes || "0"} minute(s)`}
       />
       <RateCard
@@ -159,8 +160,8 @@ export function PlanRatesEditor({
         quantityLabel="Tokens"
         onCredits={(v) => setField("llmCredits", v)}
         onQuantity={(v) => setField("llmPerTokens", v)}
-        unitRate={formatCredits(rates.llm_tokens)}
-        unitRateLabel="credit / token"
+        unitRate={formatCredits(stored.llmCreditsPer1000Tokens)}
+        unitRateLabel="credits / 1000 tokens"
         formula={`${value.llmCredits || "0"} credits per ${value.llmPerTokens || "0"} tokens`}
       />
     </div>

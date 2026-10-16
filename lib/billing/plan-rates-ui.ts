@@ -27,29 +27,43 @@ function num(value: string, fallback = 0) {
   return Number.isFinite(n) && n >= 0 ? n : fallback;
 }
 
-function roundNice(value: number) {
-  if (!Number.isFinite(value)) return 0;
-  const rounded = Math.round(value * 1_000_000) / 1_000_000;
-  return Object.is(rounded, -0) ? 0 : rounded;
+/**
+ * Clean rate values for storage/display.
+ * Collapses dust from the old minutes↔seconds round-trip (e.g. 1.00002 → 1)
+ * while keeping intentional precision up to 6 decimals.
+ */
+function snapRate(value: number) {
+  if (!Number.isFinite(value) || value < 0) return 0;
+  for (const places of [0, 1, 2, 3]) {
+    const factor = 10 ** places;
+    const candidate = Math.round(value * factor) / factor;
+    if (Math.abs(candidate - value) < 5e-5) {
+      return Object.is(candidate, -0) ? 0 : candidate;
+    }
+  }
+  const at6 = Math.round(value * 1_000_000) / 1_000_000;
+  return Object.is(at6, -0) ? 0 : at6;
 }
 
 export function bundleToApiRates(form: BundleForm): ApiRates {
-  const ttsPer = Math.max(num(form.ttsPerChars, 1), 1e-9);
-  const sttMinutes = Math.max(num(form.sttPerMinutes, 1), 1e-9);
-  const llmPer = Math.max(num(form.llmPerTokens, 1), 1e-9);
+  const stored = bundleToStoredPlanRates(form);
   return {
-    tts_characters: roundNice(num(form.ttsCredits) / ttsPer),
-    stt_seconds: roundNice(num(form.sttCredits) / (sttMinutes * 60)),
-    llm_tokens: roundNice(num(form.llmCredits) / llmPer),
+    tts_characters: snapRate(stored.ttsCreditsPer1000Chars / 1000),
+    // Derive seconds from the clean per-minute rate (not the reverse).
+    stt_seconds: snapRate(stored.sttCreditsPerMinute / 60),
+    llm_tokens: snapRate(stored.llmCreditsPer1000Tokens / 1000),
   };
 }
 
 export function bundleToStoredPlanRates(form: BundleForm) {
-  const api = bundleToApiRates(form);
+  // Direct from form fields — never round-trip through per-second.
+  const ttsPer = Math.max(num(form.ttsPerChars, 1), 1e-9);
+  const sttMinutes = Math.max(num(form.sttPerMinutes, 1), 1e-9);
+  const llmPer = Math.max(num(form.llmPerTokens, 1), 1e-9);
   return {
-    ttsCreditsPer1000Chars: roundNice(api.tts_characters * 1000),
-    sttCreditsPerMinute: roundNice(api.stt_seconds * 60),
-    llmCreditsPer1000Tokens: roundNice(api.llm_tokens * 1000),
+    ttsCreditsPer1000Chars: snapRate((num(form.ttsCredits) / ttsPer) * 1000),
+    sttCreditsPerMinute: snapRate(num(form.sttCredits) / sttMinutes),
+    llmCreditsPer1000Tokens: snapRate((num(form.llmCredits) / llmPer) * 1000),
   };
 }
 
@@ -62,15 +76,16 @@ export function planRatesToBundle(input: {
   const sttMin = Number(input.stt_credits_per_minute ?? 1);
   const llm1000 = Number(input.llm_credits_per_1000_tokens ?? 1);
   return {
-    ttsCredits: String(roundNice(tts1000)),
+    ttsCredits: String(snapRate(tts1000)),
     ttsPerChars: "1000",
-    sttCredits: String(roundNice(sttMin)),
+    // Snap so previously corrupted 1.00002 loads as 1 in the form.
+    sttCredits: String(snapRate(sttMin)),
     sttPerMinutes: "1",
-    llmCredits: String(roundNice(llm1000)),
+    llmCredits: String(snapRate(llm1000)),
     llmPerTokens: "1000",
   };
 }
 
 export function formatCredits(value: number) {
-  return roundNice(value).toLocaleString(undefined, { maximumFractionDigits: 6 });
+  return snapRate(value).toLocaleString(undefined, { maximumFractionDigits: 6 });
 }
