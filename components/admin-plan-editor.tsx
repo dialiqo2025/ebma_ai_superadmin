@@ -44,6 +44,12 @@ type Plan = {
   tts_credits_per_1000_chars?: string | null;
   stt_credits_per_minute?: string | null;
   llm_credits_per_1000_tokens?: string | null;
+  tts_rate_credits?: string | null;
+  tts_rate_chars?: string | null;
+  stt_rate_credits?: string | null;
+  stt_rate_minutes?: string | null;
+  llm_rate_credits?: string | null;
+  llm_rate_tokens?: string | null;
   is_default?: boolean;
   contact_only?: boolean;
 };
@@ -135,9 +141,19 @@ export function AdminPlanEditorPage({ editId }: { editId?: string }) {
               .split("\n")
               .map((value) => value.trim())
               .filter(Boolean),
-            ttsCreditsPer1000Chars: stored?.ttsCreditsPer1000Chars ?? null,
-            sttCreditsPerMinute: stored?.sttCreditsPerMinute ?? null,
-            llmCreditsPer1000Tokens: stored?.llmCreditsPer1000Tokens ?? null,
+            ...(stored
+              ? {
+                  ttsRateCredits: stored.ttsRateCredits,
+                  ttsRateChars: stored.ttsRateChars,
+                  sttRateCredits: stored.sttRateCredits,
+                  sttRateMinutes: stored.sttRateMinutes,
+                  llmRateCredits: stored.llmRateCredits,
+                  llmRateTokens: stored.llmRateTokens,
+                  ttsCreditsPer1000Chars: stored.ttsCreditsPer1000Chars,
+                  sttCreditsPerMinute: stored.sttCreditsPerMinute,
+                  llmCreditsPer1000Tokens: stored.llmCreditsPer1000Tokens,
+                }
+              : {}),
             isDefault: form.isDefault && !form.contactOnly,
             contactOnly: form.contactOnly,
           },

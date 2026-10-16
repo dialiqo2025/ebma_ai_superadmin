@@ -652,8 +652,8 @@ export function AdminUsers() {
                       <option key={plan.plan_uuid} value={plan.plan_uuid}>
                         {plan.name}
                         {plan.is_default ? " (default)" : ""}
-                        {plan.tts_credits_per_1000_chars
-                          ? ` · TTS ₹${Number(plan.tts_credits_per_1000_chars)}/1k`
+                        {plan.tts_rate_credits != null || plan.tts_credits_per_1000_chars
+                          ? ` · TTS ₹${Number(plan.tts_rate_credits ?? plan.tts_credits_per_1000_chars)}/${Number(plan.tts_rate_chars ?? 1000).toLocaleString()}`
                           : ""}
                       </option>
                     ))}

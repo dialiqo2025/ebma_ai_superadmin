@@ -31,6 +31,12 @@ export type BillingPlan = {
   tts_credits_per_1000_chars?: string | null;
   stt_credits_per_minute?: string | null;
   llm_credits_per_1000_tokens?: string | null;
+  tts_rate_credits?: string | null;
+  tts_rate_chars?: string | null;
+  stt_rate_credits?: string | null;
+  stt_rate_minutes?: string | null;
+  llm_rate_credits?: string | null;
+  llm_rate_tokens?: string | null;
   is_default?: boolean;
   contact_only?: boolean;
   active: boolean;

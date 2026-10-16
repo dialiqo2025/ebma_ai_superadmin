@@ -37,6 +37,12 @@ type Plan = {
   tts_credits_per_1000_chars?: string | null;
   stt_credits_per_minute?: string | null;
   llm_credits_per_1000_tokens?: string | null;
+  tts_rate_credits?: string | null;
+  tts_rate_chars?: string | null;
+  stt_rate_credits?: string | null;
+  stt_rate_minutes?: string | null;
+  llm_rate_credits?: string | null;
+  llm_rate_tokens?: string | null;
   is_default?: boolean;
   contact_only?: boolean;
   active: boolean;
@@ -194,7 +200,7 @@ export function AdminPlans() {
                 <td className="px-5 py-4 text-muted">
                   {plan.contact_only
                     ? "—"
-                    : `₹${Number(plan.tts_credits_per_1000_chars ?? 30)}/1k TTS · ₹${Number(plan.stt_credits_per_minute ?? 1)}/min STT · ₹${Number(plan.llm_credits_per_1000_tokens ?? 1)}/1k LLM`}
+                    : `₹${Number(plan.tts_rate_credits ?? plan.tts_credits_per_1000_chars ?? 30)}/${Number(plan.tts_rate_chars ?? 1000).toLocaleString()} TTS · ₹${Number(plan.stt_rate_credits ?? plan.stt_credits_per_minute ?? 1)}/${Number(plan.stt_rate_minutes ?? 1)} min STT · ₹${Number(plan.llm_rate_credits ?? plan.llm_credits_per_1000_tokens ?? 1)}/${Number(plan.llm_rate_tokens ?? 1000).toLocaleString()} LLM`}
                 </td>
                 <td className="px-5 py-4 text-xs text-accent">
                   {Object.entries(plan.features || {})
@@ -326,9 +332,19 @@ export function AdminPlanEditor({ editId }: { editId?: string }) {
         .split("\n")
         .map((item) => item.trim())
         .filter(Boolean),
-      ttsCreditsPer1000Chars: stored?.ttsCreditsPer1000Chars ?? null,
-      sttCreditsPerMinute: stored?.sttCreditsPerMinute ?? null,
-      llmCreditsPer1000Tokens: stored?.llmCreditsPer1000Tokens ?? null,
+      ...(stored
+        ? {
+            ttsRateCredits: stored.ttsRateCredits,
+            ttsRateChars: stored.ttsRateChars,
+            sttRateCredits: stored.sttRateCredits,
+            sttRateMinutes: stored.sttRateMinutes,
+            llmRateCredits: stored.llmRateCredits,
+            llmRateTokens: stored.llmRateTokens,
+            ttsCreditsPer1000Chars: stored.ttsCreditsPer1000Chars,
+            sttCreditsPerMinute: stored.sttCreditsPerMinute,
+            llmCreditsPer1000Tokens: stored.llmCreditsPer1000Tokens,
+          }
+        : {}),
       isDefault: form.isDefault && !form.contactOnly,
       contactOnly: form.contactOnly,
     };

@@ -105,7 +105,7 @@ export function PlanRatesEditor({
   onChange: (next: BundleForm) => void;
   disabled?: boolean;
 }) {
-  // Show the same rates that will be sent in the PATCH/POST payload.
+  // Exact pair is charged; legacy per-1000 is only synced for rollback.
   const stored = bundleToStoredPlanRates(value);
   const setField = (key: keyof BundleForm, fieldValue: string) => {
     if (disabled) return;
@@ -132,8 +132,8 @@ export function PlanRatesEditor({
         quantityLabel="Characters"
         onCredits={(v) => setField("ttsCredits", v)}
         onQuantity={(v) => setField("ttsPerChars", v)}
-        unitRate={formatCredits(stored.ttsCreditsPer1000Chars)}
-        unitRateLabel="credits / 1000 characters"
+        unitRate={formatCredits(stored.ttsRateCredits / stored.ttsRateChars)}
+        unitRateLabel="credit / character (charged as entered)"
         formula={`${value.ttsCredits || "0"} credits per ${value.ttsPerChars || "0"} characters`}
       />
       <RateCard
@@ -146,8 +146,10 @@ export function PlanRatesEditor({
         quantityLabel="Minutes"
         onCredits={(v) => setField("sttCredits", v)}
         onQuantity={(v) => setField("sttPerMinutes", v)}
-        unitRate={formatCredits(stored.sttCreditsPerMinute)}
-        unitRateLabel="credits / minute"
+        unitRate={formatCredits(
+          stored.sttRateCredits / (stored.sttRateMinutes * 60),
+        )}
+        unitRateLabel="credit / second (charged as entered)"
         formula={`${value.sttCredits || "0"} credits per ${value.sttPerMinutes || "0"} minute(s)`}
       />
       <RateCard
@@ -160,8 +162,8 @@ export function PlanRatesEditor({
         quantityLabel="Tokens"
         onCredits={(v) => setField("llmCredits", v)}
         onQuantity={(v) => setField("llmPerTokens", v)}
-        unitRate={formatCredits(stored.llmCreditsPer1000Tokens)}
-        unitRateLabel="credits / 1000 tokens"
+        unitRate={formatCredits(stored.llmRateCredits / stored.llmRateTokens)}
+        unitRateLabel="credit / token (charged as entered)"
         formula={`${value.llmCredits || "0"} credits per ${value.llmPerTokens || "0"} tokens`}
       />
     </div>
