@@ -54,13 +54,13 @@ function AuthVisual() {
         aria-hidden
       />
 
-      <Link
+      {/* <Link
         href="/home"
         className="absolute left-[42px] top-[38px] z-[2] flex items-center gap-[7px] text-[12px] text-muted transition hover:text-text"
       >
         <ArrowLeft size={16} />
         Back to home
-      </Link>
+      </Link> */}
 
       <div className="absolute left-[10%] right-[8%] top-1/2 z-[2] -translate-y-[56%]">
         <div className="flex w-max items-center gap-2 rounded-full border border-brand-border bg-brand-soft px-3 py-2 text-[12px] font-[750] uppercase tracking-[0.1em] text-accent">
