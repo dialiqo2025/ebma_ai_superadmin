@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
+// Restore Roboto later: uncomment import + const, and add className={roboto.variable} on <body>.
+// import { Roboto } from "next/font/google";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
-const roboto = Roboto({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-roboto" });
+// const roboto = Roboto({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-roboto" });
 
 export const metadata: Metadata = {
   title: "ebma AI — Voice & language intelligence",
@@ -20,10 +21,7 @@ const themeInitScript = `(function(){try{var t=localStorage.getItem("ebma-color-
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" data-theme="light" suppressHydrationWarning>
-      <body
-        suppressHydrationWarning
-        className={roboto.variable}
-      >
+      <body suppressHydrationWarning>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <Providers>{children}</Providers>
       </body>
