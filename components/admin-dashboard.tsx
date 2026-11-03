@@ -11,6 +11,8 @@ import {
   ShieldCheck,
   Users,
   Volume2,
+  ServerCog,
+  ScrollText,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -18,6 +20,8 @@ import { useRouter } from "next/navigation";
 import { apiRequest } from "@/lib/api";
 
 const modules = [
+  { title: "API & Function Logs", description: "Monitor successful and failed application requests.", href: "/platform/admin/api-logs", icon: ScrollText },
+  { title: "GPU Service Logs", description: "Inspect STT/TTS GPU calls and transcription files.", href: "/platform/admin/gpu-logs", icon: ServerCog },
   { title: "Users", description: "Manage registered accounts, access, and status.", href: "/platform/admin/users", icon: Users },
   { title: "Usage Settings", description: "Set new user credits and service rates.", href: "/platform/admin/usage-settings", icon: Settings2 },
   { title: "Plans & Pricing", description: "Manage credit packages and checkout plans.", href: "/platform/admin/plans", icon: CreditCard },

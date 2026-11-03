@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Activity, ArrowLeft, Coins, Filter, RefreshCw, Search, Users } from "lucide-react";
+import { Activity, ArrowLeft, ChevronDown, Coins, Cpu, Filter, RefreshCw, Search, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { apiRequest } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
@@ -25,6 +25,40 @@ type UserUsageResponse = {
   items: UserUsageItem[];
   creditRangeMax: number;
   summary?: { totalAccounts: number; totalRequests: number; totalCredits: number };
+  pagination: { page: number; pageSize: number; total: number; totalPages: number; hasNextPage: boolean };
+};
+type UsageEvent = {
+  usageUuid: string;
+  requestId: string | null;
+  usageType: "stt_seconds" | "tts_characters" | "llm_tokens";
+  quantity: number;
+  unitPriceCredits: number;
+  chargedCredits: number;
+  providerReference: string | null;
+  metadata: unknown;
+  createdAt: string;
+  apiTransaction: null | {
+    log_uuid: string;
+    method: string;
+    path: string;
+    status: string;
+    http_status: number;
+    duration_ms: number;
+    description: string;
+  };
+  gpuTransactions: Array<{
+    log_uuid: string;
+    service: string;
+    operation: string;
+    status: string;
+    upstream_status: number | null;
+    duration_ms: number;
+    description: string;
+    error_message: string | null;
+  }>;
+};
+type UsageEventResponse = {
+  items: UsageEvent[];
   pagination: { page: number; pageSize: number; total: number; totalPages: number; hasNextPage: boolean };
 };
 
@@ -50,6 +84,8 @@ function parseCreditBound(value: string) {
 const number = (value: number) => new Intl.NumberFormat().format(value);
 const credits = (value: number) =>
   `${new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }).format(value)} cr`;
+const requestCredits = (value: number) =>
+  `${new Intl.NumberFormat(undefined, { maximumFractionDigits: 6 }).format(value)} cr`;
 
 export function AdminUserUsage() {
   const { user, ready } = useAuth();
@@ -412,7 +448,7 @@ export function AdminUserUsage() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="platform-data-table w-full min-w-[980px] text-left text-sm">
+          <table className="platform-data-table w-full min-w-[1120px] text-left text-sm">
             <thead className="border-b border-brand-border bg-surface-raised text-[10px] uppercase tracking-wide text-muted">
               <tr>
                 <th>User</th>
@@ -424,40 +460,21 @@ export function AdminUserUsage() {
                 <th>STT audio</th>
                 <th>TTS characters</th>
                 <th>Assistant tokens</th>
+                <th>Breakdown</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-brand-border">
-              {(result?.items ?? []).map((item) => (
-                <tr
-                  key={item.user_uuid}
-                  className="transition-colors odd:bg-surface even:bg-surface-raised/35 hover:bg-brand-soft/70"
-                >
-                  <td>
-                    <p className="font-semibold text-text">{item.fullName}</p>
-                    <p className="mt-0.5 text-[11px] text-muted">{item.email}</p>
-                  </td>
-                  <td>{number(item.events)}</td>
-                  <td>{number(item.sttEvents)}</td>
-                  <td>{number(item.ttsEvents)}</td>
-                  <td>{number(item.llmEvents)}</td>
-                  <td className="font-semibold">
-                    <span className="bg-brand-gradient bg-clip-text text-transparent">{credits(item.credits)}</span>
-                  </td>
-                  <td>{(item.sttQuantity / 60).toFixed(1)} min</td>
-                  <td>{number(item.ttsQuantity)}</td>
-                  <td>{number(item.llmQuantity)}</td>
-                </tr>
-              ))}
+              {(result?.items ?? []).map((item) => <UserUsageRows key={item.user_uuid} item={item} from={range.from} to={range.to} />)}
               {!loading && !result?.items.length && (
                 <tr>
-                  <td colSpan={9} className="py-10 text-center text-muted">
+                  <td colSpan={10} className="py-10 text-center text-muted">
                     No users found for this search.
                   </td>
                 </tr>
               )}
               {loading && (
                 <tr>
-                  <td colSpan={9} className="py-10 text-center text-muted">
+                  <td colSpan={10} className="py-10 text-center text-muted">
                     Loading user usage…
                   </td>
                 </tr>
@@ -496,4 +513,87 @@ export function AdminUserUsage() {
       )}
     </main>
   );
+}
+
+function UserUsageRows({ item, from, to }: { item: UserUsageItem; from: Date; to: Date }) {
+  const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [result, setResult] = useState<UsageEventResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const load = useCallback(async () => {
+    if (!open) return;
+    setLoading(true);
+    setError("");
+    try {
+      const query = new URLSearchParams({
+        from: from.toISOString(),
+        to: to.toISOString(),
+        page: String(page),
+        pageSize: "20",
+      });
+      setResult(await apiRequest<UsageEventResponse>(`/billing/admin/users/${item.user_uuid}/usage-events?${query}`, { auth: true }));
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Unable to load request usage");
+    } finally {
+      setLoading(false);
+    }
+  }, [open, page, from, to, item.user_uuid]);
+
+  useEffect(() => { void load(); }, [load]);
+  useEffect(() => { setPage(1); setResult(null); }, [from, to]);
+
+  return <>
+    <tr className="transition-colors odd:bg-surface even:bg-surface-raised/35 hover:bg-brand-soft/70">
+      <td><p className="font-semibold text-text">{item.fullName}</p><p className="mt-0.5 text-[11px] text-muted">{item.email}</p></td>
+      <td>{number(item.events)}</td>
+      <td>{number(item.sttEvents)}</td>
+      <td>{number(item.ttsEvents)}</td>
+      <td>{number(item.llmEvents)}</td>
+      <td className="font-semibold"><span className="bg-brand-gradient bg-clip-text text-transparent">{credits(item.credits)}</span></td>
+      <td>{(item.sttQuantity / 60).toFixed(1)} min</td>
+      <td>{number(item.ttsQuantity)}</td>
+      <td>{number(item.llmQuantity)}</td>
+      <td><button type="button" onClick={() => { setOpen((value) => !value); if (!open) setPage(1); }} className="inline-flex items-center gap-1.5 whitespace-nowrap text-xs font-semibold text-accent hover:text-text">Requests <ChevronDown size={13} className={`transition-transform ${open ? "rotate-180" : ""}`} /></button></td>
+    </tr>
+    {open && <tr className="bg-surface-raised/60"><td colSpan={10} className="p-0">
+      <div className="border-y border-brand-border p-4">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2"><div><h3 className="text-sm font-bold text-text">Per-request usage · {item.fullName}</h3><p className="mt-1 text-[10px] text-muted">Billing is the source of truth. API and GPU data provide related diagnostics when correlation is available.</p></div>{result && <span className="text-[10px] text-muted">{result.pagination.total.toLocaleString()} billable requests</span>}</div>
+        {error && <p className="mb-3 rounded-lg border border-danger-border bg-danger-soft px-3 py-2 text-xs text-danger">{error}</p>}
+        <div className="overflow-x-auto rounded-xl border border-brand-border bg-surface">
+          <table className="w-full min-w-[1100px] text-left text-xs">
+            <thead className="border-b border-brand-border bg-surface-raised text-[9px] uppercase tracking-wide text-muted"><tr><th className="px-3 py-2">Date & time</th><th className="px-3 py-2">Service</th><th className="px-3 py-2">Measured usage</th><th className="px-3 py-2">Rate</th><th className="px-3 py-2">Credits</th><th className="px-3 py-2">API request</th><th className="px-3 py-2">GPU processing</th><th className="px-3 py-2">Diagnostics</th></tr></thead>
+            <tbody className="divide-y divide-brand-border">
+              {result?.items.map((event) => <UsageEventRow key={event.usageUuid} event={event} />)}
+              {loading && <tr><td colSpan={8} className="px-3 py-8 text-center text-muted">Loading request usage…</td></tr>}
+              {!loading && !result?.items.length && <tr><td colSpan={8} className="px-3 py-8 text-center text-muted">No billable requests in this period.</td></tr>}
+            </tbody>
+          </table>
+        </div>
+        {result && result.pagination.totalPages > 1 && <div className="mt-3 flex items-center justify-end gap-2 text-[10px] text-muted"><button disabled={loading || page <= 1} onClick={() => setPage((value) => Math.max(1, value - 1))} className="rounded border border-brand-border px-2.5 py-1.5 disabled:opacity-40">Previous</button><span>Page {page} of {result.pagination.totalPages}</span><button disabled={loading || !result.pagination.hasNextPage} onClick={() => setPage((value) => value + 1)} className="rounded border border-brand-border px-2.5 py-1.5 disabled:opacity-40">Next</button></div>}
+      </div>
+    </td></tr>}
+  </>;
+}
+
+function UsageEventRow({ event }: { event: UsageEvent }) {
+  const service = event.usageType === "stt_seconds" ? "Speech To Text" : event.usageType === "tts_characters" ? "Text To Speech" : "Assistant / LLM";
+  const unit = event.usageType === "stt_seconds"
+    ? `${event.quantity.toFixed(2)} sec (${(event.quantity / 60).toFixed(2)} min)`
+    : event.usageType === "tts_characters"
+      ? `${number(event.quantity)} characters`
+      : `${number(event.quantity)} tokens`;
+  const rateUnit = event.usageType === "stt_seconds" ? "sec" : event.usageType === "tts_characters" ? "character" : "token";
+  const gpu = event.gpuTransactions[0];
+  return <tr className="align-top hover:bg-brand-soft/40">
+    <td className="whitespace-nowrap px-3 py-3"><p className="font-medium text-text">{new Date(event.createdAt).toLocaleDateString()}</p><p className="mt-0.5 text-[10px] text-muted">{new Date(event.createdAt).toLocaleTimeString()}</p></td>
+    <td className="px-3 py-3"><p className="font-semibold text-text">{service}</p><p className="mt-0.5 font-mono text-[9px] text-muted">{event.usageType}</p></td>
+    <td className="whitespace-nowrap px-3 py-3 font-medium text-text">{unit}</td>
+    <td className="whitespace-nowrap px-3 py-3">{event.unitPriceCredits.toFixed(6)} cr/{rateUnit}</td>
+    <td className="whitespace-nowrap px-3 py-3 font-bold text-accent">{requestCredits(event.chargedCredits)}</td>
+    <td className="max-w-56 px-3 py-3">{event.apiTransaction ? <><p className="font-semibold text-text">{event.apiTransaction.method} · HTTP {event.apiTransaction.http_status}</p><p className="mt-0.5 truncate font-mono text-[9px] text-muted" title={event.apiTransaction.path}>{event.apiTransaction.path}</p><p className="mt-0.5 text-[9px] text-muted">{event.apiTransaction.duration_ms} ms</p></> : <span className="text-muted">Not correlated</span>}</td>
+    <td className="max-w-52 px-3 py-3">{gpu ? <><p className={`font-semibold ${gpu.status === "success" ? "text-success" : "text-danger"}`}><Cpu size={11} className="mr-1 inline" />{gpu.operation.replaceAll("_", " ")}</p><p className="mt-0.5 text-[9px] text-muted">{gpu.duration_ms} ms{event.gpuTransactions.length > 1 ? ` · +${event.gpuTransactions.length - 1} related` : ""}</p></> : <span className="text-muted">Not correlated</span>}</td>
+    <td className="px-3 py-3"><details><summary className="cursor-pointer whitespace-nowrap font-semibold text-accent">Inspect context</summary><div className="mt-2 w-72 space-y-2 rounded-lg border border-brand-border bg-bg p-2 text-[9px] leading-4"><p><span className="text-muted">Request ID:</span> <span className="break-all font-mono">{event.requestId || "Historical / unavailable"}</span></p><p><span className="text-muted">Provider:</span> <span className="break-all font-mono">{event.providerReference || "—"}</span></p>{event.apiTransaction && <p><span className="text-muted">API:</span> {event.apiTransaction.description}</p>}{event.gpuTransactions.map((log) => <p key={log.log_uuid}><span className="text-muted">GPU:</span> {log.description}{log.error_message ? ` · ${log.error_message}` : ""}</p>)}<pre className="max-h-32 overflow-auto whitespace-pre-wrap break-words text-[8px] text-muted">{event.metadata ? JSON.stringify(event.metadata, null, 2) : "No additional metadata"}</pre></div></details></td>
+  </tr>;
 }

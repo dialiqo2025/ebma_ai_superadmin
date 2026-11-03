@@ -26,6 +26,8 @@ type AdminUser = {
   email: string;
   role: string;
   user_enabled: boolean;
+  created_at: string;
+  last_login?: string | null;
 };
 
 type UserResponse = { data: AdminUser[]; total_users_count: number };
@@ -70,6 +72,8 @@ export function AdminUsers() {
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  const [togglingUserUuid, setTogglingUserUuid] = useState<string | null>(null);
 
   const [creditUser, setCreditUser] = useState<AdminUser | null>(null);
   const [wallet, setWallet] = useState<AdminUserWallet | null>(null);
@@ -142,15 +146,36 @@ export function AdminUsers() {
   };
 
   const toggleUser = async (record: AdminUser) => {
+    const nextEnabled = !record.user_enabled;
+    if (!nextEnabled && !window.confirm(
+      `Disable login access for ${record.email}? Their existing session will stop working on the next authenticated request.`,
+    )) return;
+
+    setTogglingUserUuid(record.user_uuid);
+    setError("");
+    setNotice("");
     try {
       await apiRequest("/user", {
         method: "PUT",
-        body: { user_uuid: record.user_uuid, isActive: !record.user_enabled },
+        body: { user_uuid: record.user_uuid, isActive: nextEnabled },
         auth: true,
       });
-      await load();
+      setUsers((current) => current.map((item) =>
+        item.user_uuid === record.user_uuid ? { ...item, user_enabled: nextEnabled } : item,
+      ));
+      if (record.role !== "tenant") {
+        setSummary((current) => current ? {
+          ...current,
+          total_active_users: Math.max(0, current.total_active_users + (nextEnabled ? 1 : -1)),
+        } : current);
+      }
+      setNotice(nextEnabled
+        ? `Login access restored for ${record.email}.`
+        : `Login access disabled for ${record.email}.`);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Unable to update user");
+    } finally {
+      setTogglingUserUuid(null);
     }
   };
 
@@ -352,6 +377,11 @@ export function AdminUsers() {
           {error}
         </p>
       )}
+      {notice && (
+        <p className="mb-4 rounded-lg border border-success/30 bg-success/10 px-4 py-3 text-sm text-success">
+          {notice}
+        </p>
+      )}
 
       <section className="platform-table-container overflow-hidden rounded-2xl border border-brand-border bg-surface shadow-sm">
         <div className="flex w-full flex-wrap items-center justify-between gap-3 border-b border-brand-border px-4 py-4 sm:px-5">
@@ -369,28 +399,30 @@ export function AdminUsers() {
           </span>
         </div>
         <div className="overflow-x-auto">
-        <table className="platform-data-table w-full min-w-[1100px] table-fixed text-left text-sm">
+        <table className="platform-data-table w-full min-w-[1250px] table-fixed text-left text-sm">
           <colgroup>
-            <col className="w-[18%]" />
-            <col className="w-[28%]" />
-            <col className="w-[9%]" />
-            <col className="w-[10%]" />
-            <col className="w-[35%]" />
+            <col className="w-[16%]" />
+            <col className="w-[23%]" />
+            <col className="w-[8%]" />
+            <col className="w-[13%]" />
+            <col className="w-[14%]" />
+            <col className="w-[26%]" />
           </colgroup>
           <thead className="border-b border-brand-border bg-surface-raised text-[10px] uppercase tracking-wide text-muted">
             <tr>
               <th scope="col">User</th>
               <th scope="col">Email</th>
               <th scope="col">Role</th>
-              <th scope="col">Status</th>
+              <th scope="col">Created</th>
+              <th scope="col">Login access</th>
               <th scope="col">Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={5} className="py-10 text-center text-sm text-muted">Loading users…</td></tr>
+              <tr><td colSpan={6} className="py-10 text-center text-sm text-muted">Loading users…</td></tr>
             ) : users.length === 0 ? (
-              <tr><td colSpan={5} className="py-10 text-center text-sm text-muted">No users found.</td></tr>
+              <tr><td colSpan={6} className="py-10 text-center text-sm text-muted">No users found.</td></tr>
             ) : (
               users.map((record) => (
                 <tr
@@ -409,9 +441,31 @@ export function AdminUsers() {
                     </span>
                   </td>
                   <td>
-                    <span className={record.user_enabled ? "text-success" : "text-danger"}>
-                      {record.user_enabled ? "Active" : "Disabled"}
-                    </span>
+                    <p className="whitespace-nowrap text-xs font-medium text-text">
+                      {new Date(record.created_at).toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" })}
+                    </p>
+                    <p className="mt-1 whitespace-nowrap text-[10px] text-muted">
+                      {new Date(record.created_at).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
+                    </p>
+                  </td>
+                  <td>
+                    <div className="flex items-center gap-2.5">
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={record.user_enabled}
+                        aria-label={`${record.user_enabled ? "Disable" : "Enable"} login access for ${record.email}`}
+                        title={record.user_enabled ? "Disable login access" : "Restore login access"}
+                        disabled={togglingUserUuid === record.user_uuid}
+                        onClick={() => void toggleUser(record)}
+                        className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full border p-0 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-wait disabled:opacity-60 ${record.user_enabled ? "border-success bg-success" : "border-brand-border bg-surface-raised"}`}
+                      >
+                        <span className={`pointer-events-none absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow-sm ring-1 ring-black/5 transition-transform ${record.user_enabled ? "translate-x-4" : "translate-x-0"}`} />
+                      </button>
+                      <span className={record.user_enabled ? "text-xs font-medium text-success" : "text-xs font-medium text-danger"}>
+                        {togglingUserUuid === record.user_uuid ? "Updating…" : record.user_enabled ? "Active" : "Inactive"}
+                      </span>
+                    </div>
                   </td>
                   <td>
                     <div className="flex flex-nowrap items-center gap-3 whitespace-nowrap">
@@ -428,13 +482,6 @@ export function AdminUsers() {
                         className="inline-flex items-center gap-1 text-xs text-cyan hover:text-text"
                       >
                         <Coins size={13} /> Add credits
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => void toggleUser(record)}
-                        className="text-xs text-accent hover:text-text"
-                      >
-                        {record.user_enabled ? "Disable" : "Enable"}
                       </button>
                       <button
                         type="button"

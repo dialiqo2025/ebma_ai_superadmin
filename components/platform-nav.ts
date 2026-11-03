@@ -13,6 +13,8 @@ import {
   CreditCard,
   Activity,
   Receipt,
+  ServerCog,
+  ScrollText,
 } from "lucide-react";
 
 export type PlatformNavItem = {
@@ -44,6 +46,8 @@ export const platformNav: PlatformNavItem[] = [
 ];
 
 export const adminNav: PlatformNavItem[] = [
+  { label: "API & Function Logs", href: "/platform/admin/api-logs", icon: ScrollText },
+  { label: "GPU Service Logs", href: "/platform/admin/gpu-logs", icon: ServerCog },
   { label: "Users", href: "/platform/admin/users", icon: Users },
   { label: "User Usage", href: "/platform/admin/user-usage", icon: BarChart3 },
   { label: "Usage Settings", href: "/platform/admin/usage-settings", icon: Settings2 },
