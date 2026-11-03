@@ -87,7 +87,13 @@ export function AdminObservability({ kind }: { kind: Kind }) {
         apiRequest<ListResponse>(`/observability/${endpoint}?${query}`, { auth: true }),
         apiRequest<Settings>("/observability/settings", { auth: true }),
       ]);
-      setResult(logs);
+      setResult({
+        ...logs,
+        items: [...logs.items].sort((left, right) => {
+          const timeDifference = new Date(right.created_at).getTime() - new Date(left.created_at).getTime();
+          return timeDifference || right.log_uuid.localeCompare(left.log_uuid);
+        }),
+      });
       setSettings(nextSettings);
       setRetentionDraft(String(nextSettings.retention_days));
     } catch (cause) {
