@@ -28,7 +28,7 @@ type Operation = {
 };
 type Response = { items: Operation[]; pagination: { page: number; pageSize: number; total: number; totalPages: number; hasNextPage: boolean } };
 type Statistics = {
-  totalRequests: number; successRequests: number; failedRequests: number; queuedRequests: number; processingRequests: number; stalledRequests: number; stalledAfterMinutes: number; successRate: number;
+  totalRequests: number; successRequests: number; failedRequests: number; queuedRequests: number; processingRequests: number; activeProcessingRequests?: number; stalledRequests: number; stalledAfterMinutes: number; successRate: number;
   sttRequests: number; sttLiveSessions: number; sttFileTranscriptions: number; sttAudioSeconds: number;
   ttsRequests: number; ttsDefaultVoice: number; ttsVoiceCloning: number; ttsInputCharacters: number; ttsOutputBytes: number;
   totalCredits: number;
@@ -112,7 +112,7 @@ export function AdminGpuOperations() {
         <Stat icon={CheckCircle2} label="Successful" value={statistics?.successRequests} tone="text-success" />
         <Stat icon={XCircle} label="Failed" value={statistics?.failedRequests} tone="text-danger" />
         <Stat icon={Hourglass} label="Queued" value={statistics?.queuedRequests} tone="text-warning" />
-        <Stat icon={LoaderCircle} label="Processing" value={statistics?.processingRequests} tone="text-warning" />
+        <Stat icon={LoaderCircle} label="Processing" value={statistics ? statistics.activeProcessingRequests ?? statistics.processingRequests : undefined} tone="text-warning" />
         <Stat icon={TriangleAlert} label="Stalled" value={statistics?.stalledRequests} tone="text-danger" />
         <Stat icon={Coins} label="Credits charged" value={statistics ? `${statistics.totalCredits.toLocaleString(undefined, { maximumFractionDigits: 6 })} cr` : undefined} tone="text-accent" />
       </div>
