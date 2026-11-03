@@ -18,6 +18,7 @@ type Details = {
     userEmail: string | null; userName: string | null; requestId: string | null; providerReference: string | null;
     createdAt: string; startedAt: string; completedAt: string | null; totalDurationMs: number;
     errorCode: string | null; errorMessage: string | null; metrics: Record<string, unknown>; input: unknown; output: unknown;
+    resultAvailable: boolean;
   };
   billing: { totalCredits: number; items: Array<{ usageUuid: string; usageType: string; quantity: number; unitPriceCredits: number; chargedCredits: number; metadata: unknown; createdAt: string }> };
   stages: Stage[];
@@ -48,10 +49,19 @@ export function AdminGpuOperationDetails({ service, operationUuid }: { service: 
       const url = URL.createObjectURL(blob); const anchor = document.createElement("a"); anchor.href = url; anchor.download = stage.artifactOriginalName || "uploaded-source"; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Unable to download source file"); }
   };
+  const downloadResult = async () => {
+    try {
+      const blob = await apiBlob(`/observability/gpu-operations/${operation.service}/${operation.operationUuid}/result`);
+      const url = URL.createObjectURL(blob);
+      const format = operation.service === "stt" ? "txt" : String(operation.metrics.outputFormat || "wav");
+      const anchor = document.createElement("a"); anchor.href = url; anchor.download = `${operation.service}-result-${operation.operationUuid}.${format}`; anchor.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Unable to download result file"); }
+  };
 
   return <main className="mx-auto w-full max-w-[1280px] text-text">
     <Link href="/platform/admin/gpu-logs" className="inline-flex items-center gap-2 text-xs text-muted hover:text-accent"><ArrowLeft size={14} /> GPU Operations</Link>
-    <div className="mt-5 flex flex-wrap items-start justify-between gap-4"><div><p className="font-mono text-[11px] tracking-[.22em] text-accent">{operation.service.toUpperCase()} / {operation.operationType.toUpperCase()}</p><h1 className="mt-2 text-3xl font-extrabold">Operation flow</h1><p className="mt-2 break-all font-mono text-[11px] text-muted">{operation.operationUuid}</p></div><span className={`rounded-full px-3 py-1.5 text-xs font-bold ${operation.status === "success" ? "bg-success/10 text-success" : operation.status === "failed" ? "bg-danger-soft text-danger" : "bg-warning/10 text-warning"}`}>{operation.rawStatus}</span></div>
+    <div className="mt-5 flex flex-wrap items-start justify-between gap-4"><div><p className="font-mono text-[11px] tracking-[.22em] text-accent">{operation.service.toUpperCase()} / {operation.operationType.toUpperCase()}</p><h1 className="mt-2 text-3xl font-extrabold">Operation flow</h1><p className="mt-2 break-all font-mono text-[11px] text-muted">{operation.operationUuid}</p></div><div className="flex items-center gap-2">{operation.resultAvailable && <button onClick={() => void downloadResult()} className="inline-flex items-center gap-2 rounded-lg border border-brand-border bg-surface px-3 py-2 text-xs font-semibold text-accent hover:bg-brand-soft"><Download size={14} /> Download {operation.service === "stt" ? "transcript result" : "generated audio"}</button>}<span className={`rounded-full px-3 py-1.5 text-xs font-bold ${operation.status === "success" ? "bg-success/10 text-success" : operation.status === "failed" ? "bg-danger-soft text-danger" : "bg-warning/10 text-warning"}`}>{operation.rawStatus}</span></div></div>
     {operation.errorMessage && <p className="mt-4 rounded-xl border border-danger-border bg-danger-soft px-4 py-3 text-sm text-danger"><AlertCircle size={15} className="mr-2 inline" />{operation.errorMessage}</p>}
     <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <Summary icon={User} label="User" value={operation.userName || "Unknown"} detail={operation.userEmail || "No email"} />
