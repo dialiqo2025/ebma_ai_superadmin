@@ -227,7 +227,7 @@ function LogRows({ item, kind, expanded, onToggle, onArtifact, onTranscript }: {
 
 function Detail({ title, value }: { title: string; value: unknown }) { return <div><p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted">{title}</p><pre className="max-h-72 overflow-auto whitespace-pre-wrap break-words rounded-lg border border-brand-border bg-bg p-3 font-mono text-[10px] leading-5 text-muted">{json(value)}</pre></div>; }
 
-function UserFilterDropdown({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+export function UserFilterDropdown({ value, onChange }: { value: string; onChange: (value: string) => void }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const requestIdRef = useRef(0);
   const [open, setOpen] = useState(false);

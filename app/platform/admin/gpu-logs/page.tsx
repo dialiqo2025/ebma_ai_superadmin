@@ -1,2 +1,2 @@
-import { AdminObservability } from "@/components/admin-observability";
-export default function Page() { return <AdminObservability kind="gpu" />; }
+import { AdminGpuOperations } from "@/components/admin-gpu-operations";
+export default function Page() { return <AdminGpuOperations />; }
