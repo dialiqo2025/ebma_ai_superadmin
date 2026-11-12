@@ -15,6 +15,7 @@ import {
   Receipt,
   ServerCog,
   ScrollText,
+  HeartPulse,
 } from "lucide-react";
 
 export type PlatformNavItem = {
@@ -46,8 +47,6 @@ export const platformNav: PlatformNavItem[] = [
 ];
 
 export const adminNav: PlatformNavItem[] = [
-  { label: "API & Function Logs", href: "/platform/admin/api-logs", icon: ScrollText },
-  { label: "GPU Service Logs", href: "/platform/admin/gpu-logs", icon: ServerCog },
   { label: "Users", href: "/platform/admin/users", icon: Users },
   { label: "User Usage", href: "/platform/admin/user-usage", icon: BarChart3 },
   { label: "Usage Settings", href: "/platform/admin/usage-settings", icon: Settings2 },
@@ -55,4 +54,7 @@ export const adminNav: PlatformNavItem[] = [
   { label: "Plans & Pricing", href: "/platform/admin/plans", icon: CreditCard },
   { label: "Subscriptions", href: "/platform/admin/subscriptions", icon: Activity },
   { label: "Transactions", href: "/platform/admin/transactions", icon: Receipt },
+  { label: "API & Function Logs", href: "/platform/admin/api-logs", icon: ScrollText },
+  { label: "GPU Service Logs", href: "/platform/admin/gpu-logs", icon: ServerCog },
+  { label: "GPU Health", href: "/platform/admin/gpu-health", icon: HeartPulse },
 ];
