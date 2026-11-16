@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Activity, ArrowLeft, ChevronDown, Coins, Cpu, Filter, RefreshCw, Search, Users } from "lucide-react";
+import { Activity, ArrowLeft, ChevronDown, Coins, Cpu, Download, Filter, RefreshCw, Search, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { apiRequest } from "@/lib/api";
+import { apiBlob, apiRequest } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 
 type Period = "today" | "7d" | "30d" | "month";
+type ExportModule = "" | "stt_file" | "stt_live" | "tts_default" | "tts_clone" | "assistant" | "translation";
+type ExportStatus = "" | "success" | "failed" | "queued" | "processing" | "stalled";
 type UserUsageItem = {
   user_uuid: string;
   fullName: string;
@@ -103,6 +105,9 @@ export function AdminUserUsage() {
   const [result, setResult] = useState<UserUsageResponse | null>(null);
   const [creditScaleMax, setCreditScaleMax] = useState(100);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState<"summary" | "details" | "">("");
+  const [exportModule, setExportModule] = useState<ExportModule>("");
+  const [exportStatus, setExportStatus] = useState<ExportStatus>("");
   const [error, setError] = useState("");
   const filterRef = useRef<HTMLDivElement>(null);
   const requestIdRef = useRef(0);
@@ -229,6 +234,37 @@ export function AdminUserUsage() {
     setError("");
   };
 
+  const exportCsv = async (format: "summary" | "details") => {
+    setExporting(format);
+    setError("");
+    try {
+      const query = new URLSearchParams({
+        from: range.from.toISOString(),
+        to: range.to.toISOString(),
+        timezone: "Asia/Kolkata",
+        format,
+        search: appliedSearch,
+      });
+      if (minCredits !== "") query.set("minCredits", minCredits);
+      if (maxCredits !== "") query.set("maxCredits", maxCredits);
+      if (exportModule) query.set("module", exportModule);
+      if (exportStatus) query.set("status", exportStatus);
+      const blob = await apiBlob(`/billing/admin/user-usage/export?${query}`, { timeout: 120_000 });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `ebma-user-usage-${format}-${range.from.toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Unable to export user usage");
+    } finally {
+      setExporting("");
+    }
+  };
+
   return (
     <main className="mx-auto w-full max-w-[1210px] text-text">
       <Link href="/platform/admin" className="inline-flex items-center gap-2 text-xs font-medium text-muted hover:text-accent">
@@ -256,6 +292,57 @@ export function AdminUserUsage() {
             <option value="30d">Last 30 days</option>
             <option value="month">This month</option>
           </select>
+          <select
+            aria-label="Export module"
+            title="Module filter for CSV exports"
+            value={exportModule}
+            onChange={(event) => setExportModule(event.target.value as ExportModule)}
+            className="h-10 rounded-lg border border-brand-border bg-surface px-3 text-xs text-text"
+          >
+            <option value="">All modules</option>
+            <option value="stt_file">STT file</option>
+            <option value="stt_live">STT live</option>
+            <option value="tts_default">TTS default</option>
+            <option value="tts_clone">TTS clone</option>
+            <option value="assistant">Assistant / LLM</option>
+            <option value="translation">Translation</option>
+          </select>
+          <select
+            aria-label="Export request status"
+            title="Status filter for CSV exports"
+            value={exportStatus}
+            onChange={(event) => setExportStatus(event.target.value as ExportStatus)}
+            className="h-10 rounded-lg border border-brand-border bg-surface px-3 text-xs text-text"
+          >
+            <option value="">All statuses</option>
+            <option value="success">Success</option>
+            <option value="failed">Failed</option>
+            <option value="queued">Queued</option>
+            <option value="processing">Processing</option>
+            <option value="stalled">Stalled</option>
+          </select>
+          <div className="flex overflow-hidden rounded-lg border border-brand-border bg-surface">
+            <button
+              type="button"
+              onClick={() => void exportCsv("summary")}
+              disabled={Boolean(exporting)}
+              aria-busy={exporting === "summary"}
+              className="inline-flex h-10 w-[124px] items-center justify-center gap-2 whitespace-nowrap border-r border-brand-border px-3 text-xs font-medium text-accent hover:bg-brand-soft disabled:opacity-60"
+            >
+              {exporting === "summary" ? <RefreshCw size={14} className="animate-spin" /> : <Download size={14} />}
+              Summary CSV
+            </button>
+            <button
+              type="button"
+              onClick={() => void exportCsv("details")}
+              disabled={Boolean(exporting)}
+              aria-busy={exporting === "details"}
+              className="inline-flex h-10 w-[112px] items-center justify-center gap-2 whitespace-nowrap px-3 text-xs font-medium text-accent hover:bg-brand-soft disabled:opacity-60"
+            >
+              {exporting === "details" ? <RefreshCw size={14} className="animate-spin" /> : <Download size={14} />}
+              Details CSV
+            </button>
+          </div>
           <button
             type="button"
             onClick={() => void load()}
