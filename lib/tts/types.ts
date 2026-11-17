@@ -1,4 +1,5 @@
 export type TtsVoiceMode = "default" | "clone";
+export type TtsVoicePresetId = "violet" | "indigo" | "aurora" | "ember";
 export type TtsOutputFormat = "wav" | "mp3" | "ogg";
 export type TtsStatus = "queued" | "processing" | "completed" | "failed";
 
@@ -19,10 +20,19 @@ export type TtsVoiceCloneOptions = {
   requiresSampleTranscript: boolean;
 };
 
+export type TtsVoicePreset = {
+  id: TtsVoicePresetId;
+  name: string;
+  description: string;
+  previewUrl: string;
+};
+
 export type TtsOptions = {
   maxTextCharacters: number;
   languages: string;
   voiceModes: TtsVoiceMode[];
+  defaultVoicePreset: TtsVoicePresetId;
+  voicePresets: TtsVoicePreset[];
   audioFormats: TtsOutputFormat[];
   speed: TtsRangeOption;
   pitch: TtsRangeOption;
@@ -49,6 +59,7 @@ export type TtsGeneration = {
   text: string;
   language: string;
   voiceMode: TtsVoiceMode;
+  voicePreset: TtsVoicePresetId | null;
   voiceId: string | null;
   speed: number;
   pitch: number;
@@ -82,6 +93,7 @@ export type CreateTtsGenerationRequest = {
   text: string;
   language?: string;
   voiceMode?: TtsVoiceMode;
+  voicePreset?: TtsVoicePresetId;
   voiceId?: string;
   speed?: number;
   pitch?: number;

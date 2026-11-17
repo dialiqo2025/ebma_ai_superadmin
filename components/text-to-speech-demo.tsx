@@ -1,23 +1,31 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  Check,
   ChevronRight,
   Download,
   Loader2,
   Play,
   RefreshCcw,
   Trash2,
+  Volume2,
 } from "lucide-react";
 import { useUsageGate } from "@/components/capability-notice";
-import { useMemo, useState } from "react";
 import { CURL_BASE_URL, CurlSnippet, curlAuthHeader, shellQuote, type CurlStep } from "@/components/curl-snippet";
 import { useTtsCompose, useTtsHistory, useTtsOptions } from "@/hooks/use-tts";
 import { translateText } from "@/lib/translate";
-import type { TtsGeneration, TtsOutputFormat, TtsStatus } from "@/lib/tts";
+import { ttsApi, type TtsGeneration, type TtsOutputFormat, type TtsStatus, type TtsVoicePresetId } from "@/lib/tts";
 
 const BRAND_GRADIENT =
   "bg-brand-gradient";
+
+const VOICE_PRESET_TONES: Record<TtsVoicePresetId, { background: string; icon: string }> = {
+  violet: { background: "from-[#7757e8]/20 via-[#9a7cff]/10 to-transparent", icon: "text-[#7757e8]" },
+  indigo: { background: "from-[#465bd8]/20 via-[#6b7df1]/10 to-transparent", icon: "text-[#465bd8]" },
+  aurora: { background: "from-[#168f80]/20 via-[#47b8a9]/10 to-transparent", icon: "text-[#168f80]" },
+  ember: { background: "from-[#d46b3c]/20 via-[#f09a6d]/10 to-transparent", icon: "text-[#d46b3c]" },
+};
 
 const LANGUAGE_OPTIONS = [
   { value: "hi", label: "Hindi" },
@@ -142,7 +150,7 @@ function GenerationRow({
             {item.status}
           </span>
           <span className="font-mono text-[12px] text-muted">
-            {item.language} · {item.voiceMode} · {item.outputFormat}
+            {item.language} · {item.voiceMode === "default" ? (item.voicePreset ?? "violet") : "clone"} · {item.outputFormat}
           </span>
         </div>
       </button>
@@ -213,11 +221,21 @@ export function TextToSpeechDemo() {
   const [selected, setSelected] = useState<TtsGeneration | null>(null);
   const [translating, setTranslating] = useState(false);
   const [translateError, setTranslateError] = useState("");
+  const [previewLoading, setPreviewLoading] = useState<TtsVoicePresetId | null>(null);
+  const [previewPlaying, setPreviewPlaying] = useState<TtsVoicePresetId | null>(null);
+  const [previewError, setPreviewError] = useState("");
+  const previewAudioRef = useRef<HTMLAudioElement | null>(null);
+  const previewUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!compose.busy) void history.refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [compose.busy, compose.current?.status]);
+
+  useEffect(() => () => {
+    previewAudioRef.current?.pause();
+    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+  }, []);
 
   const formats: TtsOutputFormat[] =
     options?.audioFormats?.length ? options.audioFormats : ["wav", "mp3", "ogg"];
@@ -225,11 +243,44 @@ export function TextToSpeechDemo() {
   const pitch = options?.pitch ?? { min: 0.5, max: 1.5, step: 0.1, default: 1 };
   const modelReady = options?.modelConfigured ?? false;
 
+  const playVoicePreview = async (presetId: TtsVoicePresetId) => {
+    if (previewPlaying === presetId && previewAudioRef.current) {
+      previewAudioRef.current.pause();
+      previewAudioRef.current.currentTime = 0;
+      setPreviewPlaying(null);
+      return;
+    }
+    previewAudioRef.current?.pause();
+    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current);
+    previewAudioRef.current = null;
+    previewUrlRef.current = null;
+    setPreviewPlaying(null);
+    setPreviewLoading(presetId);
+    setPreviewError("");
+    try {
+      const blob = await ttsApi.fetchVoicePresetPreview(presetId, compose.language || "en");
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      previewUrlRef.current = url;
+      previewAudioRef.current = audio;
+      audio.onended = () => setPreviewPlaying(null);
+      audio.onerror = () => { setPreviewPlaying(null); setPreviewError("The voice preview could not be played."); };
+      setPreviewPlaying(presetId);
+      await audio.play();
+    } catch (cause) {
+      setPreviewPlaying(null);
+      setPreviewError(cause instanceof Error ? cause.message : "Unable to load voice preview.");
+    } finally {
+      setPreviewLoading(null);
+    }
+  };
+
   const curlSteps = useMemo<CurlStep[]>(() => {
     const body = {
       text: compose.text.trim().slice(0, compose.maxChars) || "Hello from EBMA text to speech.",
       language: compose.language || "auto",
       voiceMode: compose.voiceMode,
+      ...(compose.voiceMode === "default" ? { voicePreset: compose.voicePreset } : {}),
       // The API identifies cloned voices by id; uploaded samples are a portal-only flow.
       ...(compose.voiceMode === "clone" ? { voiceId: "<your_voice_id>" } : {}),
       speed: Number(compose.speed.toFixed(1)),
@@ -253,7 +304,7 @@ export function TextToSpeechDemo() {
         command: `curl ${generation}/<generation_uuid>/audio \\\n  ${curlAuthHeader} \\\n  -o speech.${compose.outputFormat}`,
       },
     ];
-  }, [compose.text, compose.maxChars, compose.language, compose.voiceMode, compose.speed, compose.pitch, compose.outputFormat]);
+  }, [compose.text, compose.maxChars, compose.language, compose.voiceMode, compose.voicePreset, compose.speed, compose.pitch, compose.outputFormat]);
 
   const onSelectLanguage = async (nextLang: string) => {
     if (nextLang === compose.language && !translating) {
@@ -441,6 +492,63 @@ export function TextToSpeechDemo() {
               />
             </div>
           </div>
+
+          {compose.voiceMode === "default" && Boolean(options?.voicePresets?.length) && (
+            <section className="mt-4 rounded-2xl border border-brand-border bg-gradient-to-br from-brand-soft via-surface to-surface p-4 sm:p-5">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="font-mono text-[10px] font-semibold uppercase tracking-[.18em] text-accent">System voice library</p>
+                  <h3 className="mt-1 text-sm font-bold text-text">Choose a consistent default voice</h3>
+                  <p className="mt-1 text-[12px] leading-5 text-muted">Preview each voice in the selected language. Your choice is saved with this generation and reused for retries.</p>
+                </div>
+                <span className="rounded-full border border-success/20 bg-success/10 px-2.5 py-1 text-[10px] font-semibold text-success">Stable voice presets</span>
+              </div>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4" role="radiogroup" aria-label="Default voice preset">
+                {options!.voicePresets.map((preset, index) => {
+                  const selectedPreset = compose.voicePreset === preset.id;
+                  const loadingPreview = previewLoading === preset.id;
+                  const playingPreview = previewPlaying === preset.id;
+                  return (
+                    <article key={preset.id} className={cx(
+                      "relative overflow-hidden rounded-xl border bg-surface transition-all",
+                      selectedPreset ? "border-accent shadow-[0_10px_30px_-18px_rgba(101,66,232,.8)] ring-1 ring-accent/20" : "border-brand-border hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-sm",
+                    )}>
+                      <div className={cx("pointer-events-none absolute inset-0 bg-gradient-to-br opacity-90", VOICE_PRESET_TONES[preset.id].background)} />
+                      <button
+                        type="button"
+                        role="radio"
+                        aria-checked={selectedPreset}
+                        onClick={() => compose.setVoicePreset(preset.id)}
+                        className="relative block w-full px-4 pb-2 pt-4 text-left"
+                      >
+                        <span className="flex items-start justify-between gap-3">
+                          <span className={cx("grid h-9 w-9 place-items-center rounded-xl bg-surface/90 shadow-sm", VOICE_PRESET_TONES[preset.id].icon)}>
+                            <Volume2 size={16} />
+                          </span>
+                          <span className={cx("grid h-5 w-5 place-items-center rounded-full border transition", selectedPreset ? "border-accent bg-accent text-white" : "border-brand-border bg-surface text-transparent")}><Check size={12} strokeWidth={3} /></span>
+                        </span>
+                        <span className="mt-3 block text-sm font-bold text-text">{preset.name}</span>
+                        <span className="mt-0.5 block text-[10px] uppercase tracking-wider text-muted">{preset.description}</span>
+                        <span className="mt-2 block text-[10px] font-medium text-muted">Preset {String(index + 1).padStart(2, "0")}</span>
+                      </button>
+                      <div className="relative px-4 pb-4 pt-1">
+                        <button
+                          type="button"
+                          disabled={Boolean(previewLoading) || compose.busy || !modelReady}
+                          onClick={() => void playVoicePreview(preset.id)}
+                          className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-brand-border bg-surface/80 px-3 py-2 text-[11px] font-semibold text-accent transition hover:bg-brand-soft disabled:opacity-50"
+                        >
+                          {loadingPreview ? <Loader2 size={13} className="animate-spin" /> : <Play size={12} fill={playingPreview ? "currentColor" : "none"} />}
+                          {loadingPreview ? "Preparing…" : playingPreview ? "Stop preview" : "Play preview"}
+                        </button>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+              {previewError && <p role="alert" className="mt-3 text-[11px] text-danger">{previewError}</p>}
+            </section>
+          )}
 
           {compose.voiceMode === "clone" && (
             <div className="mt-4 space-y-3">
@@ -755,6 +863,9 @@ export function TextToSpeechDemo() {
                             outputFormat: selected.outputFormat,
                             ...(selected.voiceMode === "clone" && selected.voiceId
                               ? { voiceId: selected.voiceId }
+                              : {}),
+                            ...(selected.voiceMode === "default"
+                              ? { voicePreset: selected.voicePreset ?? compose.voicePreset }
                               : {}),
                           })
                           .then((updated) => {

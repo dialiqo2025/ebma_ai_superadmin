@@ -149,6 +149,10 @@ export const ttsApi = {
     return apiBlob(`/tts/generations/${generationUuid}/audio`, { timeout: 60_000 });
   },
 
+  async fetchVoicePresetPreview(presetId: string, language: string) {
+    return apiBlob(`/tts/voice-presets/${encodeURIComponent(presetId)}/preview?language=${encodeURIComponent(language)}`, { timeout: 120_000 });
+  },
+
   audioAbsoluteUrl(audioUrl: string | null | undefined) {
     if (!audioUrl) return null;
     if (/^https?:\/\//i.test(audioUrl)) return audioUrl;

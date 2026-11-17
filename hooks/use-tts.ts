@@ -10,6 +10,7 @@ import type {
   TtsOutputFormat,
   TtsStatus,
   TtsVoiceMode,
+  TtsVoicePresetId,
 } from "@/lib/tts";
 
 export type TtsComposeState = {
@@ -17,6 +18,7 @@ export type TtsComposeState = {
   language: string;
   voiceMode: TtsVoiceMode;
   voiceId: string;
+  voicePreset: TtsVoicePresetId;
   speed: number;
   pitch: number;
   outputFormat: TtsOutputFormat;
@@ -234,6 +236,7 @@ export function useTtsCompose(options: TtsOptions | null) {
   const [language, setLanguage] = useState("hi");
   const [voiceMode, setVoiceMode] = useState<TtsVoiceMode>("default");
   const [voiceId, setVoiceId] = useState("");
+  const [voicePreset, setVoicePreset] = useState<TtsVoicePresetId>("violet");
   const [voiceSample, setVoiceSample] = useState<File | null>(null);
   const [sampleTranscript, setSampleTranscript] = useState("");
   const [playWhileGenerating, setPlayWhileGenerating] = useState(true);
@@ -252,6 +255,7 @@ export function useTtsCompose(options: TtsOptions | null) {
     setPitch(options.pitch.default);
     if (options.audioFormats.length) setOutputFormat(options.audioFormats[0]);
     if (options.voiceModes.length) setVoiceMode(options.voiceModes[0]);
+    if (options.defaultVoicePreset) setVoicePreset(options.defaultVoicePreset);
   }, [options]);
 
   const maxChars = options?.maxTextCharacters ?? 1500;
@@ -302,6 +306,7 @@ export function useTtsCompose(options: TtsOptions | null) {
               text: textPayload,
               language: languagePayload,
               voiceMode: "default",
+              voicePreset,
               speed,
               pitch,
               outputFormat,
@@ -359,6 +364,7 @@ export function useTtsCompose(options: TtsOptions | null) {
     streamingEnabled,
     text,
     voiceMode,
+    voicePreset,
     voiceSample,
     sampleTranscript,
   ]);
@@ -446,6 +452,8 @@ export function useTtsCompose(options: TtsOptions | null) {
     setVoiceMode,
     voiceId,
     setVoiceId,
+    voicePreset,
+    setVoicePreset,
     voiceSample,
     setVoiceSample,
     sampleTranscript,
